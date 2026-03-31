@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainPage from '../pages/main/MainPage';
 import StudentLogin from '@/pages/StudentLogin';
 import CourseMgtMain from '../features/Course-Mgt/main';
+import StaffLogin from '@/pages/StaffLogin';
 
 const AppRoute = () => {
 
@@ -14,6 +15,7 @@ const AppRoute = () => {
             <Route path="/" element={<MainPage />} />
             <Route path="mainPage" element={<MainPage />} />
             <Route path='/studentLogin' element={<StudentLogin/>}/>
+             <Route path='/staffLogin' element={<StaffLogin/>}/>
             <Route path="courseMgt" element={<CourseMgtMain />} />
         </Routes>
         </BrowserRouter>
