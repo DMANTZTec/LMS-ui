@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import MainPage from '../pages/main/MainPage';
+import StudentLogin from '@/pages/StudentLogin';
 
 const AppRoute = () => {
 
@@ -10,6 +11,7 @@ const AppRoute = () => {
         <BrowserRouter>
         <Routes>
             <Route path="mainPage" element={<MainPage />} />
+            <Route path='/studentLogin' element={<StudentLogin/>}/>
         </Routes>
         </BrowserRouter>
         </>
