@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, ChevronDown, Eye, Pencil } from 'lucide-react';
 
+import { api } from '@/api/CourseMgtController';
 
 const programsData = [
     {
         id: "P001",
-        name: "Computer Science",
+        programName: "Computer Science",
         courses: 3,
         fee: "$15,000",
         coursesList: [
@@ -43,6 +44,17 @@ const programsData = [
 
 const ProgramsTab = () => {
     const [openRow, setOpenRow] = useState(null);
+//     const [programsData, setProgramsData] = useState([]);
+
+// useEffect(() => {
+// fetchProgamsData();
+// },[]);
+
+// const fetchProgamsData = async () => {
+// const result = await api.getAllPrograms();
+// console.log("result.data is: ", result.data);
+// setProgramsData(result.data);
+// }
 
     return (
 
@@ -62,7 +74,7 @@ const ProgramsTab = () => {
                     </TableHeader>
 
                     <TableBody>
-                        {programsData.map((program) => (
+                        {programsData.map((program, index) => (
                             <>
 
                                 <TableRow key={program.id}>
@@ -72,13 +84,17 @@ const ProgramsTab = () => {
                                         </Button>
                                     </TableCell>
                                     <TableCell>{program.id}</TableCell>
-                                    <TableCell>{program.name}</TableCell>
+                                    <TableCell>{program.programTitle}</TableCell>
                                     <TableCell>{program.courses}</TableCell>
                                     <TableCell>{program.fee}</TableCell>
                                     <TableCell className="flex gap-2">
-
-                                        <Eye className="w-5 h-5 text-blue-500 cursor-pointer" />
-                                        <Pencil className="w-5 h-5 text-green-500 cursor-pointer" />
+                                          <Button variant='ghost'>
+                                            <Eye className="w-5 h-5 text-blue-500 cursor-pointer" />
+                                          </Button>
+                                        <Button variant='ghost'>
+                                            <Pencil className="w-5 h-5 text-green-500 cursor-pointer" />
+                                        </Button>
+                                        
                                     </TableCell>
                                 </TableRow>
 
