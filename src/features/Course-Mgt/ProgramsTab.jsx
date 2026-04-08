@@ -1,60 +1,76 @@
 import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, ChevronDown, Eye, Pencil } from 'lucide-react';
 
 import { api } from '@/api/CourseMgtController';
 
-const programsData = [
-    {
-        id: "P001",
-        programName: "Computer Science",
-        courses: 3,
-        fee: "$15,000",
-        coursesList: [
-            { id: "C101", subject: "Programming", name: "Introduction to Python", duration: "12 weeks" },
-            { id: "C102", subject: "Data Structures", name: "Advanced Algorithms", duration: "16 weeks" },
-            { id: "C103", subject: "Web Development", name: "Full Stack JavaScript", duration: "14 weeks" },
-        ],
-    },
-    {
-        id: "P002",
-        name: "Business Administration",
-        courses: 2,
-        fee: "$12,000",
-        coursesList: [
-            { id: "C201", subject: "Accounting and Finance", name: "introduction to finance", duration: "8 weeks" },
-            { id: "C202", subject: "Marketing", name: "introduction to Marketing", duration: "10 weeks" }
-        ],
-    },
-    {
-        id: "P003",
-        name: "Digital Marketing",
-        courses: 4,
-        fee: "$10,000",
-        coursesList: [
-            { id: "C301", subject: "Google Digital Marketing and E-commerce", name: "introduction to digital marketing & E-commerce", duration: "14 weeks" },
-            { id: "C302", subject: "Meta Social Media Marketing", name: "introduction to Social Media Marketing", duration: "10 weeks" },
-            { id: "C303", subject: "IBM Growth Hacking", name: "introduction to Growth Hacking", duration: "10 weeks" },
-            { id: "C304", subject: "Affiliate Marketing", name: "introduction to Affiliate Marketing", duration: "8 weeks" }
-        ],
-    }
+// const programsData = [
+//     {
+//         id: "P001",
+//         programName: "Computer Science",
+//         courses: 3,
+//         fee: "$15,000",
+//         coursesList: [
+//             { id: "C101", subject: "Programming", name: "Introduction to Python", duration: "12 weeks" },
+//             { id: "C102", subject: "Data Structures", name: "Advanced Algorithms", duration: "16 weeks" },
+//             { id: "C103", subject: "Web Development", name: "Full Stack JavaScript", duration: "14 weeks" },
+//         ],
+//     },
+//     {
+//         id: "P002",
+//         name: "Business Administration",
+//         courses: 2,
+//         fee: "$12,000",
+//         coursesList: [
+//             { id: "C201", subject: "Accounting and Finance", name: "introduction to finance", duration: "8 weeks" },
+//             { id: "C202", subject: "Marketing", name: "introduction to Marketing", duration: "10 weeks" }
+//         ],
+//     },
+//     {
+//         id: "P003",
+//         name: "Digital Marketing",
+//         courses: 4,
+//         fee: "$10,000",
+//         coursesList: [
+//             { id: "C301", subject: "Google Digital Marketing and E-commerce", name: "introduction to digital marketing & E-commerce", duration: "14 weeks" },
+//             { id: "C302", subject: "Meta Social Media Marketing", name: "introduction to Social Media Marketing", duration: "10 weeks" },
+//             { id: "C303", subject: "IBM Growth Hacking", name: "introduction to Growth Hacking", duration: "10 weeks" },
+//             { id: "C304", subject: "Affiliate Marketing", name: "introduction to Affiliate Marketing", duration: "8 weeks" }
+//         ],
+//     }
 
-];
+// ];
+
+
 
 const ProgramsTab = () => {
     const [openRow, setOpenRow] = useState(null);
-//     const [programsData, setProgramsData] = useState([]);
+    const [programsData, setProgramsData] = useState([]);
 
-// useEffect(() => {
-// fetchProgamsData();
-// },[]);
+    const fetchProgamsData = async () => {
+const result = await api.getAllPrograms();
+console.log("result.data is: ", result.data);
+return result.data
+}
 
-// const fetchProgamsData = async () => {
-// const result = await api.getAllPrograms();
-// console.log("result.data is: ", result.data);
-// setProgramsData(result.data);
-// }
+
+const {data, isPending, error } = useQuery({
+    queryKey: ['programsData'],
+    queryFn: fetchProgamsData,
+    staleTime: 2 * 60 * 1000
+});
+    
+useEffect(() => {
+
+if(data)
+setProgramsData(data);
+
+},[data]);
+
+if (isPending) return <div>Loading ...</div>;
+if (error) return <div>Error: {error.message}</div>;
 
     return (
 
@@ -75,17 +91,17 @@ const ProgramsTab = () => {
 
                     <TableBody>
                         {programsData.map((program, index) => (
-                            <>
+                            <React.Fragment key={program.programId}>
 
-                                <TableRow key={program.id}>
+                                <TableRow>
                                     <TableCell>
                                         <Button onClick={() => setOpenRow(openRow === program.id ? null : program.id)} variant='ghost'>
                                             {openRow === program.id ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                                         </Button>
                                     </TableCell>
-                                    <TableCell>{program.id}</TableCell>
+                                    <TableCell>{program.programId}</TableCell>
                                     <TableCell>{program.programTitle}</TableCell>
-                                    <TableCell>{program.courses}</TableCell>
+                                    <TableCell>{program.coursesList.length}</TableCell>
                                     <TableCell>{program.fee}</TableCell>
                                     <TableCell className="flex gap-2">
                                           <Button variant='ghost'>
@@ -99,12 +115,12 @@ const ProgramsTab = () => {
                                 </TableRow>
 
                                 {/* Expanded Row */}
-                                {(openRow === program.id && program.coursesList.length > 0) && (
+                                {(openRow === program.id && program.coursesList?.length > 0) && (
 
 
                                     <TableRow>
                                         <TableCell colSpan={6} className='bg-gray-100'>
-                                            <div className='bg-white rounded-lg p-{10}'>
+                                            <div className='bg-white rounded-lg p-10'>
                                                 <Table>
                                                     <TableHeader>
                                                         <TableRow className='bg-gray-200'>
@@ -118,9 +134,9 @@ const ProgramsTab = () => {
                                                     <TableBody>
                                                         {program.coursesList.map((course) => (
                                                             <TableRow key={course.id}>
-                                                                <TableCell>{course.id}</TableCell>
-                                                                <TableCell>{course.subject}</TableCell>
-                                                                <TableCell>{course.name}</TableCell>
+                                                                <TableCell>{course.courseId}</TableCell>
+                                                                <TableCell>{course.subjectNm}</TableCell>
+                                                                <TableCell>{course.courseTitle}</TableCell>
                                                                 <TableCell>{course.duration}</TableCell>
                                                             </TableRow>
                                                         ))}
@@ -130,7 +146,7 @@ const ProgramsTab = () => {
                                         </TableCell>
                                     </TableRow>
                                 )}
-                            </>
+                            </React.Fragment>
                         ))}
                     </TableBody>
                 </Table>

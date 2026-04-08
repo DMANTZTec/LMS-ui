@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
     Table,
     TableHeader,
@@ -18,6 +19,15 @@ import { Button } from '@/components/ui/button';
 import { Eye, SquarePen } from 'lucide-react';
 import { api } from '@/api/CourseMgtController';
 
+const fetchCourses = async () => {
+    console.log('entered into fetchCourses function.');
+const result = await api.viewAllCourses();
+
+    console.log("result is: ", result);
+return result.data;
+};
+
+
 const CoursesTab = () => {
 
 const [ courses, setCourses ] = useState([]); 
@@ -35,17 +45,25 @@ const [ courses, setCourses ] = useState([]);
     //     { id: "ENG101", subject: "English", name: "English Composition", duration: "10 weeks", fee: "$400" },
     // ]
 
+    
+
+const { data, isPending, error } = useQuery({
+    queryKey: ['courses'],
+    queryFn: fetchCourses,
+    staleTime: 2 * 60 * 1000
+});
+
 useEffect(() => {
-fetchCourses();
+        if (data)
+            setCourses(data);
+    },[data]);
 
-},[]);
-
-const fetchCourses = async () => {
-const result = await api.viewAllCourses();
-
-    console.log("result is: ", result);
-setCourses(result.data);
-};
+if (isPending) {
+    return <div>Data Loading ...</div>;
+}
+if (error) {
+    return <div>Error: {error.message}</div>
+}
     return (
         <>
             <div className='bg-gray-100 p-6 h-[750.33px] '>
@@ -85,7 +103,7 @@ setCourses(result.data);
 
                         <TableBody>
                             {courses.map((course, index) => (
-                                <TableRow key={course.id}>
+                                <TableRow key={course.courseId}>
                                     <TableCell>{course.courseId}</TableCell>
                                     <TableCell>{course.subject}</TableCell>
                                     <TableCell>{course.courseTitle}</TableCell>
