@@ -20,18 +20,20 @@ import { Eye, SquarePen } from 'lucide-react';
 import { api } from '@/api/CourseMgtController';
 
 const fetchCourses = async () => {
-    console.log('entered into fetchCourses function.');
-const result = await api.viewAllCourses();
+    console.log('entered into fetchCourses function. and the current time is: ', new Date().toLocaleTimeString());
+    const result = await api.viewAllCourses();
 
     console.log("result is: ", result);
-return result.data;
+    return result.data;
 };
 
 
 const CoursesTab = () => {
 
-const [ courses, setCourses ] = useState([]); 
-
+    const [courses, setCourses] = useState([]);
+    const [selectedSubject, setSelectedSubject] = useState("");
+    
+    
     // const courses = [
     //     { id: "CS101", subject: "Computer Science", name: "Introduction to Programming", duration: "12 weeks", fee: "$500" },
     //     { id: "CS201", subject: "Computer Science", name: "Data Structures and Algorithms", duration: "16 weeks", fee: "$650" },
@@ -45,25 +47,31 @@ const [ courses, setCourses ] = useState([]);
     //     { id: "ENG101", subject: "English", name: "English Composition", duration: "10 weeks", fee: "$400" },
     // ]
 
+
+
+    const { data = [], isPending, error } = useQuery({
+        queryKey: ['courses'],
+        queryFn: fetchCourses,
+        staleTime: 2 * 60 * 1000
+    });
+
+    useEffect(() => {
+        const filteredData = (selectedSubject && selectedSubject != "all" ? (data.filter(course => course.subjectNm === selectedSubject)) : data);
+        setCourses(filteredData);
+
+    }, [data, selectedSubject]);
+
+    const uniqueSubject = [...new Set(data.map(d => d.subjectNm))];
     
 
-const { data, isPending, error } = useQuery({
-    queryKey: ['courses'],
-    queryFn: fetchCourses,
-    staleTime: 2 * 60 * 1000
-});
+    if (isPending) {
+        return <div>Data Loading ...</div>;
+    }
+    if (error) {
+        return <div>Error: {error.message}</div>
+    }
 
-useEffect(() => {
-        if (data)
-            setCourses(data);
-    },[data]);
 
-if (isPending) {
-    return <div>Data Loading ...</div>;
-}
-if (error) {
-    return <div>Error: {error.message}</div>
-}
     return (
         <>
             <div className='bg-gray-100 p-6 h-[750.33px] '>
@@ -73,15 +81,17 @@ if (error) {
                     {/* filter */}
                     <div className='mb-4 bg-gray-100'>
 
-                        <Select>
+                        <Select onValueChange={setSelectedSubject}>
                             <SelectTrigger className='w-[200px] bg-white'>
                                 <SelectValue placeholder="All Subjects" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">All Subjects</SelectItem>
-                                <SelectItem value="cs">Computer Science</SelectItem>
-                                <SelectItem value="math">Mathemetics</SelectItem>
-                                <SelectItem value="phy">Physics</SelectItem>
+                                {uniqueSubject.map((subject) => (
+                                    <React.Fragment key={subject}>
+                                        <SelectItem value={subject}>{subject}</SelectItem>
+                                    </React.Fragment>
+                                ))}
                             </SelectContent>
                         </Select>
                     </div>
@@ -103,9 +113,12 @@ if (error) {
 
                         <TableBody>
                             {courses.map((course, index) => (
+
+
+
                                 <TableRow key={course.courseId}>
                                     <TableCell>{course.courseId}</TableCell>
-                                    <TableCell>{course.subject}</TableCell>
+                                    <TableCell>{course.subjectNm}</TableCell>
                                     <TableCell>{course.courseTitle}</TableCell>
                                     <TableCell>{course.duration}</TableCell>
                                     <TableCell>{course.fee}</TableCell>

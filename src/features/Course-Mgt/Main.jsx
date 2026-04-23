@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import * as tabs from './index';
 
-import { MCP } from '@/assets/images';
+import { Avatar, MCP } from '@/assets/images';
 
 
 const Main = () => {
@@ -13,12 +13,24 @@ const Main = () => {
         <>
             <div className='min-h-screen bg-white'>
                 {/* Header */}
-                <div className="flex items-center gap-100 px-8 py-4 bg-white shadow">
+                <div className="flex items-center justify-between px-6 py-3">              
+                {/* LEFT - Logo */}
+        <div className="flex items-center gap-2">
+          <img src={MCP} alt="logo" className="w-10 h-10" />
+        </div>
 
-                    <img src={MCP} className='w-10 h-10' />
-                    <h1 className="text-xl font-semibold">LMS Administration</h1>
-                </div>
+        {/* CENTER - Title */}
+        <h1 className="text-xl font-semibold text-center flex-1 ml-85">
+          LMS Administration
+        </h1>
 
+        {/* RIGHT - Profile */}
+        <div className="flex justify-end flex-1">
+          <div className="border rounded-full p-2 cursor-pointer">
+            <img src={Avatar} className='w-10 h-10'/>
+          </div>
+        </div>
+</div>
                 {/* Tabs */}
                 <div className='flex justify-center bg-white gap-6 py-3 text-sm border-b'>
                     {["Courses", "Programs", "Classes", "Students", "Staff", "Reports", "Providers"].map((tab, i) => (

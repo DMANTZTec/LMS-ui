@@ -1,5 +1,6 @@
 import AI from './ai.jpeg';
 import Angular from './angular.jpeg';
+import Avatar from './avatar.jpg';
 import AWS from './aws.jpeg';
 import IoT from './IoT.jpeg';
 import JAVA from './java.jpeg';
@@ -12,4 +13,4 @@ import PYTHON from './python.jpeg';
 import REACT from './react.jpeg';
 import SPRINGBOOT from './springboot.jpeg';
 
-export {AI,Angular,AWS,IoT,JAVA,Linux,MCP,MobileApps,MCPText,NODE,PYTHON,REACT,SPRINGBOOT};
+export {AI,Angular,Avatar,AWS,IoT,JAVA,Linux,MCP,MobileApps,MCPText,NODE,PYTHON,REACT,SPRINGBOOT};
