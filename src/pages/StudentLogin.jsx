@@ -19,7 +19,8 @@ const StudentLogin = () => {
       const res = await studentApi.login(payload);
       console.log(res)
       if (res.data.message === "OTP sent to your registered email") {
-        navigate("/verify-otp");
+         localStorage.setItem('user', JSON.stringify(res.data));
+        navigate("/verify-Student-otp");
         return; 
       }
       

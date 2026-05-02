@@ -6,6 +6,8 @@ import StudentLogin from '@/pages/StudentLogin';
 import CourseMgtMain from '../features/Course-Mgt/main';
 import StaffLogin from '@/pages/StaffLogin';
 import AddCourse from '@/features/Course-Mgt/AddCourse';
+import StudentOtp from '@/features/StudentOtp';
+import StaffOtp from '@/features/StaffOtp';
 
 const AppRoute = () => {
 
@@ -19,6 +21,9 @@ const AppRoute = () => {
              <Route path='/staffLogin' element={<StaffLogin/>}/>
             <Route path="courseMgt" element={<CourseMgtMain />} />
             <Route path="/addCourse" element={<AddCourse />} />
+            <Route path="/verify-Student-otp" element={<StudentOtp />} />
+            <Route path="/verify-staff-otp" element={<StaffOtp/>} />
+        
         </Routes>
         </BrowserRouter>
         </>

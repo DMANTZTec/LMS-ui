@@ -24,14 +24,10 @@ const from = location.state?.from?.pathname || "/mainPage"; // fallbaack
       
       const res = await staffApi.login1(payload);
       console.log(`value of res is: ${res.data.message}`);
-      alert(`${res.data.message} and your studentId: ${res.data.studentId}`);
-      
       if(res.data.message?.includes("Login successfully Completed. OTP sent to your email.")) {
-        localStorage.setItem("token","10");
-        console.log("entered into if block and location is:",location);
-    
-navigate(from, { replace: true });    //     go back to courseMgt or mainPage
-
+         localStorage.setItem('user', JSON.stringify(res.data));
+        navigate("/verify-staff-otp");
+        return; 
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.response?.data || error.message;
