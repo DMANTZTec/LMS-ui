@@ -8,6 +8,8 @@ import StaffLogin from '@/pages/StaffLogin';
 import AddCourse from '@/features/Course-Mgt/AddCourse';
 import StudentOtp from '@/features/StudentOtp';
 import StaffOtp from '@/features/StaffOtp';
+import StudentDashBoard from '@/pages/studentPages/StudentDashBoard';
+import StaffDashBoard from '@/pages/staffPages/StaffDashBoard';
 
 const AppRoute = () => {
 
@@ -23,7 +25,8 @@ const AppRoute = () => {
             <Route path="/addCourse" element={<AddCourse />} />
             <Route path="/verify-Student-otp" element={<StudentOtp />} />
             <Route path="/verify-staff-otp" element={<StaffOtp/>} />
-        
+            <Route path="/student-dashboard" element={<StudentDashBoard/>} />
+            <Route path="/Staff-dashboard" element={<StaffDashBoard/>} />
         </Routes>
         </BrowserRouter>
         </>

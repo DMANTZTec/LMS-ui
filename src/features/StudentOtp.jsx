@@ -42,11 +42,9 @@ export default function StudentOtp() {
       alert(res.data.message || "Verified ✅");
 
       // ✅ CLEAN TEMP DATA - removing both 'user' and 'tempAuth' to be safe
-      localStorage.removeItem("user");
-      localStorage.removeItem("tempAuth");
 
       // ✅ REDIRECT
-      navigate("/dashboard");
+      navigate("/student-dashboard");
 
     } catch (error) {
       // alert(error.response?.data || "Invalid OTP ❌");

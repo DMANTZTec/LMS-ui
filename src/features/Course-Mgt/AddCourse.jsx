@@ -105,7 +105,7 @@ const AddCourse = () => {
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:9090";
 
       // 3. Send standard JSON to backend instead of FormData
-      const response = await fetch(`${apiUrl}/api/course/create?staffId=2`, {
+      const response = await fetch(`${apiUrl}/api/course/create?staffId=1`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -141,7 +141,7 @@ const AddCourse = () => {
           </div>
           <button
             type="button"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/Staff-dashboard")}
             className="text-gray-400 hover:bg-gray-100 p-2 rounded-full transition-colors"
           >
             <X className="w-6 h-6" strokeWidth={1.5} />

@@ -41,12 +41,8 @@ export default function StaffOtp() {
 
       alert(res.data.message || "Verified ✅");
 
-      // ✅ CLEAN TEMP DATA - removing both 'user' and 'tempAuth' to be safe
-      localStorage.removeItem("user");
-      localStorage.removeItem("tempAuth");
-
-      // ✅ REDIRECT
-      navigate("/dashboard");
+      
+      navigate("/Staff-dashboard");
 
     } catch (error) {
       // alert(error.response?.data || "Invalid OTP ❌");
