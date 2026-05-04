@@ -31,9 +31,9 @@ const fetchCourses = async () => {
 const CoursesTab = () => {
 
     const [courses, setCourses] = useState([]);
-    const [selectedSubject, setSelectedSubject] = useState("");
-    
-    
+    const [selectedSubject, setSelectedSubject] = useState("");    
+    const [courseLength, setCourseLength ] = useState(0);
+
     // const courses = [
     //     { id: "CS101", subject: "Computer Science", name: "Introduction to Programming", duration: "12 weeks", fee: "$500" },
     //     { id: "CS201", subject: "Computer Science", name: "Data Structures and Algorithms", duration: "16 weeks", fee: "$650" },
@@ -58,7 +58,7 @@ const CoursesTab = () => {
     useEffect(() => {
         const filteredData = (selectedSubject && selectedSubject != "all" ? (data.filter(course => course.subjectNm === selectedSubject)) : data);
         setCourses(filteredData);
-
+setCourseLength(filteredData.length);
     }, [data, selectedSubject]);
 
     const uniqueSubject = [...new Set(data.map(d => d.subjectNm))];
@@ -74,22 +74,22 @@ const CoursesTab = () => {
 
     return (
         <>
-            <div className='bg-gray-100 p-6 h-[750.33px] '>
+            <div className='bg-gray-100 p-6'>
                 <div className='bg-gray-100'>
-                    <h2 className='text-2xl font-semibold text-center mb-6'>Course Management</h2>
+                    <h2 className='text-[18px] md:text-3xl font-semibold text-center mb-6'>Course Management</h2>
 
                     {/* filter */}
                     <div className='mb-4 bg-gray-100'>
 
                         <Select onValueChange={setSelectedSubject}>
-                            <SelectTrigger className='w-[200px] bg-white'>
+                            <SelectTrigger className='w-[200px] bg-white text-[10px] md:text-[12px]'>
                                 <SelectValue placeholder="All Subjects" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">All Subjects</SelectItem>
+                                <SelectItem value="all"  className="text-[10px] md:text-[12px]">All Subjects</SelectItem>
                                 {uniqueSubject.map((subject) => (
                                     <React.Fragment key={subject}>
-                                        <SelectItem value={subject}>{subject}</SelectItem>
+                                        <SelectItem value={subject}  className="text-[10px] md:text-[12px]">{subject}</SelectItem>
                                     </React.Fragment>
                                 ))}
                             </SelectContent>
@@ -98,10 +98,10 @@ const CoursesTab = () => {
                 </div>
 
                 {/* Table */}
-                <div className='bg-white'>
-                    <Table>
+                <div className='bg-white overflow-x-auto shadow rounded'>
+                    <Table className="min-w-[600px]">
                         <TableHeader>
-                            <TableRow>
+                            <TableRow className="text-[10px] md:text-[12px]">
                                 <TableHead>Course ID</TableHead>
                                 <TableHead>Subject</TableHead>
                                 <TableHead>Course Name</TableHead>
@@ -112,18 +112,21 @@ const CoursesTab = () => {
                         </TableHeader>
 
                         <TableBody>
+                            
+
                             {courses.map((course, index) => (
 
 
 
-                                <TableRow key={course.courseId}>
-                                    <TableCell>{course.courseId}</TableCell>
+                                <TableRow key={course.courseId} className="text-[10px] md:text-[12px]">
+
+                                    <TableCell >{course.courseId}</TableCell>
                                     <TableCell>{course.subjectNm}</TableCell>
                                     <TableCell>{course.courseTitle}</TableCell>
                                     <TableCell>{course.duration}</TableCell>
                                     <TableCell>{course.fee}</TableCell>
                                     <TableCell>
-                                        <div className='flex gap-2'>
+                                        <div className='flex gap-2 mt-2'>
                                             <Button variant='ghost'>
                                                 <Eye className="w-5 h-5 text-blue-500 cursor-pointer" />
                                             </Button>
@@ -131,13 +134,15 @@ const CoursesTab = () => {
                                                 <SquarePen className="w-5 h-5 text-green-500 cursor-pointer" />
                                             </Button>
                                         </div>
+                                        
                                     </TableCell>
                                 </TableRow>
+                                
                             ))}
                         </TableBody>
                     </Table>
                 </div>
-                <div className='mt-2'><p className='text-sm text-gray-500 mt-4'>Showing 10 of 10 courses</p></div>
+                <div className='mt-2'><p className='text-sm text-gray-500 mt-4'>Showing {courseLength} of 10 courses</p></div>
 
             </div>
 

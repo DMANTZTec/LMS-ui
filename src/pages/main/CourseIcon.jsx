@@ -22,10 +22,10 @@ const CourseIcon = () => {
 
     return (
         <>
-            <div className="relative flex gap-4 top-[6px] right-[8px] bottom-[6px] left-[8px]">          
+            <div className="flex flex-wrap justify-center md:justify-start gap-6 px-4 py-4">          
             {courses.map((icon,index) => (
-               <div key={icon.id} className='flex flex-col items-center'>
-               <img src={icon.src}  className='w-16 h-12 mb-2'/>
+               <div key={icon.id} className="flex flex-col items-center w-20">
+               <img src={icon.src}  className="text-xs md:text-sm text-blue-700 text-center mt-1"/>
                <span className="text-xs text-medium text-blue-700">{icon.name}</span>
                </div> 
             ))}

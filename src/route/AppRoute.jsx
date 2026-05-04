@@ -27,6 +27,8 @@ const AppRoute = () => {
             <Route path="/verify-staff-otp" element={<StaffOtp/>} />
             <Route path="/student-dashboard" element={<StudentDashBoard/>} />
             <Route path="/Staff-dashboard" element={<StaffDashBoard/>} />
+            
+            
         </Routes>
         </BrowserRouter>
         </>
