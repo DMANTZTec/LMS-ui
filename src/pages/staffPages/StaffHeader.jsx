@@ -15,7 +15,7 @@ const StaffHeader = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("tempAuth");
 
-    navigate("/staff-login"); // change if needed
+    navigate("/"); // change if needed
   };
 
   return (

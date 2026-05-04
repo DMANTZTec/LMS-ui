@@ -7,12 +7,13 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useCloudinaryUpload } from "@/components/useCloudinaryUpload";
+import { api } from "@/api/CourseMgtController";
 
 
 const MAX_IMAGE_SIZE = 100 * 1024 * 1024; // 10MB
 const MAX_VIDEO_SIZE = 1000 * 1024 * 1024; // 100MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
-const ACCEPTED_VIDEO_TYPES = ["image/jpeg", "image/jpg", "image/png","video/mp4", "video/quicktime"]; // quicktime is .mov
+const ACCEPTED_VIDEO_TYPES = ["image/jpeg", "image/jpg", "image/png","video/mp4", "video/quicktime"]; 
 
 const schema = z.object({
   courseId: z.string().min(1, "Course ID is required"),
@@ -59,10 +60,8 @@ const AddCourse = () => {
 
   const fetchCourseId = async () => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:9090";
-      const res = await fetch(`${apiUrl}/api/course/view-courses`);
-      const data = await res.json();
-
+      const res = await api.viewAllCourses();
+      const data = res.data;
       let nextId = "BD001";
       if (data.length > 0) {
         const lastId = data[data.length - 1].courseId;
@@ -83,10 +82,13 @@ const AddCourse = () => {
   const onSubmit = async (data) => {
     try {
       // 1. Upload files to Cloudinary in parallel
+
+
       const [imageUrl, videoUrl] = await Promise.all([
         uploadFile(data.courseImage[0], "image"),
         uploadFile(data.courseVideo[0], "image"),
       ]);
+
 
       // 2. Prepare JSON payload with the returned Cloudinary URLs
       const payload = {
@@ -102,22 +104,9 @@ const AddCourse = () => {
       };
 
       console.log("Payload:", payload);
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:9090";
 
-      // 3. Send standard JSON to backend instead of FormData
-      const response = await fetch(`${apiUrl}/api/course/create?staffId=1`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.message || "Failed to create course");
-      }
-
+      const response = await api.createCourse(1,payload);
+      console.log("Response:", response.data);
       alert("Course created ✅");
       reset();
       setPreviews({ imgName: "", vidName: "" });
@@ -141,7 +130,7 @@ const AddCourse = () => {
           </div>
           <button
             type="button"
-            onClick={() => navigate("/Staff-dashboard")}
+            onClick={() => navigate("/")}
             className="text-gray-400 hover:bg-gray-100 p-2 rounded-full transition-colors"
           >
             <X className="w-6 h-6" strokeWidth={1.5} />

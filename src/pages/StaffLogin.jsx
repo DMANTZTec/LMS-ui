@@ -15,9 +15,6 @@ const from = location.state?.from?.pathname || "/mainPage"; // fallbaack
     setIsSubmitting(true);
     try {
       const payload = {
-        // username: data.identifier, 
-        // password: data.password,
-
         loginId: data.identifier, 
         password: data.password,
       };
