@@ -7,18 +7,18 @@ import CourseIcon from './CourseIcon';
 const MainPage = () => {
     return (
         <>
-        <div className='flex justify-between px-6 py-4'>
-            <div className='flex'>
-                <img src={logo.MCP} className='w-[85px] h-[94px]' />
-                <img src={logo.MCPText} width="341" height="86" className='pl-8' />
+        <div className="flex flex-col md:flex-row items-center justify-between px-4 md:px-6 py-4 gap-4">
+            <div className="flex items-center gap-4">
+                <img src={logo.MCP} className="w-14 h-16 md:w-[85px] md:h-[94px]" />
+                <img src={logo.MCPText} className="w-[180px] md:w-[341px]" />
             </div>    
 
-                <div className='flex items-center gap-3'>
+                <div className="flex gap-3">
                     <Link to="/staffLogin">
-                        <Button className='bg-teal-700  text-white rounded-[8px]'>Staff Login</Button>
+                        <Button className="bg-teal-700 text-white rounded-md px-3 py-1 text-sm md:text-base">Staff Login</Button>
                     </Link>
                     <Link to="/studentLogin">
-                        <Button className='bg-teal-700 text-white rounded-[8px] pl-[10px]'>Student Login</Button>
+                        <Button className="bg-teal-700 text-white rounded-md px-3 py-1 text-sm md:text-base">Student Login</Button>
                     </Link>
                 </div>
             </div> 

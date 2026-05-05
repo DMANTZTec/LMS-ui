@@ -1,6 +1,6 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, Outlet } from "react-router-dom";
 
-const ProtectedRoute = ({ children, role }) => {
+const ProtectedRoute = ({ role }) => {
 
     const token = localStorage.getItem("token");
     const location = useLocation(); 
@@ -15,7 +15,7 @@ if(!token) {
 console.log("inside if block of protected route");
 }
 console.log("outside if block of protected route line 2");
-    return children;
+    return <Outlet />;
 };
 
 export default ProtectedRoute;

@@ -75,11 +75,11 @@ if (error) return <div>Error: {error.message}</div>;
     return (
 
         <div className="p-6 bg-gray-100">
-            <h2 className='text-2xl font-semibold mb-4'>Programs</h2>
-            <div className="rounded-xl border shadow-sm bg-white">
-                <Table>
+            <h2 className='text-[18px] md:text-3xl font-semibold mb-4'>Programs</h2>
+            <div className="rounded-xl shadow bg-white overflow-x-auto">
+                <Table className="min-w-[700px]">
                     <TableHeader>
-                        <TableRow className='bg-gray-100'>
+                        <TableRow className='bg-gray-100 text-[10px] md:text-[12px]'>
                             <TableHead />
                             <TableHead>PROGRAM ID</TableHead>
                             <TableHead>PROGRAM NAME</TableHead>
@@ -93,7 +93,7 @@ if (error) return <div>Error: {error.message}</div>;
                         {programsData.map((program, index) => (
                             <React.Fragment key={program.programId}>
 
-                                <TableRow>
+                                <TableRow className="text-[10px] md:text-[12px]">
                                     <TableCell>
                                         <Button onClick={() => setOpenRow(openRow === program.id ? null : program.id)} variant='ghost'>
                                             {openRow === program.id ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
@@ -119,11 +119,11 @@ if (error) return <div>Error: {error.message}</div>;
 
 
                                     <TableRow>
-                                        <TableCell colSpan={6} className='bg-gray-100'>
-                                            <div className='bg-white rounded-lg p-10'>
+                                        <TableCell colspan={6} className='bg-gray-100'>
+                                            <div className='bg-white rounded-lg overflow-x-auto ml-10 mr-10'>
                                                 <Table>
                                                     <TableHeader>
-                                                        <TableRow className='bg-gray-200'>
+                                                        <TableRow className='bg-gray-200 text-[10px] md:text-[12px]'>
                                                             <TableHead>COURSE ID</TableHead>
                                                             <TableHead>SUBJECT NAME</TableHead>
                                                             <TableHead>COURSE NAME</TableHead>
@@ -133,7 +133,7 @@ if (error) return <div>Error: {error.message}</div>;
 
                                                     <TableBody>
                                                         {program.coursesList.map((course) => (
-                                                            <TableRow key={course.id}>
+                                                            <TableRow key={course.id} className="text-[10px] md:text-[12px]">
                                                                 <TableCell>{course.courseId}</TableCell>
                                                                 <TableCell>{course.subjectNm}</TableCell>
                                                                 <TableCell>{course.courseTitle}</TableCell>
