@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
 import MainPage from '../pages/main/MainPage';
 import StudentLogin from '@/pages/StudentLogin';
 import CourseMgtMain from '../features/Course-Mgt/main';

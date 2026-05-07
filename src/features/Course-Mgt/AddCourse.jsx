@@ -47,6 +47,7 @@ const AddCourse = () => {
   const [previews, setPreviews] = useState({ imgName: "", vidName: "" });
   const { uploadFile } = useCloudinaryUpload();
 
+  
   const {
     register,
     handleSubmit,
@@ -105,8 +106,11 @@ const AddCourse = () => {
 
       console.log("Payload:", payload);
 
-      const response = await api.createCourse(1,payload);
-      console.log("Response:", response.data);
+  const savedUser = JSON.parse(localStorage.getItem('user'));
+  const staffId = savedUser?.staffId || "SF00001";
+
+      const response = await api.createCourse(staffId,payload);
+     // console.log("Response:", response.data);
       alert("Course created ✅");
       reset();
       setPreviews({ imgName: "", vidName: "" });

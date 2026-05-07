@@ -18,6 +18,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Eye, SquarePen } from 'lucide-react';
 import { api } from '@/api/CourseMgtController';
+import { useNavigate } from "react-router-dom";
 
 const fetchCourses = async () => {
     console.log('entered into fetchCourses function. and the current time is: ', new Date().toLocaleTimeString());
@@ -33,6 +34,7 @@ const CoursesTab = () => {
     const [courses, setCourses] = useState([]);
     const [selectedSubject, setSelectedSubject] = useState("");    
     const [courseLength, setCourseLength ] = useState(0);
+    const navigate = useNavigate();
 
     // const courses = [
     //     { id: "CS101", subject: "Computer Science", name: "Introduction to Programming", duration: "12 weeks", fee: "$500" },
@@ -118,7 +120,7 @@ setCourseLength(filteredData.length);
 
 
 
-                                <TableRow key={course.courseId} className="text-[10px] md:text-[12px]">
+                                <TableRow key={course.courseId}  onClick={() => navigate(`/course-builder/${course.courseId}`)} className="text-[10px] md:text-[12px]">
 
                                     <TableCell >{course.courseId}</TableCell>
                                     <TableCell>{course.subjectNm}</TableCell>
