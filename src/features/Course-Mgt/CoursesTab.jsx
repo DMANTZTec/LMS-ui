@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Eye, SquarePen } from 'lucide-react';
 import { api } from '@/api/CourseMgtController';
 import { useNavigate } from "react-router-dom";
+import AddNewCourse from '@/pages/staffPages/AddNewCourse';
 
 const fetchCourses = async () => {
     console.log('entered into fetchCourses function. and the current time is: ', new Date().toLocaleTimeString());
@@ -96,6 +97,11 @@ setCourseLength(filteredData.length);
                                 ))}
                             </SelectContent>
                         </Select>
+
+                        {/* ADD Course Button */}
+                        <AddNewCourse/>
+
+
                     </div>
                 </div>
 

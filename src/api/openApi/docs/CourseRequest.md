@@ -11,6 +11,9 @@ Name | Type | Description | Notes
 **skills** | **Array&lt;string&gt;** |  | [default to undefined]
 **subjectId** | **number** |  | [default to undefined]
 **providerId** | **number** |  | [default to undefined]
+**level** | **string** |  | [default to undefined]
+**courseImage** | **string** |  | [optional] [default to undefined]
+**introVideo** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -24,6 +27,9 @@ const instance: CourseRequest = {
     skills,
     subjectId,
     providerId,
+    level,
+    courseImage,
+    introVideo,
 };
 ```
 

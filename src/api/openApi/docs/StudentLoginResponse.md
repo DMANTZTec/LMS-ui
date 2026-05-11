@@ -5,8 +5,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**role** | **string** |  | [optional] [default to undefined]
 **studentId** | **string** |  | [optional] [default to undefined]
 **email** | **string** |  | [optional] [default to undefined]
+**token** | **string** |  | [optional] [default to undefined]
 **message** | **string** |  | [optional] [default to undefined]
 
 ## Example
@@ -15,8 +17,10 @@ Name | Type | Description | Notes
 import { StudentLoginResponse } from './api';
 
 const instance: StudentLoginResponse = {
+    role,
     studentId,
     email,
+    token,
     message,
 };
 ```

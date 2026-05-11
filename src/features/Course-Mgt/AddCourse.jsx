@@ -134,7 +134,7 @@ const AddCourse = () => {
           </div>
           <button
             type="button"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/Staff-dashboard")}
             className="text-gray-400 hover:bg-gray-100 p-2 rounded-full transition-colors"
           >
             <X className="w-6 h-6" strokeWidth={1.5} />

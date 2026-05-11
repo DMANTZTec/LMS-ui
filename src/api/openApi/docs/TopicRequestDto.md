@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **topicName** | **string** |  | [default to undefined]
 **description** | **string** |  | [optional] [default to undefined]
 **expectedTimeMin** | **number** |  | [default to undefined]
-**staffId** | **number** |  | [default to undefined]
+**staffId** | **string** |  | [default to undefined]
 
 ## Example
 

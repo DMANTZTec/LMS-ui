@@ -1,12 +1,19 @@
-
 const requestInterceptor = (config) => {
+  console.log("Request Interceptor");
 
-  console.log("this is Request interceptor"); // optional logging
+  // Get token from localStorage
+  const token = localStorage.getItem("token");
+
+  // Attach token to Authorization header
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
   return config;
 };
 
 const requestError = (error) => {
-  console.error("this is Request interceptor Error:");
+  console.error("Request Interceptor Error:", error);
   return Promise.reject(error);
 };
 

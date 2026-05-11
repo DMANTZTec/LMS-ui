@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LoginForm from '@/components/LoginForm';
 import LoginIcon from '../assets/images/loginicon.png'
-import { studentApi } from '@/api/student-controller.api';
+//import { studentApi } from '@/api/student-controller.api';
+import { authapi } from '@/api/auth-controller.api';
 
 const StudentLogin = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,13 +17,35 @@ const StudentLogin = () => {
         password: data.password,
       };
       
-      const res = await studentApi.login(payload);
+      const res = await authapi.studentLogin(payload);
+
+      
       console.log(res)
-      if (res.data.message === "OTP sent to your registered email") {
-         localStorage.setItem('user', JSON.stringify(res.data));
-        navigate("/verify-Student-otp");
-        return; 
-      }
+      // if (res.data.message === "OTP sent to your registered email") {
+      //    localStorage.setItem('user', JSON.stringify(res.data));
+      //   navigate("/verify-Student-otp");
+      //   return; 
+      // }
+     const { token, studentId, email, role } = res.data;
+
+if (token) {
+
+  // Store JWT
+  localStorage.setItem("token", token);
+
+  // Store minimal OTP data
+  sessionStorage.setItem(
+    "otpUser",
+    JSON.stringify({
+      studentId,
+      email,
+      role,
+    })
+  );
+
+  navigate("/verify-Student-otp");
+  return;
+}
       
       
       alert(`${res.data.message} and your studentId: ${res.data.studentId}`);

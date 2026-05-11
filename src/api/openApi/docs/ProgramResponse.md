@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **description** | **string** |  | [optional] [default to undefined]
 **status** | **string** |  | [optional] [default to undefined]
 **durationInMonths** | **number** |  | [optional] [default to undefined]
+**coursesList** | [**Array&lt;CourseResponse&gt;**](CourseResponse.md) |  | [optional] [default to undefined]
 **providerId** | **number** |  | [optional] [default to undefined]
 **createdBy** | **number** |  | [optional] [default to undefined]
 **createdDt** | **string** |  | [optional] [default to undefined]
@@ -29,6 +30,7 @@ const instance: ProgramResponse = {
     description,
     status,
     durationInMonths,
+    coursesList,
     providerId,
     createdBy,
     createdDt,

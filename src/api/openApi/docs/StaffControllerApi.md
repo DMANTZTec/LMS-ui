@@ -7,7 +7,6 @@ All URIs are relative to *http://localhost:9090*
 |[**forgotPassword1**](#forgotpassword1) | **POST** /api/staff/forgot-password | |
 |[**getAllStaff**](#getallstaff) | **GET** /api/staff/view-staff | |
 |[**getStaffById**](#getstaffbyid) | **GET** /api/staff/{staffId} | |
-|[**login1**](#login1) | **POST** /api/staff/login | |
 |[**registerInitialAdmin**](#registerinitialadmin) | **POST** /api/staff/admin-register | |
 |[**registerStaff**](#registerstaff) | **POST** /api/staff/register | |
 |[**resetPassword1**](#resetpassword1) | **POST** /api/staff/reset-password | |
@@ -49,7 +48,7 @@ const { status, data } = await apiInstance.forgotPassword1(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -92,7 +91,7 @@ This endpoint does not have any parameters.
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -142,62 +141,11 @@ const { status, data } = await apiInstance.getStaffById(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: */*
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **login1**
-> StaffLoginResponse login1(staffLoginRequest)
-
-
-### Example
-
-```typescript
-import {
-    StaffControllerApi,
-    Configuration,
-    StaffLoginRequest
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new StaffControllerApi(configuration);
-
-let staffLoginRequest: StaffLoginRequest; //
-
-const { status, data } = await apiInstance.login1(
-    staffLoginRequest
-);
-```
-
-### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **staffLoginRequest** | **StaffLoginRequest**|  | |
-
-
-### Return type
-
-**StaffLoginResponse**
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
  - **Accept**: */*
 
 
@@ -244,7 +192,7 @@ const { status, data } = await apiInstance.registerInitialAdmin(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -298,7 +246,7 @@ const { status, data } = await apiInstance.registerStaff(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -349,7 +297,7 @@ const { status, data } = await apiInstance.resetPassword1(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -400,7 +348,7 @@ const { status, data } = await apiInstance.verifyOtp1(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 

@@ -26,7 +26,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new ProviderControllerApi(configuration);
 
-let staffId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
 let providerRequest: ProviderRequest; //
 
 const { status, data } = await apiInstance.createProvider(
@@ -40,7 +40,7 @@ const { status, data } = await apiInstance.createProvider(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **providerRequest** | **ProviderRequest**|  | |
-| **staffId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -49,7 +49,7 @@ const { status, data } = await apiInstance.createProvider(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -80,7 +80,7 @@ const configuration = new Configuration();
 const apiInstance = new ProviderControllerApi(configuration);
 
 let id: number; // (default to undefined)
-let staffId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
 
 const { status, data } = await apiInstance.deleteProvider(
     id,
@@ -93,7 +93,7 @@ const { status, data } = await apiInstance.deleteProvider(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **id** | [**number**] |  | defaults to undefined|
-| **staffId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -102,7 +102,7 @@ const { status, data } = await apiInstance.deleteProvider(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -145,7 +145,7 @@ This endpoint does not have any parameters.
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -195,7 +195,7 @@ const { status, data } = await apiInstance.getProviderById(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -227,7 +227,7 @@ const configuration = new Configuration();
 const apiInstance = new ProviderControllerApi(configuration);
 
 let id: number; // (default to undefined)
-let staffId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
 let providerRequest: ProviderRequest; //
 
 const { status, data } = await apiInstance.updateProvider(
@@ -243,7 +243,7 @@ const { status, data } = await apiInstance.updateProvider(
 |------------- | ------------- | ------------- | -------------|
 | **providerRequest** | **ProviderRequest**|  | |
 | **id** | [**number**] |  | defaults to undefined|
-| **staffId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -252,7 +252,7 @@ const { status, data } = await apiInstance.updateProvider(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 

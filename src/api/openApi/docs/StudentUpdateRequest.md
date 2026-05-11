@@ -17,6 +17,7 @@ Name | Type | Description | Notes
 **mobileNum** | **string** |  | [optional] [default to undefined]
 **emergencyContactNm** | **string** |  | [optional] [default to undefined]
 **emergencyContactNum** | **string** |  | [optional] [default to undefined]
+**profileImg** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -36,6 +37,7 @@ const instance: StudentUpdateRequest = {
     mobileNum,
     emergencyContactNm,
     emergencyContactNum,
+    profileImg,
 };
 ```
 

@@ -23,7 +23,7 @@ Name | Type | Description | Notes
 **enabled** | **string** |  | [optional] [default to undefined]
 **emergencyContactNm** | **string** |  | [optional] [default to undefined]
 **emergencyContactNum** | **string** |  | [optional] [default to undefined]
-**profile_img** | **string** |  | [optional] [default to undefined]
+**profileImg** | **string** |  | [optional] [default to undefined]
 **createdBy** | **number** |  | [optional] [default to undefined]
 **createdDt** | **string** |  | [optional] [default to undefined]
 **updatedBy** | **number** |  | [optional] [default to undefined]
@@ -53,7 +53,7 @@ const instance: StudentResponse = {
     enabled,
     emergencyContactNm,
     emergencyContactNum,
-    profile_img,
+    profileImg,
     createdBy,
     createdDt,
     updatedBy,

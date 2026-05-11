@@ -20,7 +20,7 @@ Name | Type | Description | Notes
 **password** | **string** |  | [default to undefined]
 **emergencyContactNm** | **string** |  | [optional] [default to undefined]
 **emergencyContactNum** | **string** |  | [optional] [default to undefined]
-**profile_img** | **string** |  | [optional] [default to undefined]
+**profileImg** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -43,7 +43,7 @@ const instance: StudentRegistrationRequest = {
     password,
     emergencyContactNm,
     emergencyContactNum,
-    profile_img,
+    profileImg,
 };
 ```
 

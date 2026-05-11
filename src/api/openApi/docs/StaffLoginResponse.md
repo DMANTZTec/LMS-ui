@@ -5,8 +5,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**role** | **string** |  | [optional] [default to undefined]
 **staffId** | **string** |  | [optional] [default to undefined]
-**name** | **string** |  | [optional] [default to undefined]
+**email** | **string** |  | [optional] [default to undefined]
+**token** | **string** |  | [optional] [default to undefined]
 **message** | **string** |  | [optional] [default to undefined]
 
 ## Example
@@ -15,8 +17,10 @@ Name | Type | Description | Notes
 import { StaffLoginResponse } from './api';
 
 const instance: StaffLoginResponse = {
+    role,
     staffId,
-    name,
+    email,
+    token,
     message,
 };
 ```

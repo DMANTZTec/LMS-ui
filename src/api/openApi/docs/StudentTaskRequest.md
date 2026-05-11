@@ -1,21 +1,21 @@
-# StaffLoginRequest
+# StudentTaskRequest
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**username** | **string** |  | [default to undefined]
-**password** | **string** |  | [default to undefined]
+**studentId** | **string** |  | [default to undefined]
+**topicId** | **number** |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { StaffLoginRequest } from './api';
+import { StudentTaskRequest } from './api';
 
-const instance: StaffLoginRequest = {
-    username,
-    password,
+const instance: StudentTaskRequest = {
+    studentId,
+    topicId,
 };
 ```
 

@@ -14,11 +14,11 @@ export default function StaffOtp() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const savedUser = JSON.parse(localStorage.getItem('user'));
+  const savedUser = JSON.parse(sessionStorage.getItem('otpStaff') || "{}");
 
 
   const staffId = savedUser?.staffId;
-  const name  = savedUser?.name;
+  const   email= savedUser?.email;
 
 
 
@@ -61,7 +61,7 @@ export default function StaffOtp() {
         <CardDescription>
           Enter the code sent to your mail:{" "}
           <span className="font-medium text-black">
-            { name|| " "}
+            { email || " "}
           </span>
         </CardDescription>
       </CardHeader>

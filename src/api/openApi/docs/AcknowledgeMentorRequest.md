@@ -1,21 +1,19 @@
-# StaffLoginRequest
+# AcknowledgeMentorRequest
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**username** | **string** |  | [default to undefined]
-**password** | **string** |  | [default to undefined]
+**acknowledged** | **boolean** |  | [optional] [default to undefined]
 
 ## Example
 
 ```typescript
-import { StaffLoginRequest } from './api';
+import { AcknowledgeMentorRequest } from './api';
 
-const instance: StaffLoginRequest = {
-    username,
-    password,
+const instance: AcknowledgeMentorRequest = {
+    acknowledged,
 };
 ```
 

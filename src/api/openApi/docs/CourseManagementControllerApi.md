@@ -21,6 +21,7 @@ All URIs are relative to *http://localhost:9090*
 |[**getAllPrograms**](#getallprograms) | **GET** /api/getAll/program | |
 |[**getChapterById**](#getchapterbyid) | **GET** /api/get/{chapterId} | |
 |[**getChaptersByCourse**](#getchaptersbycourse) | **GET** /api/chapters/getAll | |
+|[**getChaptersByCourseId**](#getchaptersbycourseid) | **GET** /api/course/{courseId}/chapters | |
 |[**getProgramById**](#getprogrambyid) | **GET** /api/getById/program/{id} | |
 |[**getTopicByIdAndChapterId**](#gettopicbyidandchapterid) | **GET** /api/topics/{topicId} | |
 |[**getTopicsByChapterId**](#gettopicsbychapterid) | **GET** /api/topics | |
@@ -72,7 +73,7 @@ const { status, data } = await apiInstance.addCourses(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -126,7 +127,7 @@ const { status, data } = await apiInstance.addDocument(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -180,7 +181,7 @@ const { status, data } = await apiInstance.addUrl(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -234,7 +235,7 @@ const { status, data } = await apiInstance.addVideo(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -265,7 +266,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new CourseManagementControllerApi(configuration);
 
-let staffId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
 let chapterRequest: ChapterRequest; //
 
 const { status, data } = await apiInstance.createChapter(
@@ -279,7 +280,7 @@ const { status, data } = await apiInstance.createChapter(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **chapterRequest** | **ChapterRequest**|  | |
-| **staffId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -288,7 +289,7 @@ const { status, data } = await apiInstance.createChapter(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -319,7 +320,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new CourseManagementControllerApi(configuration);
 
-let staffId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
 let courseRequest: CourseRequest; //
 
 const { status, data } = await apiInstance.createCourse(
@@ -333,7 +334,7 @@ const { status, data } = await apiInstance.createCourse(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **courseRequest** | **CourseRequest**|  | |
-| **staffId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -342,7 +343,7 @@ const { status, data } = await apiInstance.createCourse(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -393,7 +394,7 @@ const { status, data } = await apiInstance.createProgram(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -424,7 +425,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new CourseManagementControllerApi(configuration);
 
-let staffId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
 let subjectRequest: SubjectRequest; //
 
 const { status, data } = await apiInstance.createSubject(
@@ -438,7 +439,7 @@ const { status, data } = await apiInstance.createSubject(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **subjectRequest** | **SubjectRequest**|  | |
-| **staffId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -447,7 +448,7 @@ const { status, data } = await apiInstance.createSubject(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -498,7 +499,7 @@ const { status, data } = await apiInstance.createTopic(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -529,7 +530,7 @@ const configuration = new Configuration();
 const apiInstance = new CourseManagementControllerApi(configuration);
 
 let chapterId: number; // (default to undefined)
-let staffId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
 
 const { status, data } = await apiInstance.deleteChapter(
     chapterId,
@@ -542,7 +543,7 @@ const { status, data } = await apiInstance.deleteChapter(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **chapterId** | [**number**] |  | defaults to undefined|
-| **staffId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -551,7 +552,7 @@ const { status, data } = await apiInstance.deleteChapter(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -582,7 +583,7 @@ const configuration = new Configuration();
 const apiInstance = new CourseManagementControllerApi(configuration);
 
 let courseId: number; // (default to undefined)
-let staffId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
 
 const { status, data } = await apiInstance.deleteCourse(
     courseId,
@@ -595,7 +596,7 @@ const { status, data } = await apiInstance.deleteCourse(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **courseId** | [**number**] |  | defaults to undefined|
-| **staffId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -604,7 +605,7 @@ const { status, data } = await apiInstance.deleteCourse(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -654,7 +655,7 @@ const { status, data } = await apiInstance.deleteProgram(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -685,7 +686,7 @@ const configuration = new Configuration();
 const apiInstance = new CourseManagementControllerApi(configuration);
 
 let subjectId: number; // (default to undefined)
-let staffId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
 
 const { status, data } = await apiInstance.deleteSubject(
     subjectId,
@@ -698,7 +699,7 @@ const { status, data } = await apiInstance.deleteSubject(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **subjectId** | [**number**] |  | defaults to undefined|
-| **staffId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -707,7 +708,7 @@ const { status, data } = await apiInstance.deleteSubject(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -723,7 +724,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deleteTopic**
-> deleteTopic()
+> string deleteTopic()
 
 
 ### Example
@@ -753,16 +754,16 @@ const { status, data } = await apiInstance.deleteTopic(
 
 ### Return type
 
-void (empty response body)
+**string**
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: */*
 
 
 ### HTTP response details
@@ -800,7 +801,7 @@ This endpoint does not have any parameters.
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -850,7 +851,7 @@ const { status, data } = await apiInstance.getChapterById(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -893,7 +894,57 @@ This endpoint does not have any parameters.
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getChaptersByCourseId**
+> Array<ChapterResponse> getChaptersByCourseId()
+
+
+### Example
+
+```typescript
+import {
+    CourseManagementControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CourseManagementControllerApi(configuration);
+
+let courseId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.getChaptersByCourseId(
+    courseId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **courseId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**Array<ChapterResponse>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -943,7 +994,7 @@ const { status, data } = await apiInstance.getProgramById(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -996,7 +1047,7 @@ const { status, data } = await apiInstance.getTopicByIdAndChapterId(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -1046,7 +1097,7 @@ const { status, data } = await apiInstance.getTopicsByChapterId(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -1099,7 +1150,7 @@ const { status, data } = await apiInstance.moveChapter(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -1152,7 +1203,7 @@ const { status, data } = await apiInstance.moveTopic(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -1202,7 +1253,7 @@ const { status, data } = await apiInstance.removeCourse(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -1234,7 +1285,7 @@ const configuration = new Configuration();
 const apiInstance = new CourseManagementControllerApi(configuration);
 
 let chapterId: number; // (default to undefined)
-let staffId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
 let chapterRequest: ChapterRequest; //
 
 const { status, data } = await apiInstance.updateChapter(
@@ -1250,7 +1301,7 @@ const { status, data } = await apiInstance.updateChapter(
 |------------- | ------------- | ------------- | -------------|
 | **chapterRequest** | **ChapterRequest**|  | |
 | **chapterId** | [**number**] |  | defaults to undefined|
-| **staffId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -1259,7 +1310,7 @@ const { status, data } = await apiInstance.updateChapter(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -1291,7 +1342,7 @@ const configuration = new Configuration();
 const apiInstance = new CourseManagementControllerApi(configuration);
 
 let courseId: number; // (default to undefined)
-let staffId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
 let courseRequest: CourseRequest; //
 
 const { status, data } = await apiInstance.updateCourse(
@@ -1307,7 +1358,7 @@ const { status, data } = await apiInstance.updateCourse(
 |------------- | ------------- | ------------- | -------------|
 | **courseRequest** | **CourseRequest**|  | |
 | **courseId** | [**number**] |  | defaults to undefined|
-| **staffId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -1316,7 +1367,7 @@ const { status, data } = await apiInstance.updateCourse(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -1370,7 +1421,7 @@ const { status, data } = await apiInstance.updateProgram(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -1402,7 +1453,7 @@ const configuration = new Configuration();
 const apiInstance = new CourseManagementControllerApi(configuration);
 
 let subjectId: number; // (default to undefined)
-let staffId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
 let subjectRequest: SubjectRequest; //
 
 const { status, data } = await apiInstance.updateSubject(
@@ -1418,7 +1469,7 @@ const { status, data } = await apiInstance.updateSubject(
 |------------- | ------------- | ------------- | -------------|
 | **subjectRequest** | **SubjectRequest**|  | |
 | **subjectId** | [**number**] |  | defaults to undefined|
-| **staffId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -1427,7 +1478,7 @@ const { status, data } = await apiInstance.updateSubject(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -1481,7 +1532,7 @@ const { status, data } = await apiInstance.updateTopic(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -1524,7 +1575,7 @@ This endpoint does not have any parameters.
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -1567,7 +1618,7 @@ This endpoint does not have any parameters.
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -1617,7 +1668,7 @@ const { status, data } = await apiInstance.viewCoursesBySubject(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 

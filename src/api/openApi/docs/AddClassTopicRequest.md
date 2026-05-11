@@ -1,21 +1,19 @@
-# StaffLoginRequest
+# AddClassTopicRequest
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**username** | **string** |  | [default to undefined]
-**password** | **string** |  | [default to undefined]
+**topics** | [**Array&lt;TopicItem&gt;**](TopicItem.md) |  | [optional] [default to undefined]
 
 ## Example
 
 ```typescript
-import { StaffLoginRequest } from './api';
+import { AddClassTopicRequest } from './api';
 
-const instance: StaffLoginRequest = {
-    username,
-    password,
+const instance: AddClassTopicRequest = {
+    topics,
 };
 ```
 

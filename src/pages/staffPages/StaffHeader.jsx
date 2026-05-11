@@ -1,18 +1,19 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { email } from "zod";
 
 const StaffHeader = () => {
   const navigate = useNavigate();
 
   // Get user from localStorage
-  const savedUser = JSON.parse(localStorage.getItem("user"));
-  const name = savedUser?.name;
+  const savedUser = JSON.parse(sessionStorage.getItem("otpStaff"));
+  const email = savedUser?.email;
 
-  // First letter of name
-  const firstLetter = name ? name.charAt(0).toUpperCase() : "";
+  // First letter of name 
+  const firstLetter = email ? email.charAt(0).toUpperCase() : "";
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("otpStaff");
     localStorage.removeItem("tempAuth");
 
     navigate("/"); // change if needed
@@ -26,7 +27,7 @@ const StaffHeader = () => {
 
       {/* Right */}
       <div>
-        {name ? (
+        {email ? (
           <div className="flex items-center gap-3">
             
             {/* Avatar */}
@@ -45,7 +46,7 @@ const StaffHeader = () => {
           </div>
         ) : (
           <button
-            onClick={() => navigate("/staff-login")}
+            onClick={() => navigate("/staffLogin")}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Login

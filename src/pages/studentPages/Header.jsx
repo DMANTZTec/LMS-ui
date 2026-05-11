@@ -5,15 +5,15 @@ const Header = () => {
   const navigate = useNavigate();
 
   // Get user from localStorage
-  const savedUser = JSON.parse(localStorage.getItem("user"));
+  const savedUser = JSON.parse(sessionStorage.getItem("otpUser"));
   const email = savedUser?.email;
 
   // Get first letter of email (capital)
   const firstLetter = email ? email.charAt(0).toUpperCase() : "";
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("tempAuth");
+    sessionStorage.removeItem("otpUser");
+    sessionStorage.removeItem("tempAuth");
 
     navigate("/"); // change if your login route is different
   };

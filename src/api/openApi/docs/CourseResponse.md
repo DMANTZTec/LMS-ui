@@ -12,7 +12,11 @@ Name | Type | Description | Notes
 **language** | **string** |  | [optional] [default to undefined]
 **skills** | **Array&lt;string&gt;** |  | [optional] [default to undefined]
 **subjectId** | **number** |  | [optional] [default to undefined]
+**subjectNm** | **string** |  | [optional] [default to undefined]
 **providerId** | **number** |  | [optional] [default to undefined]
+**level** | **string** |  | [optional] [default to undefined]
+**courseImage** | **string** |  | [optional] [default to undefined]
+**introVideo** | **string** |  | [optional] [default to undefined]
 **createdBy** | **number** |  | [optional] [default to undefined]
 **createdDt** | **string** |  | [optional] [default to undefined]
 **updatedBy** | **number** |  | [optional] [default to undefined]
@@ -31,7 +35,11 @@ const instance: CourseResponse = {
     language,
     skills,
     subjectId,
+    subjectNm,
     providerId,
+    level,
+    courseImage,
+    introVideo,
     createdBy,
     createdDt,
     updatedBy,

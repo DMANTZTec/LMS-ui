@@ -1,32 +1,32 @@
-# StudentCourseControllerApi
+# AuthControllerApi
 
 All URIs are relative to *http://localhost:9090*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
-|[**enroll**](#enroll) | **POST** /api/student-course/enroll | |
-|[**getStudentCourses**](#getstudentcourses) | **GET** /api/student-course/{studentId} | |
+|[**staffLogin**](#stafflogin) | **POST** /api/auth/staff/login | |
+|[**studentLogin**](#studentlogin) | **POST** /api/auth/student/login | |
 
-# **enroll**
-> StudentCourseResponse enroll(studentCourseEnrollRequest)
+# **staffLogin**
+> StaffLoginResponse staffLogin(staffLoginRequest)
 
 
 ### Example
 
 ```typescript
 import {
-    StudentCourseControllerApi,
+    AuthControllerApi,
     Configuration,
-    StudentCourseEnrollRequest
+    StaffLoginRequest
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StudentCourseControllerApi(configuration);
+const apiInstance = new AuthControllerApi(configuration);
 
-let studentCourseEnrollRequest: StudentCourseEnrollRequest; //
+let staffLoginRequest: StaffLoginRequest; //
 
-const { status, data } = await apiInstance.enroll(
-    studentCourseEnrollRequest
+const { status, data } = await apiInstance.staffLogin(
+    staffLoginRequest
 );
 ```
 
@@ -34,12 +34,12 @@ const { status, data } = await apiInstance.enroll(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **studentCourseEnrollRequest** | **StudentCourseEnrollRequest**|  | |
+| **staffLoginRequest** | **StaffLoginRequest**|  | |
 
 
 ### Return type
 
-**StudentCourseResponse**
+**StaffLoginResponse**
 
 ### Authorization
 
@@ -58,25 +58,26 @@ const { status, data } = await apiInstance.enroll(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getStudentCourses**
-> Array<StudentCourseResponse> getStudentCourses()
+# **studentLogin**
+> StudentLoginResponse studentLogin(studentLoginRequest)
 
 
 ### Example
 
 ```typescript
 import {
-    StudentCourseControllerApi,
-    Configuration
+    AuthControllerApi,
+    Configuration,
+    StudentLoginRequest
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StudentCourseControllerApi(configuration);
+const apiInstance = new AuthControllerApi(configuration);
 
-let studentId: string; // (default to undefined)
+let studentLoginRequest: StudentLoginRequest; //
 
-const { status, data } = await apiInstance.getStudentCourses(
-    studentId
+const { status, data } = await apiInstance.studentLogin(
+    studentLoginRequest
 );
 ```
 
@@ -84,12 +85,12 @@ const { status, data } = await apiInstance.getStudentCourses(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **studentId** | [**string**] |  | defaults to undefined|
+| **studentLoginRequest** | **StudentLoginRequest**|  | |
 
 
 ### Return type
 
-**Array<StudentCourseResponse>**
+**StudentLoginResponse**
 
 ### Authorization
 
@@ -97,7 +98,7 @@ const { status, data } = await apiInstance.getStudentCourses(
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: */*
 
 

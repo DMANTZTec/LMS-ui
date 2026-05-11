@@ -1,32 +1,32 @@
-# StudentCourseControllerApi
+# ClassStudentControllerApi
 
 All URIs are relative to *http://localhost:9090*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
-|[**enroll**](#enroll) | **POST** /api/student-course/enroll | |
-|[**getStudentCourses**](#getstudentcourses) | **GET** /api/student-course/{studentId} | |
+|[**enrollStudents**](#enrollstudents) | **POST** /api/class-students/enroll | |
+|[**removeStudents**](#removestudents) | **POST** /api/class-students/remove | |
 
-# **enroll**
-> StudentCourseResponse enroll(studentCourseEnrollRequest)
+# **enrollStudents**
+> Array<EnrollStudentResponse> enrollStudents(enrollStudentRequest)
 
 
 ### Example
 
 ```typescript
 import {
-    StudentCourseControllerApi,
+    ClassStudentControllerApi,
     Configuration,
-    StudentCourseEnrollRequest
+    EnrollStudentRequest
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StudentCourseControllerApi(configuration);
+const apiInstance = new ClassStudentControllerApi(configuration);
 
-let studentCourseEnrollRequest: StudentCourseEnrollRequest; //
+let enrollStudentRequest: EnrollStudentRequest; //
 
-const { status, data } = await apiInstance.enroll(
-    studentCourseEnrollRequest
+const { status, data } = await apiInstance.enrollStudents(
+    enrollStudentRequest
 );
 ```
 
@@ -34,12 +34,12 @@ const { status, data } = await apiInstance.enroll(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **studentCourseEnrollRequest** | **StudentCourseEnrollRequest**|  | |
+| **enrollStudentRequest** | **EnrollStudentRequest**|  | |
 
 
 ### Return type
 
-**StudentCourseResponse**
+**Array<EnrollStudentResponse>**
 
 ### Authorization
 
@@ -58,25 +58,26 @@ const { status, data } = await apiInstance.enroll(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getStudentCourses**
-> Array<StudentCourseResponse> getStudentCourses()
+# **removeStudents**
+> Array<string> removeStudents(removeStudentRequest)
 
 
 ### Example
 
 ```typescript
 import {
-    StudentCourseControllerApi,
-    Configuration
+    ClassStudentControllerApi,
+    Configuration,
+    RemoveStudentRequest
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StudentCourseControllerApi(configuration);
+const apiInstance = new ClassStudentControllerApi(configuration);
 
-let studentId: string; // (default to undefined)
+let removeStudentRequest: RemoveStudentRequest; //
 
-const { status, data } = await apiInstance.getStudentCourses(
-    studentId
+const { status, data } = await apiInstance.removeStudents(
+    removeStudentRequest
 );
 ```
 
@@ -84,12 +85,12 @@ const { status, data } = await apiInstance.getStudentCourses(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **studentId** | [**string**] |  | defaults to undefined|
+| **removeStudentRequest** | **RemoveStudentRequest**|  | |
 
 
 ### Return type
 
-**Array<StudentCourseResponse>**
+**Array<string>**
 
 ### Authorization
 
@@ -97,7 +98,7 @@ const { status, data } = await apiInstance.getStudentCourses(
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: */*
 
 

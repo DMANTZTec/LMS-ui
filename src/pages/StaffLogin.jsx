@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import LoginForm from '@/components/LoginForm';
 import LoginIcon from '../assets/images/loginicon.png'
-import { staffApi } from '@/api/staff-controller.api';
+//import { staffApi } from '@/api/staff-controller.api';
+import { authapi } from '@/api/auth-controller.api';
 
 const StaffLogin = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -15,17 +16,39 @@ const from = location.state?.from?.pathname || "/mainPage"; // fallbaack
     setIsSubmitting(true);
     try {
       const payload = {
-        loginId: data.identifier, 
+        username: data.identifier, 
         password: data.password,
       };
       
-      const res = await staffApi.login1(payload);
+      const res = await authapi.staffLogin(payload);
+
       console.log(`value of res is: ${res.data.message}`);
-      if(res.data.message?.includes("Login successfully Completed. OTP sent to your email.")) {
-         localStorage.setItem('user', JSON.stringify(res.data));
-        navigate("/verify-staff-otp");
-        return; 
-      }
+
+      // if(res.data.message?.includes("Login successfully Completed. OTP sent to your email.")) {
+      //    localStorage.setItem('user', JSON.stringify(res.data));
+      //   navigate("/verify-staff-otp");
+      //   return; 
+      // }
+      const { token, staffId, email, role } = res.data;
+
+if (token) {
+
+  // Store JWT
+  localStorage.setItem("token", token);
+
+  // Store minimal OTP data
+  sessionStorage.setItem(
+    "otpStaff",
+    JSON.stringify({
+      staffId,
+      email,
+      role,
+    })
+  );
+
+  navigate("/verify-staff-otp");
+  return;
+}
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.response?.data || error.message;
       alert(errorMessage);

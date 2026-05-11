@@ -12,7 +12,9 @@ export default function StudentOtp() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const savedUser = JSON.parse(localStorage.getItem('user'));
+const savedUser = JSON.parse(
+  sessionStorage.getItem("otpUser") || "{}"
+);
 
   const studentId = savedUser?.studentId;
   const email = savedUser?.email;

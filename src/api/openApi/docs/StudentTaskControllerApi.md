@@ -1,32 +1,32 @@
-# StudentCourseControllerApi
+# StudentTaskControllerApi
 
 All URIs are relative to *http://localhost:9090*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
-|[**enroll**](#enroll) | **POST** /api/student-course/enroll | |
-|[**getStudentCourses**](#getstudentcourses) | **GET** /api/student-course/{studentId} | |
+|[**addStudentTask**](#addstudenttask) | **POST** /api/student-task/addtask | |
+|[**markNeedHelp**](#markneedhelp) | **PATCH** /api/student-task/need-help | |
 
-# **enroll**
-> StudentCourseResponse enroll(studentCourseEnrollRequest)
+# **addStudentTask**
+> StudentTaskResponse addStudentTask(studentTaskRequest)
 
 
 ### Example
 
 ```typescript
 import {
-    StudentCourseControllerApi,
+    StudentTaskControllerApi,
     Configuration,
-    StudentCourseEnrollRequest
+    StudentTaskRequest
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StudentCourseControllerApi(configuration);
+const apiInstance = new StudentTaskControllerApi(configuration);
 
-let studentCourseEnrollRequest: StudentCourseEnrollRequest; //
+let studentTaskRequest: StudentTaskRequest; //
 
-const { status, data } = await apiInstance.enroll(
-    studentCourseEnrollRequest
+const { status, data } = await apiInstance.addStudentTask(
+    studentTaskRequest
 );
 ```
 
@@ -34,12 +34,12 @@ const { status, data } = await apiInstance.enroll(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **studentCourseEnrollRequest** | **StudentCourseEnrollRequest**|  | |
+| **studentTaskRequest** | **StudentTaskRequest**|  | |
 
 
 ### Return type
 
-**StudentCourseResponse**
+**StudentTaskResponse**
 
 ### Authorization
 
@@ -58,25 +58,26 @@ const { status, data } = await apiInstance.enroll(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getStudentCourses**
-> Array<StudentCourseResponse> getStudentCourses()
+# **markNeedHelp**
+> StudentTaskResponse markNeedHelp(studentNeedHelpRequest)
 
 
 ### Example
 
 ```typescript
 import {
-    StudentCourseControllerApi,
-    Configuration
+    StudentTaskControllerApi,
+    Configuration,
+    StudentNeedHelpRequest
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StudentCourseControllerApi(configuration);
+const apiInstance = new StudentTaskControllerApi(configuration);
 
-let studentId: string; // (default to undefined)
+let studentNeedHelpRequest: StudentNeedHelpRequest; //
 
-const { status, data } = await apiInstance.getStudentCourses(
-    studentId
+const { status, data } = await apiInstance.markNeedHelp(
+    studentNeedHelpRequest
 );
 ```
 
@@ -84,12 +85,12 @@ const { status, data } = await apiInstance.getStudentCourses(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **studentId** | [**string**] |  | defaults to undefined|
+| **studentNeedHelpRequest** | **StudentNeedHelpRequest**|  | |
 
 
 ### Return type
 
-**Array<StudentCourseResponse>**
+**StudentTaskResponse**
 
 ### Authorization
 
@@ -97,7 +98,7 @@ const { status, data } = await apiInstance.getStudentCourses(
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: */*
 
 

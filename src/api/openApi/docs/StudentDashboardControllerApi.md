@@ -50,7 +50,7 @@ const { status, data } = await apiInstance.getChapterProgress(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -103,7 +103,7 @@ const { status, data } = await apiInstance.getCourseProgress(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -153,7 +153,7 @@ const { status, data } = await apiInstance.getDashboardSummary(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -203,7 +203,7 @@ const { status, data } = await apiInstance.getMyClasses(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -256,7 +256,7 @@ const { status, data } = await apiInstance.getMyCourses(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -309,7 +309,7 @@ const { status, data } = await apiInstance.getTopicProgress(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -359,7 +359,7 @@ const { status, data } = await apiInstance.getWeeklySchedule(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 

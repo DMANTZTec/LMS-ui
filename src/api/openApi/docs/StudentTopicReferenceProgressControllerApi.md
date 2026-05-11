@@ -42,7 +42,7 @@ const { status, data } = await apiInstance.markReferenceCompleted(
 
 ### Authorization
 
-No authorization required
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
