@@ -1,5 +1,6 @@
 .gitignore
 .npmignore
+.openapi-generator-ignore
 api.ts
 base.ts
 common.ts
@@ -8,6 +9,7 @@ docs/AcknowledgeMentorRequest.md
 docs/AddClassTopicRequest.md
 docs/AssignCourseRequest.md
 docs/AuthControllerApi.md
+docs/ChapterDetailResponse.md
 docs/ChapterProgressResponse.md
 docs/ChapterRequest.md
 docs/ChapterResponse.md
@@ -18,6 +20,7 @@ docs/ClassScheduleRequest.md
 docs/ClassScheduleResponse.md
 docs/ClassStudentControllerApi.md
 docs/ClassTopicResponse.md
+docs/CourseDetailsResponse.md
 docs/CourseManagementControllerApi.md
 docs/CourseProgressSummaryResponse.md
 docs/CourseRequest.md
@@ -74,10 +77,12 @@ docs/StudentTopicReferenceProgressResponse.md
 docs/StudentUpdateRequest.md
 docs/SubjectRequest.md
 docs/SubjectResponse.md
+docs/TopicDetailResponse.md
 docs/TopicItem.md
 docs/TopicProgressResponse.md
 docs/TopicReferenceRequestDto.md
 docs/TopicReferenceResponseDto.md
+docs/TopicReferencesDetailResponse.md
 docs/TopicRequestDto.md
 docs/TopicResponseDto.md
 docs/UpdateClassRequest.md

@@ -51,7 +51,7 @@ const CoursesTab = () => {
     // ]
 
 
-
+   
     const { data = [], isPending, error } = useQuery({
         queryKey: ['courses'],
         queryFn: fetchCourses,
@@ -73,6 +73,10 @@ setCourseLength(filteredData.length);
     if (error) {
         return <div>Error: {error.message}</div>
     }
+
+const courseDetail = (courseId) => {
+navigate(`/courseDetails/${courseId}`);
+}
 
 
     return (
@@ -126,7 +130,7 @@ setCourseLength(filteredData.length);
 
 
 
-                                <TableRow key={course.courseId}  onClick={() => navigate(`/course-builder/${course.courseId}`)} className="text-[10px] md:text-[12px]">
+                                <TableRow key={course.courseId} className="text-[10px] md:text-[12px]">
 
                                     <TableCell >{course.courseId}</TableCell>
                                     <TableCell>{course.subjectNm}</TableCell>
@@ -135,7 +139,7 @@ setCourseLength(filteredData.length);
                                     <TableCell>{course.fee}</TableCell>
                                     <TableCell>
                                         <div className='flex gap-2 mt-2'>
-                                            <Button variant='ghost'>
+                                            <Button variant='ghost' onClick={() => courseDetail(course.courseId)}>
                                                 <Eye className="w-5 h-5 text-blue-500 cursor-pointer" />
                                             </Button>
                                             <Button variant='ghost'>

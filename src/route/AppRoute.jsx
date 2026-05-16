@@ -9,6 +9,7 @@ import StudentOtp from '@/features/StudentOtp';
 import StaffOtp from '@/features/StaffOtp';
 import StudentDashBoard from '@/pages/studentPages/StudentDashBoard';
 import StaffDashBoard from '@/pages/staffPages/StaffDashBoard';
+import CourseDetails from '../features/Course-Mgt/CourseDetail/CourseDetails';
 
 const AppRoute = () => {
 
@@ -26,7 +27,7 @@ const AppRoute = () => {
             <Route path="/verify-staff-otp" element={<StaffOtp/>} />
             <Route path="/student-dashboard" element={<StudentDashBoard/>} />
             <Route path="/Staff-dashboard" element={<StaffDashBoard/>} />
-            
+            <Route path="/courseDetails/:courseId" element={<CourseDetails/>} />
             
         </Routes>
         </BrowserRouter>

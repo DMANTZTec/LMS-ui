@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **studentId** | **string** |  | [optional] [default to undefined]
 **studentName** | **string** |  | [optional] [default to undefined]
+**profileImg** | **string** |  | [optional] [default to undefined]
 **courses** | [**StudentMyCoursesResponse**](StudentMyCoursesResponse.md) |  | [optional] [default to undefined]
 **weeklySchedule** | [**WeeklyScheduleResponse**](WeeklyScheduleResponse.md) |  | [optional] [default to undefined]
 **overallProgress** | [**OverallProgressResponse**](OverallProgressResponse.md) |  | [optional] [default to undefined]
@@ -19,6 +20,7 @@ import { StudentDashboardSummaryResponse } from './api';
 const instance: StudentDashboardSummaryResponse = {
     studentId,
     studentName,
+    profileImg,
     courses,
     weeklySchedule,
     overallProgress,
