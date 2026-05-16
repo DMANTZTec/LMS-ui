@@ -234,7 +234,7 @@ const configuration = new Configuration();
 const apiInstance = new StudentDashboardControllerApi(configuration);
 
 let studentId: string; // (default to undefined)
-let status: 'PLANNED' | 'ONGOING' | 'COMPLETED'; // (optional) (default to undefined)
+let status: 'PLANNED' | 'ACTIVE' | 'COMPLETED'; // (optional) (default to undefined)
 
 const { status, data } = await apiInstance.getMyCourses(
     studentId,
@@ -247,7 +247,7 @@ const { status, data } = await apiInstance.getMyCourses(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **studentId** | [**string**] |  | defaults to undefined|
-| **status** | [**&#39;PLANNED&#39; | &#39;ONGOING&#39; | &#39;COMPLETED&#39;**]**Array<&#39;PLANNED&#39; &#124; &#39;ONGOING&#39; &#124; &#39;COMPLETED&#39;>** |  | (optional) defaults to undefined|
+| **status** | [**&#39;PLANNED&#39; | &#39;ACTIVE&#39; | &#39;COMPLETED&#39;**]**Array<&#39;PLANNED&#39; &#124; &#39;ACTIVE&#39; &#124; &#39;COMPLETED&#39;>** |  | (optional) defaults to undefined|
 
 
 ### Return type

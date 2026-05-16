@@ -22,6 +22,7 @@ All URIs are relative to *http://localhost:9090*
 |[**getChapterById**](#getchapterbyid) | **GET** /api/get/{chapterId} | |
 |[**getChaptersByCourse**](#getchaptersbycourse) | **GET** /api/chapters/getAll | |
 |[**getChaptersByCourseId**](#getchaptersbycourseid) | **GET** /api/course/{courseId}/chapters | |
+|[**getCourseDetails**](#getcoursedetails) | **GET** /api/coursedetails/{courseId} | |
 |[**getProgramById**](#getprogrambyid) | **GET** /api/getById/program/{id} | |
 |[**getTopicByIdAndChapterId**](#gettopicbyidandchapterid) | **GET** /api/topics/{topicId} | |
 |[**getTopicsByChapterId**](#gettopicsbychapterid) | **GET** /api/topics | |
@@ -941,6 +942,56 @@ const { status, data } = await apiInstance.getChaptersByCourseId(
 ### Return type
 
 **Array<ChapterResponse>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getCourseDetails**
+> CourseDetailsResponse getCourseDetails()
+
+
+### Example
+
+```typescript
+import {
+    CourseManagementControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CourseManagementControllerApi(configuration);
+
+let courseId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.getCourseDetails(
+    courseId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **courseId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**CourseDetailsResponse**
 
 ### Authorization
 

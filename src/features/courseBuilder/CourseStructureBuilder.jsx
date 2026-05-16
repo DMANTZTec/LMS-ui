@@ -729,7 +729,7 @@ else if (
           Course Chapters
         </h2>
 
-        <Button
+        {/* <Button
   variant="outline"
   onClick={async () => {
     const success =
@@ -744,7 +744,7 @@ else if (
   <Plus className="h-4 w-4" />
 
   Add Chapter
-</Button>
+</Button> */}
       </div>
 
       {/* LOADING */}
@@ -802,7 +802,7 @@ else if (
 
       {/* FOOTER */}
 
-      <div className="mt-8 flex flex-wrap items-center justify-end gap-3">
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
           <Button
   variant="outline"
   onClick={async () => {

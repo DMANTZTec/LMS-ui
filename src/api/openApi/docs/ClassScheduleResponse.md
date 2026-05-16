@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **courseId** | **number** |  | [optional] [default to undefined]
 **courseName** | **string** |  | [optional] [default to undefined]
 **staffId** | **number** |  | [optional] [default to undefined]
+**staffName** | **string** |  | [optional] [default to undefined]
 **classDate** | **string** |  | [optional] [default to undefined]
 **startTime** | [**LocalTime**](LocalTime.md) |  | [optional] [default to undefined]
 **endTime** | [**LocalTime**](LocalTime.md) |  | [optional] [default to undefined]
@@ -31,6 +32,7 @@ const instance: ClassScheduleResponse = {
     courseId,
     courseName,
     staffId,
+    staffName,
     classDate,
     startTime,
     endTime,
