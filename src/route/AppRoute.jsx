@@ -1,14 +1,15 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainPage from '../pages/main/MainPage';
-import StudentLogin from '@/pages/StudentLogin';
+import StudentLogin from '@/pages/Auth/StudentLogin';
 import CourseMgtMain from '../features/Course-Mgt/main';
-import StaffLogin from '@/pages/StaffLogin';
+import StaffLogin from '@/pages/Auth/StaffLogin';
 import AddCourse from '@/features/Course-Mgt/AddCourse';
 import StudentOtp from '@/features/StudentOtp';
 import StaffOtp from '@/features/StaffOtp';
 import StudentDashBoard from '@/pages/studentPages/StudentDashBoard';
 import StaffDashBoard from '@/pages/staffPages/StaffDashBoard';
+import CourseStructureBuilder from '@/features/courseBuilder/CourseStructureBuilder';
 
 const AppRoute = () => {
 
@@ -26,6 +27,7 @@ const AppRoute = () => {
             <Route path="/verify-staff-otp" element={<StaffOtp/>} />
             <Route path="/student-dashboard" element={<StudentDashBoard/>} />
             <Route path="/Staff-dashboard" element={<StaffDashBoard/>} />
+            <Route path='/course-builder/:courseId' element={<CourseStructureBuilder/>}/> 
             
             
         </Routes>

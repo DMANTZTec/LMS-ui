@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import LoginForm from '@/components/LoginForm';
-import LoginIcon from '../assets/images/loginicon.png'
+import LoginIcon from '@/assets/images/loginicon.png'
 //import { staffApi } from '@/api/staff-controller.api';
 import { authapi } from '@/api/auth-controller.api';
 

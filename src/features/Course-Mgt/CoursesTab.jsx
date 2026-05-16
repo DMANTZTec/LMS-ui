@@ -126,7 +126,7 @@ setCourseLength(filteredData.length);
 
 
 
-                                <TableRow key={course.courseId}  onClick={() => navigate(`/course-builder/${course.courseId}`)} className="text-[10px] md:text-[12px]">
+                                <TableRow key={course.courseId}   className="text-[10px] md:text-[12px]">
 
                                     <TableCell >{course.courseId}</TableCell>
                                     <TableCell>{course.subjectNm}</TableCell>
@@ -138,8 +138,8 @@ setCourseLength(filteredData.length);
                                             <Button variant='ghost'>
                                                 <Eye className="w-5 h-5 text-blue-500 cursor-pointer" />
                                             </Button>
-                                            <Button variant='ghost'>
-                                                <SquarePen className="w-5 h-5 text-green-500 cursor-pointer" />
+                                            <Button onClick={() => navigate(`/course-builder/${course.courseId}`)} variant='ghost'>
+                                                <SquarePen  className="w-5 h-5 text-green-500 cursor-pointer" />
                                             </Button>
                                         </div>
                                         
