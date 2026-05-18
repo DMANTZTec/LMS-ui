@@ -34,6 +34,10 @@ const savedUser = JSON.parse(
       const res = await studentApi.verifyOtp(payload);
 
       alert(res.data.message || "Verified ✅");
+      const { token } = res.data;
+       if (token) {
+          localStorage.setItem("LmsJwTtoken", token);
+       }
 
  
       navigate("/student-dashboard");

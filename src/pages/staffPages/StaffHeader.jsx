@@ -13,10 +13,17 @@ const StaffHeader = () => {
   const firstLetter = email ? email.charAt(0).toUpperCase() : "";
 
   const handleLogout = () => {
-    localStorage.removeItem("otpStaff");
-    localStorage.removeItem("tempAuth");
+    // localStorage.removeItem("otpStaff");
+    // localStorage.removeItem("tempAuth");
 
-    navigate("/"); // change if needed
+    try {
+    localStorage.clear();
+    sessionStorage.clear();
+
+    navigate("/");
+  } catch (error) {
+    console.error("Logout error:", error);
+  }
   };
 
   return (

@@ -29,22 +29,11 @@ const from = location.state?.from?.pathname || "/mainPage"; // fallbaack
       //   navigate("/verify-staff-otp");
       //   return; 
       // }
-      const { token, staffId, email, role } = res.data;
+      const { staffId, email, role } = res.data;
 
-if (token) {
+if (staffId) {
 
-  // Store JWT
-  localStorage.setItem("token", token);
-
-  // Store minimal OTP data
-  sessionStorage.setItem(
-    "otpStaff",
-    JSON.stringify({
-      staffId,
-      email,
-      role,
-    })
-  );
+  sessionStorage.setItem("otpStaff",JSON.stringify({staffId,email,role,}));
 
   navigate("/verify-staff-otp");
   return;

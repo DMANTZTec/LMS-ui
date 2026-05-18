@@ -12,11 +12,16 @@ const Header = () => {
   const firstLetter = email ? email.charAt(0).toUpperCase() : "";
 
   const handleLogout = () => {
-    sessionStorage.removeItem("otpUser");
-    sessionStorage.removeItem("tempAuth");
-
+    // sessionStorage.removeItem("otpUser");
+    // sessionStorage.removeItem("tempAuth");
+    try{
+    localStorage.clear();
+    sessionStorage.clear();
     navigate("/"); // change if your login route is different
-  };
+    }
+    catch(error){
+       console.error("Logout error:", error);
+    }} 
 
   return (
     <div className="flex justify-between items-center px-6 py-4 shadow-md bg-white">

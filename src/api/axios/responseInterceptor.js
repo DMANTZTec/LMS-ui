@@ -9,10 +9,10 @@ const responseError = (error) => {
     console.error("Unauthorized - Token Expired");
 
     // Remove invalid token
-    localStorage.removeItem("token");
+    localStorage.removeItem("LmsJwTtoken");
 
     // Redirect to login
-    window.location.href = "/login";
+    window.location.href = "/";
   }
 
   return Promise.reject(error);

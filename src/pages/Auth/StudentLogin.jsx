@@ -26,12 +26,12 @@ const StudentLogin = () => {
       //   navigate("/verify-Student-otp");
       //   return; 
       // }
-     const { token, studentId, email, role } = res.data;
+     const { studentId, email, role } = res.data;
 
-if (token) {
+if (studentId) {
 
   // Store JWT
-  localStorage.setItem("token", token);
+  //localStorage.setItem("token", token);
 
   // Store minimal OTP data
   sessionStorage.setItem(
