@@ -4,6 +4,7 @@ const requestInterceptor = (config) => {
   // Get token from localStorage
   const token = localStorage.getItem("LmsJwTtoken");
 
+
   // Attach token to Authorization header
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

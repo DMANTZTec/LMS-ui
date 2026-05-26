@@ -1,46 +1,54 @@
-import React from 'react';
+import React, {lazy, Suspense} from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainPage from '../pages/main/MainPage';
-import StudentLogin from '@/pages/Auth/StudentLogin';
-import CourseMgtMain from '../features/Course-Mgt/main';
 import StaffLogin from '@/pages/Auth/StaffLogin';
-import AddCourse from '@/features/Course-Mgt/AddCourse';
+import StudentLogin from '@/pages/Auth/StudentLogin';
 import StudentOtp from '@/features/StudentOtp';
 import StaffOtp from '@/features/StaffOtp';
-import StudentDashBoard from '@/pages/studentPages/StudentDashBoard';
-import StaffDashBoard from '@/pages/staffPages/StaffDashBoard';
-import CourseStructureBuilder from '@/features/courseBuilder/CourseStructureBuilder';
-import CourseDetails from '../features/Course-Mgt/CourseDetail/CourseDetails';
+
+const StaffDashBoard = lazy(() => import('@/pages/staffPages/StaffDashBoard'));
+const StudentDashBoard = lazy(() => import('@/pages/studentPages/StudentDashBoard'));
+const CourseMgtMain = lazy(() => import('../features/Course-Mgt/main'));
+const AddCourse = lazy(() => import('@/features/Course-Mgt/AddCourse'));
+const CourseStructureBuilder = lazy(() => import('@/features/courseBuilder/CourseStructureBuilder'));
+const CourseDetails = lazy(() => import('../features/Course-Mgt/CourseDetail/CourseDetails'));
+
+import AuthGuard from '../components/protectedRoutes/AuthGuard';
 
 const AppRoute = () => {
 
     return (
         <>
-        <BrowserRouter>
-        <Routes>
-            <Route path="/" element={<MainPage />} />
-            <Route path="mainPage" element={<MainPage />} />
-            <Route path='/studentLogin' element={<StudentLogin/>}/>
-            <Route path='/staffLogin' element={<StaffLogin/>}/>
-            <Route path="courseMgt" element={<CourseMgtMain />} />
-            <Route path="/addCourse" element={<AddCourse />} />
-            <Route path="/verify-Student-otp" element={<StudentOtp />} />
-            <Route path="/verify-staff-otp" element={<StaffOtp/>} />
-            <Route path="/student-dashboard" element={<StudentDashBoard/>} />
-            <Route path="/Staff-dashboard" element={<StaffDashBoard/>} />
+            <BrowserRouter>
+            <Suspense fallback={<div className='flex h-screen items-center justify-center'>Loading...</div>}>
+                <Routes>
+                    {/* public routes*/}
+                    <Route path="/" element={<MainPage />} />
+                    <Route path="mainPage" element={<MainPage />} />
+                    <Route path='/studentLogin' element={<StudentLogin />} />
+                    <Route path='/staffLogin' element={<StaffLogin />} />
+                    <Route path="/verify-Student-otp" element={<StudentOtp />} />
+                    <Route path="/verify-staff-otp" element={<StaffOtp />} />
 
-            <Route
-                path='/course-builder/:courseId'
-                element={<CourseStructureBuilder/>}
-            />
+                    {/* STAFF Routes */}
+                    <Route element={<AuthGuard allowedRole="STAFF" />}>
+                        <Route path="/Staff-dashboard" element={<StaffDashBoard />} />
+                        <Route path="courseMgt" element={<CourseMgtMain />} />
+                        <Route path="/addCourse" element={<AddCourse />} />
+                        <Route  path='/course-builder/:courseId' element={<CourseStructureBuilder />} />
+                        <Route path="/courseDetails/:courseId" element={<CourseDetails />} />
+                    </Route>
 
-            <Route
-                path="/courseDetails/:courseId"
-                element={<CourseDetails/>}
-            />
+                    {/* STUDENT Routes */}
+                    <Route element={<AuthGuard allowedRole="STUDENT" />}>
+                        <Route path="/student-dashboard" element={<StudentDashBoard />} />
+                    </Route>
 
-        </Routes>
-        </BrowserRouter>
+
+
+                </Routes>
+                </Suspense>
+            </BrowserRouter>
         </>
     );
 }

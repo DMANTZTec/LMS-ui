@@ -314,7 +314,7 @@ const { status, data } = await apiInstance.updateStudentProfile(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **verifyOtp**
-> OtpVerifyResponse verifyOtp(otpVerifyRequest)
+> StudentLoginResponse verifyOtp(otpVerifyRequest)
 
 
 ### Example
@@ -345,7 +345,7 @@ const { status, data } = await apiInstance.verifyOtp(
 
 ### Return type
 
-**OtpVerifyResponse**
+**StudentLoginResponse**
 
 ### Authorization
 

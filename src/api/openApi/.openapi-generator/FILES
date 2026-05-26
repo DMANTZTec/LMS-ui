@@ -29,10 +29,11 @@ docs/CreateClassRequest.md
 docs/EnrollStudentRequest.md
 docs/EnrollStudentResponse.md
 docs/ForgotPasswordRequest.md
+docs/HoursSpentResponse.md
 docs/LocalTime.md
+docs/MentorPointsResponse.md
 docs/MyCourseResponse.md
 docs/OtpVerifyRequest.md
-docs/OtpVerifyResponse.md
 docs/OverallProgressResponse.md
 docs/ProgramCourseRequest.md
 docs/ProgramCourseResponse.md
@@ -66,11 +67,13 @@ docs/StudentNeedHelpRequest.md
 docs/StudentRegistrationRequest.md
 docs/StudentResponse.md
 docs/StudentTaskControllerApi.md
+docs/StudentTaskListResponse.md
 docs/StudentTaskMentorControllerApi.md
 docs/StudentTaskMentorRequest.md
 docs/StudentTaskMentorResponse.md
 docs/StudentTaskRequest.md
 docs/StudentTaskResponse.md
+docs/StudentTaskUpdateRequest.md
 docs/StudentTopicReferenceProgressControllerApi.md
 docs/StudentTopicReferenceProgressRequest.md
 docs/StudentTopicReferenceProgressResponse.md

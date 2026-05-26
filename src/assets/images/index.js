@@ -14,3 +14,4 @@ import REACT from './react.jpeg';
 import SPRINGBOOT from './springboot.jpeg';
 
 export {AI,Angular,Avatar,AWS,IoT,JAVA,Linux,MCP,MobileApps,MCPText,NODE,PYTHON,REACT,SPRINGBOOT};
+

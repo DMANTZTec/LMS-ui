@@ -313,7 +313,7 @@ const { status, data } = await apiInstance.resetPassword1(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **verifyOtp1**
-> OtpVerifyResponse verifyOtp1(staffOtpVerifyRequest)
+> StaffLoginResponse verifyOtp1(staffOtpVerifyRequest)
 
 
 ### Example
@@ -344,7 +344,7 @@ const { status, data } = await apiInstance.verifyOtp1(
 
 ### Return type
 
-**OtpVerifyResponse**
+**StaffLoginResponse**
 
 ### Authorization
 

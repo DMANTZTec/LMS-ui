@@ -5,7 +5,7 @@ import { openChaptersAtom } from "@/store/atoms/courseAtoms";
 import { openTopicsAtom } from "@/store/atoms/courseAtoms";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, ChevronDown, ChevronRight, Clock, FileText, Link, Video, ExternalLink } from "lucide-react";
+import { BookOpen, List, ChevronDown, ChevronRight, Clock, FileText, Link, Video, ExternalLink } from "lucide-react";
 import { useParams } from "react-router-dom";
 
 import ChapterItem from "./ChapterItem";
@@ -66,8 +66,9 @@ const CourseDetails = () => {
   return (
     <div className="p-6 max-w-5xl mx-auto border mt-10 rounded-xl">
       {/* Header */}
-      <Card className="mb-6">
-        <CardContent className="p-6">
+      {/* <Card className="mb-6">
+        <CardContent className="p-6"> */}
+        <div className="mb-6">
           <div className="flex">
             <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center mb-3">
               <BookOpen size={20} className="text-violet-600" />
@@ -78,12 +79,16 @@ const CourseDetails = () => {
             </div>
           </div>
           <div className="flex gap-3 mt-4">
-            <Badge>{noOfChapters} Chapters</Badge>
-            <Badge variant="secondary">{noOfTopics} Topics</Badge>
+            <Badge variant="secondary" className="bg-gray-50 text-gray-800 border border-gray-300 border-[0.67px] rounded-[8px] shadow-sm">
+              <List className="w-4 h-4 text-gray-600"  />{noOfChapters} Chapters
+              </Badge>
+            <Badge variant="secondary" className="bg-gray-50 text-gray-800 border border-gray-300 border-[0.67px] rounded-[8px] shadow-sm">
+              <FileText className="w-4 h-4 text-gray-600" />{noOfTopics} Topics
+              </Badge>
           </div>
-
-        </CardContent>
-      </Card>
+</div>
+        {/* </CardContent>
+      </Card> */}
 
       {/* Chapters */}
 
@@ -92,7 +97,7 @@ const CourseDetails = () => {
 
         const isOpen = openChapters.includes(chapter.chapterId);
         return (
-          <Card key={chapter.chapterId} className="mb-4 border-purple-400">
+          <Card key={chapter.chapterId} className="mb-4 border border-[#AD46FF] border-l-[4px]">
             <CardContent className="p-4">
 
               {/* Chapter Header */}

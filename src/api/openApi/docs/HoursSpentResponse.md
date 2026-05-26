@@ -1,21 +1,21 @@
-# OtpVerifyResponse
+# HoursSpentResponse
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**message** | **string** |  | [optional] [default to undefined]
-**verified** | **boolean** |  | [optional] [default to undefined]
+**totalHours** | **number** |  | [optional] [default to undefined]
+**label** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
 ```typescript
-import { OtpVerifyResponse } from './api';
+import { HoursSpentResponse } from './api';
 
-const instance: OtpVerifyResponse = {
-    message,
-    verified,
+const instance: HoursSpentResponse = {
+    totalHours,
+    label,
 };
 ```
 

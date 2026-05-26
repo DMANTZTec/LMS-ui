@@ -207,11 +207,19 @@ export interface EnrollStudentResponse {
 export interface ForgotPasswordRequest {
     'email'?: string;
 }
+export interface HoursSpentResponse {
+    'totalHours'?: number;
+    'label'?: string;
+}
 export interface LocalTime {
     'hour'?: number;
     'minute'?: number;
     'second'?: number;
     'nano'?: number;
+}
+export interface MentorPointsResponse {
+    'totalPoints'?: number;
+    'thisMonthPoints'?: number;
 }
 export interface MyCourseResponse {
     'courseId'?: string;
@@ -224,10 +232,6 @@ export interface MyCourseResponse {
 export interface OtpVerifyRequest {
     'studentId'?: string;
     'otp'?: string;
-}
-export interface OtpVerifyResponse {
-    'message'?: string;
-    'verified'?: boolean;
 }
 export interface OverallProgressResponse {
     'totalReferences'?: number;
@@ -461,6 +465,10 @@ export interface StudentResponse {
     'updatedBy'?: number;
     'updatedDt'?: string;
 }
+export interface StudentTaskListResponse {
+    'count'?: number;
+    'tasks'?: Array<StudentTaskResponse>;
+}
 export interface StudentTaskMentorRequest {
     'studentTaskId'?: number;
     'mentorStudentId'?: string;
@@ -511,6 +519,26 @@ export const StudentTaskResponseStatusEnum = {
 } as const;
 
 export type StudentTaskResponseStatusEnum = typeof StudentTaskResponseStatusEnum[keyof typeof StudentTaskResponseStatusEnum];
+
+export interface StudentTaskUpdateRequest {
+    'studentId': string;
+    'topicId': number;
+    'commitUrl'?: string;
+    'status'?: StudentTaskUpdateRequestStatusEnum;
+    'needHelp'?: boolean;
+    'studentCommentTxt'?: string;
+    'reviewerCommentTxt'?: string;
+}
+
+export const StudentTaskUpdateRequestStatusEnum = {
+    NotStarted: 'NOT_STARTED',
+    InProgress: 'IN_PROGRESS',
+    Submitted: 'SUBMITTED',
+    Reviewed: 'REVIEWED',
+    Completed: 'COMPLETED',
+} as const;
+
+export type StudentTaskUpdateRequestStatusEnum = typeof StudentTaskUpdateRequestStatusEnum[keyof typeof StudentTaskUpdateRequestStatusEnum];
 
 export interface StudentTopicReferenceProgressRequest {
     'studentId'?: string;
@@ -5215,7 +5243,7 @@ export const StaffControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async verifyOtp1(staffOtpVerifyRequest: StaffOtpVerifyRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OtpVerifyResponse>> {
+        async verifyOtp1(staffOtpVerifyRequest: StaffOtpVerifyRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffLoginResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.verifyOtp1(staffOtpVerifyRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.verifyOtp1']?.[localVarOperationServerIndex]?.url;
@@ -5290,7 +5318,7 @@ export const StaffControllerApiFactory = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        verifyOtp1(staffOtpVerifyRequest: StaffOtpVerifyRequest, options?: RawAxiosRequestConfig): AxiosPromise<OtpVerifyResponse> {
+        verifyOtp1(staffOtpVerifyRequest: StaffOtpVerifyRequest, options?: RawAxiosRequestConfig): AxiosPromise<StaffLoginResponse> {
             return localVarFp.verifyOtp1(staffOtpVerifyRequest, options).then((request) => request(axios, basePath));
         },
     };
@@ -5730,7 +5758,7 @@ export const StudentControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async verifyOtp(otpVerifyRequest: OtpVerifyRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OtpVerifyResponse>> {
+        async verifyOtp(otpVerifyRequest: OtpVerifyRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentLoginResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.verifyOtp(otpVerifyRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['StudentControllerApi.verifyOtp']?.[localVarOperationServerIndex]?.url;
@@ -5805,7 +5833,7 @@ export const StudentControllerApiFactory = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        verifyOtp(otpVerifyRequest: OtpVerifyRequest, options?: RawAxiosRequestConfig): AxiosPromise<OtpVerifyResponse> {
+        verifyOtp(otpVerifyRequest: OtpVerifyRequest, options?: RawAxiosRequestConfig): AxiosPromise<StudentLoginResponse> {
             return localVarFp.verifyOtp(otpVerifyRequest, options).then((request) => request(axios, basePath));
         },
     };
@@ -6659,6 +6687,135 @@ export const StudentTaskControllerApiAxiosParamCreator = function (configuration
         },
         /**
          * 
+         * @param {string} studentId 
+         * @param {number} topicId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteTask: async (studentId: string, topicId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'studentId' is not null or undefined
+            assertParamExists('deleteTask', 'studentId', studentId)
+            // verify required parameter 'topicId' is not null or undefined
+            assertParamExists('deleteTask', 'topicId', topicId)
+            const localVarPath = `/api/student-task/deletetask`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (studentId !== undefined) {
+                localVarQueryParameter['studentId'] = studentId;
+            }
+
+            if (topicId !== undefined) {
+                localVarQueryParameter['topicId'] = topicId;
+            }
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getHoursSpent: async (studentId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'studentId' is not null or undefined
+            assertParamExists('getHoursSpent', 'studentId', studentId)
+            const localVarPath = `/api/student-task/hours-spent/{studentId}`
+                .replace(`{${"studentId"}}`, encodeURIComponent(String(studentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {GetStudentTasksStatusEnum} [status] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStudentTasks: async (studentId: string, status?: GetStudentTasksStatusEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'studentId' is not null or undefined
+            assertParamExists('getStudentTasks', 'studentId', studentId)
+            const localVarPath = `/api/student-task`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (studentId !== undefined) {
+                localVarQueryParameter['studentId'] = studentId;
+            }
+
+            if (status !== undefined) {
+                localVarQueryParameter['status'] = status;
+            }
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {StudentNeedHelpRequest} studentNeedHelpRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6695,6 +6852,88 @@ export const StudentTaskControllerApiAxiosParamCreator = function (configuration
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {number} taskId 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markTaskCompleted: async (taskId: number, studentId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'taskId' is not null or undefined
+            assertParamExists('markTaskCompleted', 'taskId', taskId)
+            // verify required parameter 'studentId' is not null or undefined
+            assertParamExists('markTaskCompleted', 'studentId', studentId)
+            const localVarPath = `/api/student-task/{taskId}/complete`
+                .replace(`{${"taskId"}}`, encodeURIComponent(String(taskId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (studentId !== undefined) {
+                localVarQueryParameter['studentId'] = studentId;
+            }
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {StudentTaskUpdateRequest} studentTaskUpdateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateStudentTask: async (studentTaskUpdateRequest: StudentTaskUpdateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'studentTaskUpdateRequest' is not null or undefined
+            assertParamExists('updateStudentTask', 'studentTaskUpdateRequest', studentTaskUpdateRequest)
+            const localVarPath = `/api/student-task/updatetask`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(studentTaskUpdateRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -6718,6 +6957,44 @@ export const StudentTaskControllerApiFp = function(configuration?: Configuration
         },
         /**
          * 
+         * @param {string} studentId 
+         * @param {number} topicId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteTask(studentId: string, topicId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteTask(studentId, topicId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.deleteTask']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getHoursSpent(studentId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HoursSpentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getHoursSpent(studentId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.getHoursSpent']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {GetStudentTasksStatusEnum} [status] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStudentTasks(studentId: string, status?: GetStudentTasksStatusEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentTaskListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStudentTasks(studentId, status, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.getStudentTasks']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {StudentNeedHelpRequest} studentNeedHelpRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6726,6 +7003,31 @@ export const StudentTaskControllerApiFp = function(configuration?: Configuration
             const localVarAxiosArgs = await localVarAxiosParamCreator.markNeedHelp(studentNeedHelpRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.markNeedHelp']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} taskId 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async markTaskCompleted(taskId: number, studentId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentTaskResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.markTaskCompleted(taskId, studentId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.markTaskCompleted']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {StudentTaskUpdateRequest} studentTaskUpdateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateStudentTask(studentTaskUpdateRequest: StudentTaskUpdateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentTaskResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateStudentTask(studentTaskUpdateRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.updateStudentTask']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -6748,12 +7050,60 @@ export const StudentTaskControllerApiFactory = function (configuration?: Configu
         },
         /**
          * 
+         * @param {string} studentId 
+         * @param {number} topicId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteTask(studentId: string, topicId: number, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.deleteTask(studentId, topicId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getHoursSpent(studentId: string, options?: RawAxiosRequestConfig): AxiosPromise<HoursSpentResponse> {
+            return localVarFp.getHoursSpent(studentId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {GetStudentTasksStatusEnum} [status] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStudentTasks(studentId: string, status?: GetStudentTasksStatusEnum, options?: RawAxiosRequestConfig): AxiosPromise<StudentTaskListResponse> {
+            return localVarFp.getStudentTasks(studentId, status, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {StudentNeedHelpRequest} studentNeedHelpRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         markNeedHelp(studentNeedHelpRequest: StudentNeedHelpRequest, options?: RawAxiosRequestConfig): AxiosPromise<StudentTaskResponse> {
             return localVarFp.markNeedHelp(studentNeedHelpRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} taskId 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markTaskCompleted(taskId: number, studentId: string, options?: RawAxiosRequestConfig): AxiosPromise<StudentTaskResponse> {
+            return localVarFp.markTaskCompleted(taskId, studentId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {StudentTaskUpdateRequest} studentTaskUpdateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateStudentTask(studentTaskUpdateRequest: StudentTaskUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<StudentTaskResponse> {
+            return localVarFp.updateStudentTask(studentTaskUpdateRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -6774,6 +7124,38 @@ export class StudentTaskControllerApi extends BaseAPI {
 
     /**
      * 
+     * @param {string} studentId 
+     * @param {number} topicId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public deleteTask(studentId: string, topicId: number, options?: RawAxiosRequestConfig) {
+        return StudentTaskControllerApiFp(this.configuration).deleteTask(studentId, topicId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} studentId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getHoursSpent(studentId: string, options?: RawAxiosRequestConfig) {
+        return StudentTaskControllerApiFp(this.configuration).getHoursSpent(studentId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} studentId 
+     * @param {GetStudentTasksStatusEnum} [status] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getStudentTasks(studentId: string, status?: GetStudentTasksStatusEnum, options?: RawAxiosRequestConfig) {
+        return StudentTaskControllerApiFp(this.configuration).getStudentTasks(studentId, status, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {StudentNeedHelpRequest} studentNeedHelpRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6781,8 +7163,34 @@ export class StudentTaskControllerApi extends BaseAPI {
     public markNeedHelp(studentNeedHelpRequest: StudentNeedHelpRequest, options?: RawAxiosRequestConfig) {
         return StudentTaskControllerApiFp(this.configuration).markNeedHelp(studentNeedHelpRequest, options).then((request) => request(this.axios, this.basePath));
     }
+
+    /**
+     * 
+     * @param {number} taskId 
+     * @param {string} studentId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public markTaskCompleted(taskId: number, studentId: string, options?: RawAxiosRequestConfig) {
+        return StudentTaskControllerApiFp(this.configuration).markTaskCompleted(taskId, studentId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {StudentTaskUpdateRequest} studentTaskUpdateRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public updateStudentTask(studentTaskUpdateRequest: StudentTaskUpdateRequest, options?: RawAxiosRequestConfig) {
+        return StudentTaskControllerApiFp(this.configuration).updateStudentTask(studentTaskUpdateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
 }
 
+export const GetStudentTasksStatusEnum = {
+    Active: 'ACTIVE',
+    Completed: 'COMPLETED',
+} as const;
+export type GetStudentTasksStatusEnum = typeof GetStudentTasksStatusEnum[keyof typeof GetStudentTasksStatusEnum];
 
 
 /**
@@ -6872,6 +7280,43 @@ export const StudentTaskMentorControllerApiAxiosParamCreator = function (configu
         },
         /**
          * 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMentorPointsSummary: async (studentId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'studentId' is not null or undefined
+            assertParamExists('getMentorPointsSummary', 'studentId', studentId)
+            const localVarPath = `/api/student-task-mentor/summary/{studentId}`
+                .replace(`{${"studentId"}}`, encodeURIComponent(String(studentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {UpdateMentorMinutesRequest} updateMentorMinutesRequest 
          * @param {*} [options] Override http request option.
@@ -6948,6 +7393,18 @@ export const StudentTaskMentorControllerApiFp = function(configuration?: Configu
         },
         /**
          * 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getMentorPointsSummary(studentId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MentorPointsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMentorPointsSummary(studentId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StudentTaskMentorControllerApi.getMentorPointsSummary']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {UpdateMentorMinutesRequest} updateMentorMinutesRequest 
          * @param {*} [options] Override http request option.
@@ -6989,6 +7446,15 @@ export const StudentTaskMentorControllerApiFactory = function (configuration?: C
         },
         /**
          * 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMentorPointsSummary(studentId: string, options?: RawAxiosRequestConfig): AxiosPromise<MentorPointsResponse> {
+            return localVarFp.getMentorPointsSummary(studentId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {UpdateMentorMinutesRequest} updateMentorMinutesRequest 
          * @param {*} [options] Override http request option.
@@ -7023,6 +7489,16 @@ export class StudentTaskMentorControllerApi extends BaseAPI {
      */
     public createMentoringActivity(studentTaskMentorRequest: StudentTaskMentorRequest, options?: RawAxiosRequestConfig) {
         return StudentTaskMentorControllerApiFp(this.configuration).createMentoringActivity(studentTaskMentorRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} studentId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getMentorPointsSummary(studentId: string, options?: RawAxiosRequestConfig) {
+        return StudentTaskMentorControllerApiFp(this.configuration).getMentorPointsSummary(studentId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
