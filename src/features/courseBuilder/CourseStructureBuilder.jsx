@@ -74,7 +74,123 @@ useEffect(() => {
         const chaptersData =await api.getChaptersByCourseId(courseId);
         const chaptersWithTopics = await Promise.all(
           chaptersData.data.map(async (chapter) => {
-                const topics = await api.getTopicsByChapterId(chapter.id);
+                const topics = await api.getTopicsByChapterId(
+  chapter.id
+);
+
+const topicsWithReferences =
+  await Promise.all(
+    topics.data.map(async (topic) => {
+
+      const [
+        documentsRes,
+        videosRes,
+        urlsRes,
+      ] = await Promise.all([
+        api.getDocuments(
+          topic.id
+        ),
+        api.getVideos(
+          topic.id
+        ),
+        api.getUrlsByTopicId(
+          topic.id
+        ),
+      ]);
+
+      return {
+        id: topic.id,
+        backendId: topic.id,
+
+        title:
+          topic.topicName || "",
+
+        description:
+          topic.description || "",
+
+        duration:
+          topic.expectedTimeMin?.toString() ||
+          "",
+
+        expanded: false,
+
+        activeTab:
+          "documents",
+
+        // =====================
+        // DOCUMENTS
+        // =====================
+
+        documents:
+          documentsRes.data.map(
+            (doc) => ({
+              id: doc.id,
+              backendId: doc.id,
+
+              title:
+                doc.refValue
+                  ?.documentName || "",
+
+              fileName:
+                doc.refValue
+                  ?.fileUrl || "",
+
+              fileUrl:
+                doc.refValue
+                  ?.fileUrl || "",
+
+              file: null,
+            })
+          ),
+
+        // =====================
+        // VIDEOS
+        // =====================
+
+        videos:
+          videosRes.data.map(
+            (video) => ({
+              id: video.id,
+              backendId: video.id,
+
+              title:
+                video.refValue
+                  ?.videoTitle || "",
+
+              fileName:
+                video.refValue
+                  ?.fileUrl || "",
+
+              fileUrl:
+                video.refValue
+                  ?.fileUrl || "",
+
+              file: null,
+            })
+          ),
+
+        // =====================
+        // URLS
+        // =====================
+
+        urls:
+          urlsRes.data.map(
+            (url) => ({
+              id: url.id,
+              backendId: url.id,
+
+              title:
+                url.refValue?.title || "",
+
+              url:
+                url.refValue?.url || "",
+            })
+          ),
+
+        isChanged: false,
+      };
+    })
+  );
 
                 return {
                   id: chapter.id,
@@ -85,20 +201,23 @@ useEffect(() => {
                   description: chapter.chapterDesc || "",
                   expanded: false,
                   isChanged: false,
+topics: topicsWithReferences.map((topic) => ({
+  id: topic.id,
+  backendId: topic.backendId,
 
-                  topics: topics.data.map((topic) => ({
-                        id: topic.id,
-                        backendId: topic.id,
-                        title: topic.topicName || "",
-                        description: topic.description || "",
-                        duration: topic.expectedTimeMin?.toString() || "",
-                        expanded: false,
-                        activeTab: "documents",
-                        documents:topic.documents || [],
-                        videos:topic.videos || [],
-                        urls: topic.urls || [],
-                          isChanged: false,
-                      })
+  title: topic.title,
+  description: topic.description,
+  duration: topic.duration,
+
+  expanded: topic.expanded,
+  activeTab: topic.activeTab,
+
+  documents: topic.documents,
+  videos: topic.videos,
+  urls: topic.urls,
+
+  isChanged: false,
+})
                     ),
                 };
               }
@@ -323,6 +442,99 @@ const updateChapter = (
         );
       }
     };
+   // ==========================================
+  // Delete Reference
+  // ==========================================
+  const deleteReference = async (
+  chapterId,
+  topicId,
+  type,
+  reference
+) => {
+  try {
+
+    if (reference.backendId) {
+
+      switch (type) {
+
+        case "documents":
+          await api.deleteDocument(
+            reference.backendId
+          );
+          break;
+
+        case "videos":
+          await api.deleteVideo(
+            reference.backendId
+          );
+          break;
+
+        case "urls":
+          await api.deleteUrl(
+            reference.backendId
+          );
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    setCourse((prev) => ({
+      ...prev,
+
+      chapters: prev.chapters.map(
+        (chapter) => {
+
+          if (
+            chapter.id !== chapterId
+          ) {
+            return chapter;
+          }
+
+          return {
+            ...chapter,
+
+            topics:
+              chapter.topics.map(
+                (topic) => {
+
+                  if (
+                    topic.id !== topicId
+                  ) {
+                    return topic;
+                  }
+
+                  return {
+                    ...topic,
+
+                    [type]:
+                      topic[type].filter(
+                        (item) =>
+                          item.id !==
+                          reference.id
+                      ),
+                  };
+                }
+              ),
+          };
+        }
+      ),
+    }));
+
+    toast.success(
+      "Reference deleted"
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    toast.error(
+      "Failed to delete reference"
+    );
+  }
+};
 
   // ==========================================
   // SAVE
@@ -460,7 +672,7 @@ else if (
 
           expectedTimeMin:
             Number( topic.duration) || 0,
-          staffId,
+          staffId : staffId,
         };
 
         // ==================================
@@ -494,92 +706,83 @@ else if (
         // ==================================
         // SAVE DOCUMENTS
         // ==================================
+  //console.log("DOCUMENTS:", topic.documents);
 
-        if (
-          topic.documents?.length
-        ) {
-          await Promise.all(
-            topic.documents.map((doc) => api.addDocument(
-                  topicId,
-                  {
-                    refValue: {
-                      additionalProp1:
-                        {
-                          title: doc.title || "",
-                          fileName: doc.fileName || "",
-                          url: doc.url || "",
-                        },
-                      additionalProp2: {},
-                      additionalProp3: {},
-                    },
-                    refBy: staffId,
-                    refById: 1,
-                  }
-                )
-            )
-          );
-        }
+  if (topic.documents?.length) {
+  await Promise.all(
+    topic.documents.map(async (doc) => {
 
+      // already saved
+      if (doc.backendId) return;
+
+      // no file selected
+      if (!doc.file) return;
+
+      const response = await api.addDocument(
+        topicId,
+        doc.title || doc.file.name,
+        "STAFF",
+        staffId,
+        doc.file
+      );
+
+      doc.backendId =
+        response?.data?.id ||
+        response?.id;
+    })
+  );
+}
         // ==================================
         // SAVE VIDEOS
         // ==================================
 
-        if (
-          topic.videos?.length
-        ) {
-          await Promise.all(
-            topic.videos.map(
-              (video) =>
-                api.addVideo(
-                  topicId,
-                  {
-                    refValue: {
-                      additionalProp1:
-                        {
-                          title: video.title || "",
-                          url:video.url || "",
-                        },
-                      additionalProp2: {},
-                      additionalProp3: {},
-                    },
-                    refBy: staffId,
-                    refById: 1,
-                  }
-                )
-            )
-          );
-        }
+      if (topic.videos?.length) {
+  await Promise.all(
+    topic.videos.map(async (video) => {
+
+      if (video.backendId) return;
+
+      if (!video.file) return;
+
+      const response = await api.addVideo(
+        topicId,
+        video.title || video.file.name,
+        "STAFF",
+        staffId,
+        video.file
+      );
+
+      video.backendId =
+        response?.data?.id ||
+        response?.id;
+    })
+  );
+}
 
         // ==================================
         // SAVE URLS
         // ==================================
 
-        if (
-          topic.urls?.length
-        ) {
-          await Promise.all(
-            topic.urls.map(
-              (url) =>
-                api.addUrl(
-                  topicId,
-                  {
-                    refValue: {
-                      additionalProp1:
-                        {
-                          title: url.title || "",
-                          url: url.url || "",
-                        },
-                      additionalProp2: {},
-                      additionalProp3: {},
-                    },
-                    refBy: staffId,
-                    refById: 1,
-                  }
-                )
-            )
-          );
-        }
+        if (topic.urls?.length) {
+  await Promise.all(
+    topic.urls.map(async (url) => {
 
+      if (url.backendId) return;
+
+      const response =
+        await api.addUrl(topicId, {
+          title: url.title || "",
+          url: url.url || "",
+          refBy: "staff",
+          refById: staffId,
+        });
+
+      url.backendId =
+        response?.data?.id ||
+        response?.id;
+    })
+  );
+}
         // ==================================
         // RESET TOPIC CHANGED FLAG
         // ==================================
@@ -625,6 +828,7 @@ else if (
     toast.success(
       "Course saved successfully"
     );
+    await fetchChapters();
 
     return true;
 
@@ -769,33 +973,33 @@ else if (
             chapter,
             index
           ) => (
-            <ChapterCard
-              key={chapter.id}
-              chapter={chapter}
-              index={index}
-              errors={errors}
-              onChange={(
-                patch
-              ) =>
-                updateChapter(
-                  chapter.id,
-                  patch
-                )
-              }
-              onDelete={() =>
-                deleteChapter(
-                  chapter
-                )
-              }
-              onDeleteTopic={(
-                topic
-              ) =>
-                deleteTopic(
-                  chapter.id,
-                  topic
-                )
-              }
-            />
+           <ChapterCard
+  key={chapter.id}
+  chapter={chapter}
+  index={index}
+  errors={errors}
+  onChange={(patch) =>
+    updateChapter(chapter.id, patch)
+  }
+  onDelete={() =>
+    deleteChapter(chapter)
+  }
+  onDeleteTopic={(topic) =>
+    deleteTopic(chapter.id, topic)
+  }
+  onDeleteReference={(
+    topicId,
+    type,
+    reference
+  ) =>
+    deleteReference(
+      chapter.id,
+      topicId,
+      type,
+      reference
+    )
+  }
+/>
           )
         )}
       </div>

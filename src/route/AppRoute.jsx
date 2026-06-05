@@ -7,13 +7,16 @@ import StudentOtp from '@/features/StudentOtp';
 import StaffOtp from '@/features/StaffOtp';
 
 const StaffDashBoard = lazy(() => import('@/pages/staffPages/StaffDashBoard'));
-const StudentDashBoard = lazy(() => import('@/pages/studentPages/StudentDashBoard'));
+
+//const StudentDashBoard = lazy(() => import('@/pages/studentPages/StudentDashBoard'));
 const CourseMgtMain = lazy(() => import('../features/Course-Mgt/main'));
 const AddCourse = lazy(() => import('@/features/Course-Mgt/AddCourse'));
 const CourseStructureBuilder = lazy(() => import('@/features/courseBuilder/CourseStructureBuilder'));
 const CourseDetails = lazy(() => import('../features/Course-Mgt/CourseDetail/CourseDetails'));
 
 import AuthGuard from '../components/protectedRoutes/AuthGuard';
+
+import { StudentDashBoard } from '@/pages/studentPages/studentDashBoard/StudentDashBoard';
 
 const AppRoute = () => {
 

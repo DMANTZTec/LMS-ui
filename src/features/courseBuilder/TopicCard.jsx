@@ -25,7 +25,7 @@ const tabs = [
   },
 ];
 
-const TopicCard = ({ topic, index,chapterIndex,errors,onChange,onDelete,}) => {
+const TopicCard = ({ topic, index,chapterIndex,errors,onChange,onDelete, onDeleteReference,}) => {
   return (
     <div className="w-full space-y-3 p-3 relative rounded-[10px] border border-[#BEDBFF] bg-[#EFF6FF] opacity-100">
 
@@ -210,6 +210,7 @@ const TopicCard = ({ topic, index,chapterIndex,errors,onChange,onDelete,}) => {
               <ReferenceList
                 topic={topic}
                 onChange={onChange}
+                onDeleteReference={onDeleteReference}
               />
             </div>
           </div>

@@ -6,7 +6,7 @@ import { createTopic } from "./types";
 import TopicCard from "./TopicCard";
 import { cn } from "@/lib/utils";
 
-const ChapterCard = ({chapter,index,errors,onChange,onDelete,onDeleteTopic,}) => {
+const ChapterCard = ({chapter,index,errors,onChange,onDelete,onDeleteTopic,onDeleteReference,}) => {
   return (
     <div className="rounded-2xl border-2 border-l-4 border-[#9810FA]/40 hover:border-[#9810FA] bg-card p-4 shadow-sm transition-all">
 
@@ -130,32 +130,38 @@ const ChapterCard = ({chapter,index,errors,onChange,onDelete,onDeleteTopic,}) =>
             {chapter.topics.map(
               (topic, i) => (
                 <TopicCard
-                  key={topic.id}
-                  topic={topic}
-                  index={i}
-                  chapterIndex={index}
-                  errors={errors}
-                  onChange={(
-                    patch
-                  ) =>
-                    onChange({
-                      topics:
-                        chapter.topics.map((t) =>
-                            t.id === topic.id ? {
-                                  ...t,
-                                  ...patch,
-                                  isChanged: true,
-                                }
-                              : t
-                        ),
-                    })
-                  }
-                  onDelete={() =>
-                    onDeleteTopic(
-                      topic
-                    )
-                  }
-                />
+  key={topic.id}
+  topic={topic}
+  index={i}
+  chapterIndex={index}
+  errors={errors}
+  onChange={(patch) =>
+    onChange({
+      topics: chapter.topics.map((t) =>
+        t.id === topic.id
+          ? {
+              ...t,
+              ...patch,
+              isChanged: true,
+            }
+          : t
+      ),
+    })
+  }
+  onDelete={() =>
+    onDeleteTopic(topic)
+  }
+  onDeleteReference={(
+    type,
+    reference
+  ) =>
+    onDeleteReference(
+      topic.id,
+      type,
+      reference
+    )
+  }
+/>
               )
             )}
           </div>

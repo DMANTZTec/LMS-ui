@@ -15,17 +15,23 @@ All URIs are relative to *http://localhost:9090*
 |[**createTopic**](#createtopic) | **POST** /api/topics | |
 |[**deleteChapter**](#deletechapter) | **DELETE** /api/delete/{chapterId} | |
 |[**deleteCourse**](#deletecourse) | **DELETE** /api/course/delete/{courseId} | |
+|[**deleteDocument**](#deletedocument) | **DELETE** /api/references/document/{referenceId} | |
 |[**deleteProgram**](#deleteprogram) | **DELETE** /api/delete/program/{id} | |
 |[**deleteSubject**](#deletesubject) | **DELETE** /api/subject/delete/{subjectId} | |
 |[**deleteTopic**](#deletetopic) | **DELETE** /api/topics/{id} | |
+|[**deleteUrl**](#deleteurl) | **DELETE** /api/references/url/{referenceId} | |
+|[**deleteVideo**](#deletevideo) | **DELETE** /api/references/video/{referenceId} | |
 |[**getAllPrograms**](#getallprograms) | **GET** /api/getAll/program | |
 |[**getChapterById**](#getchapterbyid) | **GET** /api/get/{chapterId} | |
 |[**getChaptersByCourse**](#getchaptersbycourse) | **GET** /api/chapters/getAll | |
 |[**getChaptersByCourseId**](#getchaptersbycourseid) | **GET** /api/course/{courseId}/chapters | |
 |[**getCourseDetails**](#getcoursedetails) | **GET** /api/coursedetails/{courseId} | |
+|[**getDocuments**](#getdocuments) | **GET** /api/topics/{topicId}/references/documents | |
 |[**getProgramById**](#getprogrambyid) | **GET** /api/getById/program/{id} | |
 |[**getTopicByIdAndChapterId**](#gettopicbyidandchapterid) | **GET** /api/topics/{topicId} | |
 |[**getTopicsByChapterId**](#gettopicsbychapterid) | **GET** /api/topics | |
+|[**getUrlsByTopicId**](#geturlsbytopicid) | **GET** /api/topics/{topicId}/references/url | |
+|[**getVideos**](#getvideos) | **GET** /api/topics/{topicId}/references/videos | |
 |[**moveChapter**](#movechapter) | **PUT** /api/{chapterId}/movechapter | |
 |[**moveTopic**](#movetopic) | **PUT** /api/{topicId}/movetopic | |
 |[**removeCourse**](#removecourse) | **DELETE** /api/remove/course/{id} | |
@@ -90,7 +96,7 @@ const { status, data } = await apiInstance.addCourses(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **addDocument**
-> TopicReferenceResponseDto addDocument(topicReferenceRequestDto)
+> TopicReferenceResponseDto addDocument()
 
 
 ### Example
@@ -98,19 +104,24 @@ const { status, data } = await apiInstance.addCourses(
 ```typescript
 import {
     CourseManagementControllerApi,
-    Configuration,
-    TopicReferenceRequestDto
+    Configuration
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new CourseManagementControllerApi(configuration);
 
 let topicId: number; // (default to undefined)
-let topicReferenceRequestDto: TopicReferenceRequestDto; //
+let documentName: string; // (default to undefined)
+let refBy: string; // (default to undefined)
+let refById: string; // (default to undefined)
+let file: File; // (default to undefined)
 
 const { status, data } = await apiInstance.addDocument(
     topicId,
-    topicReferenceRequestDto
+    documentName,
+    refBy,
+    refById,
+    file
 );
 ```
 
@@ -118,8 +129,11 @@ const { status, data } = await apiInstance.addDocument(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **topicReferenceRequestDto** | **TopicReferenceRequestDto**|  | |
 | **topicId** | [**number**] |  | defaults to undefined|
+| **documentName** | [**string**] |  | defaults to undefined|
+| **refBy** | [**string**] |  | defaults to undefined|
+| **refById** | [**string**] |  | defaults to undefined|
+| **file** | [**File**] |  | defaults to undefined|
 
 
 ### Return type
@@ -132,7 +146,7 @@ const { status, data } = await apiInstance.addDocument(
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: multipart/form-data
  - **Accept**: */*
 
 
@@ -144,7 +158,7 @@ const { status, data } = await apiInstance.addDocument(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **addUrl**
-> TopicReferenceResponseDto addUrl(topicReferenceRequestDto)
+> TopicReferenceResponseDto addUrl(topicUrlReferenceRequestDto)
 
 
 ### Example
@@ -153,18 +167,18 @@ const { status, data } = await apiInstance.addDocument(
 import {
     CourseManagementControllerApi,
     Configuration,
-    TopicReferenceRequestDto
+    TopicUrlReferenceRequestDto
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new CourseManagementControllerApi(configuration);
 
 let topicId: number; // (default to undefined)
-let topicReferenceRequestDto: TopicReferenceRequestDto; //
+let topicUrlReferenceRequestDto: TopicUrlReferenceRequestDto; //
 
 const { status, data } = await apiInstance.addUrl(
     topicId,
-    topicReferenceRequestDto
+    topicUrlReferenceRequestDto
 );
 ```
 
@@ -172,7 +186,7 @@ const { status, data } = await apiInstance.addUrl(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **topicReferenceRequestDto** | **TopicReferenceRequestDto**|  | |
+| **topicUrlReferenceRequestDto** | **TopicUrlReferenceRequestDto**|  | |
 | **topicId** | [**number**] |  | defaults to undefined|
 
 
@@ -198,7 +212,7 @@ const { status, data } = await apiInstance.addUrl(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **addVideo**
-> TopicReferenceResponseDto addVideo(topicReferenceRequestDto)
+> TopicReferenceResponseDto addVideo()
 
 
 ### Example
@@ -206,19 +220,24 @@ const { status, data } = await apiInstance.addUrl(
 ```typescript
 import {
     CourseManagementControllerApi,
-    Configuration,
-    TopicReferenceRequestDto
+    Configuration
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new CourseManagementControllerApi(configuration);
 
 let topicId: number; // (default to undefined)
-let topicReferenceRequestDto: TopicReferenceRequestDto; //
+let videoTitle: string; // (default to undefined)
+let refBy: string; // (default to undefined)
+let refById: string; // (default to undefined)
+let file: File; // (default to undefined)
 
 const { status, data } = await apiInstance.addVideo(
     topicId,
-    topicReferenceRequestDto
+    videoTitle,
+    refBy,
+    refById,
+    file
 );
 ```
 
@@ -226,8 +245,11 @@ const { status, data } = await apiInstance.addVideo(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **topicReferenceRequestDto** | **TopicReferenceRequestDto**|  | |
 | **topicId** | [**number**] |  | defaults to undefined|
+| **videoTitle** | [**string**] |  | defaults to undefined|
+| **refBy** | [**string**] |  | defaults to undefined|
+| **refById** | [**string**] |  | defaults to undefined|
+| **file** | [**File**] |  | defaults to undefined|
 
 
 ### Return type
@@ -240,7 +262,7 @@ const { status, data } = await apiInstance.addVideo(
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: multipart/form-data
  - **Accept**: */*
 
 
@@ -621,6 +643,56 @@ const { status, data } = await apiInstance.deleteCourse(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **deleteDocument**
+> string deleteDocument()
+
+
+### Example
+
+```typescript
+import {
+    CourseManagementControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CourseManagementControllerApi(configuration);
+
+let referenceId: number; // (default to undefined)
+
+const { status, data } = await apiInstance.deleteDocument(
+    referenceId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **referenceId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**string**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **deleteProgram**
 > string deleteProgram()
 
@@ -751,6 +823,106 @@ const { status, data } = await apiInstance.deleteTopic(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **id** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**string**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **deleteUrl**
+> string deleteUrl()
+
+
+### Example
+
+```typescript
+import {
+    CourseManagementControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CourseManagementControllerApi(configuration);
+
+let referenceId: number; // (default to undefined)
+
+const { status, data } = await apiInstance.deleteUrl(
+    referenceId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **referenceId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**string**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **deleteVideo**
+> string deleteVideo()
+
+
+### Example
+
+```typescript
+import {
+    CourseManagementControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CourseManagementControllerApi(configuration);
+
+let referenceId: number; // (default to undefined)
+
+const { status, data } = await apiInstance.deleteVideo(
+    referenceId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **referenceId** | [**number**] |  | defaults to undefined|
 
 
 ### Return type
@@ -1010,6 +1182,56 @@ const { status, data } = await apiInstance.getCourseDetails(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **getDocuments**
+> Array<TopicReferenceDataDto> getDocuments()
+
+
+### Example
+
+```typescript
+import {
+    CourseManagementControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CourseManagementControllerApi(configuration);
+
+let topicId: number; // (default to undefined)
+
+const { status, data } = await apiInstance.getDocuments(
+    topicId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **topicId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**Array<TopicReferenceDataDto>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **getProgramById**
 > ProgramResponse getProgramById()
 
@@ -1145,6 +1367,106 @@ const { status, data } = await apiInstance.getTopicsByChapterId(
 ### Return type
 
 **Array<TopicResponseDto>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getUrlsByTopicId**
+> Array<TopicReferenceDataDto> getUrlsByTopicId()
+
+
+### Example
+
+```typescript
+import {
+    CourseManagementControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CourseManagementControllerApi(configuration);
+
+let topicId: number; // (default to undefined)
+
+const { status, data } = await apiInstance.getUrlsByTopicId(
+    topicId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **topicId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**Array<TopicReferenceDataDto>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getVideos**
+> Array<TopicReferenceDataDto> getVideos()
+
+
+### Example
+
+```typescript
+import {
+    CourseManagementControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CourseManagementControllerApi(configuration);
+
+let topicId: number; // (default to undefined)
+
+const { status, data } = await apiInstance.getVideos(
+    topicId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **topicId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**Array<TopicReferenceDataDto>**
 
 ### Authorization
 

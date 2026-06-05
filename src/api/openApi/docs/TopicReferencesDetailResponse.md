@@ -5,9 +5,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**documents** | [**Array&lt;TopicReferenceResponseDto&gt;**](TopicReferenceResponseDto.md) |  | [optional] [default to undefined]
-**videos** | [**Array&lt;TopicReferenceResponseDto&gt;**](TopicReferenceResponseDto.md) |  | [optional] [default to undefined]
-**urls** | [**Array&lt;TopicReferenceResponseDto&gt;**](TopicReferenceResponseDto.md) |  | [optional] [default to undefined]
+**documents** | [**Array&lt;TopicReferenceDataDto&gt;**](TopicReferenceDataDto.md) |  | [optional] [default to undefined]
+**videos** | [**Array&lt;TopicReferenceDataDto&gt;**](TopicReferenceDataDto.md) |  | [optional] [default to undefined]
+**urls** | [**Array&lt;TopicReferenceDataDto&gt;**](TopicReferenceDataDto.md) |  | [optional] [default to undefined]
 
 ## Example
 

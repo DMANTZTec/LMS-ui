@@ -6,11 +6,8 @@ import CourseMgtMain from '@/features/Course-Mgt/Main'
 
 const StaffDashBoard = () => {
   return (
-    <div>
-      <StaffHeader/>
+    <div>  
       <CourseMgtMain/>
-      
-      
     </div>
   )
 }

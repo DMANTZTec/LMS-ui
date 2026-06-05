@@ -603,23 +603,23 @@ export interface TopicProgressResponse {
     'completed'?: boolean;
     'progressPercentage'?: number;
 }
-export interface TopicReferenceRequestDto {
-    'refValue'?: { [key: string]: object; };
-    'refBy'?: string;
-    'refById'?: number;
-}
-export interface TopicReferenceResponseDto {
+export interface TopicReferenceDataDto {
     'id'?: number;
     'topicId'?: number;
     'refType'?: string;
     'refValue'?: { [key: string]: object; };
     'refBy'?: string;
-    'refById'?: number;
+    'refById'?: string;
+}
+export interface TopicReferenceResponseDto {
+    'success'?: boolean;
+    'message'?: string;
+    'data'?: TopicReferenceDataDto;
 }
 export interface TopicReferencesDetailResponse {
-    'documents'?: Array<TopicReferenceResponseDto>;
-    'videos'?: Array<TopicReferenceResponseDto>;
-    'urls'?: Array<TopicReferenceResponseDto>;
+    'documents'?: Array<TopicReferenceDataDto>;
+    'videos'?: Array<TopicReferenceDataDto>;
+    'urls'?: Array<TopicReferenceDataDto>;
 }
 export interface TopicRequestDto {
     'chapterId': number;
@@ -640,6 +640,12 @@ export interface TopicResponseDto {
     'createdDate'?: string;
     'updatedBy'?: number;
     'updatedDate'?: string;
+}
+export interface TopicUrlReferenceRequestDto {
+    'title'?: string;
+    'url'?: string;
+    'refBy'?: string;
+    'refById'?: string;
 }
 export interface UpdateClassRequest {
     'className'?: string;
@@ -2085,15 +2091,24 @@ export const CourseManagementControllerApiAxiosParamCreator = function (configur
         /**
          * 
          * @param {number} topicId 
-         * @param {TopicReferenceRequestDto} topicReferenceRequestDto 
+         * @param {string} documentName 
+         * @param {string} refBy 
+         * @param {string} refById 
+         * @param {File} file 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addDocument: async (topicId: number, topicReferenceRequestDto: TopicReferenceRequestDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        addDocument: async (topicId: number, documentName: string, refBy: string, refById: string, file: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'topicId' is not null or undefined
             assertParamExists('addDocument', 'topicId', topicId)
-            // verify required parameter 'topicReferenceRequestDto' is not null or undefined
-            assertParamExists('addDocument', 'topicReferenceRequestDto', topicReferenceRequestDto)
+            // verify required parameter 'documentName' is not null or undefined
+            assertParamExists('addDocument', 'documentName', documentName)
+            // verify required parameter 'refBy' is not null or undefined
+            assertParamExists('addDocument', 'refBy', refBy)
+            // verify required parameter 'refById' is not null or undefined
+            assertParamExists('addDocument', 'refById', refById)
+            // verify required parameter 'file' is not null or undefined
+            assertParamExists('addDocument', 'file', file)
             const localVarPath = `/api/topics/{topicId}/references/document`
                 .replace(`{${"topicId"}}`, encodeURIComponent(String(topicId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2106,18 +2121,35 @@ export const CourseManagementControllerApiAxiosParamCreator = function (configur
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
             // authentication BearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            localVarHeaderParameter['Content-Type'] = 'application/json';
+            if (documentName !== undefined) {
+                localVarQueryParameter['documentName'] = documentName;
+            }
+
+            if (refBy !== undefined) {
+                localVarQueryParameter['refBy'] = refBy;
+            }
+
+            if (refById !== undefined) {
+                localVarQueryParameter['refById'] = refById;
+            }
+
+
+            if (file !== undefined) { 
+                localVarFormParams.append('file', file as any);
+            }
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
             localVarHeaderParameter['Accept'] = '*/*';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(topicReferenceRequestDto, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = localVarFormParams;
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -2127,15 +2159,15 @@ export const CourseManagementControllerApiAxiosParamCreator = function (configur
         /**
          * 
          * @param {number} topicId 
-         * @param {TopicReferenceRequestDto} topicReferenceRequestDto 
+         * @param {TopicUrlReferenceRequestDto} topicUrlReferenceRequestDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addUrl: async (topicId: number, topicReferenceRequestDto: TopicReferenceRequestDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        addUrl: async (topicId: number, topicUrlReferenceRequestDto: TopicUrlReferenceRequestDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'topicId' is not null or undefined
             assertParamExists('addUrl', 'topicId', topicId)
-            // verify required parameter 'topicReferenceRequestDto' is not null or undefined
-            assertParamExists('addUrl', 'topicReferenceRequestDto', topicReferenceRequestDto)
+            // verify required parameter 'topicUrlReferenceRequestDto' is not null or undefined
+            assertParamExists('addUrl', 'topicUrlReferenceRequestDto', topicUrlReferenceRequestDto)
             const localVarPath = `/api/topics/{topicId}/references/url`
                 .replace(`{${"topicId"}}`, encodeURIComponent(String(topicId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2159,7 +2191,7 @@ export const CourseManagementControllerApiAxiosParamCreator = function (configur
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(topicReferenceRequestDto, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(topicUrlReferenceRequestDto, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -2169,15 +2201,24 @@ export const CourseManagementControllerApiAxiosParamCreator = function (configur
         /**
          * 
          * @param {number} topicId 
-         * @param {TopicReferenceRequestDto} topicReferenceRequestDto 
+         * @param {string} videoTitle 
+         * @param {string} refBy 
+         * @param {string} refById 
+         * @param {File} file 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addVideo: async (topicId: number, topicReferenceRequestDto: TopicReferenceRequestDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        addVideo: async (topicId: number, videoTitle: string, refBy: string, refById: string, file: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'topicId' is not null or undefined
             assertParamExists('addVideo', 'topicId', topicId)
-            // verify required parameter 'topicReferenceRequestDto' is not null or undefined
-            assertParamExists('addVideo', 'topicReferenceRequestDto', topicReferenceRequestDto)
+            // verify required parameter 'videoTitle' is not null or undefined
+            assertParamExists('addVideo', 'videoTitle', videoTitle)
+            // verify required parameter 'refBy' is not null or undefined
+            assertParamExists('addVideo', 'refBy', refBy)
+            // verify required parameter 'refById' is not null or undefined
+            assertParamExists('addVideo', 'refById', refById)
+            // verify required parameter 'file' is not null or undefined
+            assertParamExists('addVideo', 'file', file)
             const localVarPath = `/api/topics/{topicId}/references/video`
                 .replace(`{${"topicId"}}`, encodeURIComponent(String(topicId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2190,18 +2231,35 @@ export const CourseManagementControllerApiAxiosParamCreator = function (configur
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
             // authentication BearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            localVarHeaderParameter['Content-Type'] = 'application/json';
+            if (videoTitle !== undefined) {
+                localVarQueryParameter['videoTitle'] = videoTitle;
+            }
+
+            if (refBy !== undefined) {
+                localVarQueryParameter['refBy'] = refBy;
+            }
+
+            if (refById !== undefined) {
+                localVarQueryParameter['refById'] = refById;
+            }
+
+
+            if (file !== undefined) { 
+                localVarFormParams.append('file', file as any);
+            }
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
             localVarHeaderParameter['Accept'] = '*/*';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(topicReferenceRequestDto, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = localVarFormParams;
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -2509,6 +2567,43 @@ export const CourseManagementControllerApiAxiosParamCreator = function (configur
         },
         /**
          * 
+         * @param {number} referenceId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteDocument: async (referenceId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'referenceId' is not null or undefined
+            assertParamExists('deleteDocument', 'referenceId', referenceId)
+            const localVarPath = `/api/references/document/{referenceId}`
+                .replace(`{${"referenceId"}}`, encodeURIComponent(String(referenceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2599,6 +2694,80 @@ export const CourseManagementControllerApiAxiosParamCreator = function (configur
             assertParamExists('deleteTopic', 'id', id)
             const localVarPath = `/api/topics/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} referenceId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteUrl: async (referenceId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'referenceId' is not null or undefined
+            assertParamExists('deleteUrl', 'referenceId', referenceId)
+            const localVarPath = `/api/references/url/{referenceId}`
+                .replace(`{${"referenceId"}}`, encodeURIComponent(String(referenceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} referenceId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteVideo: async (referenceId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'referenceId' is not null or undefined
+            assertParamExists('deleteVideo', 'referenceId', referenceId)
+            const localVarPath = `/api/references/video/{referenceId}`
+                .replace(`{${"referenceId"}}`, encodeURIComponent(String(referenceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -2804,6 +2973,43 @@ export const CourseManagementControllerApiAxiosParamCreator = function (configur
         },
         /**
          * 
+         * @param {number} topicId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDocuments: async (topicId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'topicId' is not null or undefined
+            assertParamExists('getDocuments', 'topicId', topicId)
+            const localVarPath = `/api/topics/{topicId}/references/documents`
+                .replace(`{${"topicId"}}`, encodeURIComponent(String(topicId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2911,6 +3117,80 @@ export const CourseManagementControllerApiAxiosParamCreator = function (configur
             if (chapterId !== undefined) {
                 localVarQueryParameter['chapterId'] = chapterId;
             }
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} topicId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUrlsByTopicId: async (topicId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'topicId' is not null or undefined
+            assertParamExists('getUrlsByTopicId', 'topicId', topicId)
+            const localVarPath = `/api/topics/{topicId}/references/url`
+                .replace(`{${"topicId"}}`, encodeURIComponent(String(topicId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} topicId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getVideos: async (topicId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'topicId' is not null or undefined
+            assertParamExists('getVideos', 'topicId', topicId)
+            const localVarPath = `/api/topics/{topicId}/references/videos`
+                .replace(`{${"topicId"}}`, encodeURIComponent(String(topicId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
             localVarHeaderParameter['Accept'] = '*/*';
 
@@ -3406,12 +3686,15 @@ export const CourseManagementControllerApiFp = function(configuration?: Configur
         /**
          * 
          * @param {number} topicId 
-         * @param {TopicReferenceRequestDto} topicReferenceRequestDto 
+         * @param {string} documentName 
+         * @param {string} refBy 
+         * @param {string} refById 
+         * @param {File} file 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async addDocument(topicId: number, topicReferenceRequestDto: TopicReferenceRequestDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TopicReferenceResponseDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.addDocument(topicId, topicReferenceRequestDto, options);
+        async addDocument(topicId: number, documentName: string, refBy: string, refById: string, file: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TopicReferenceResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addDocument(topicId, documentName, refBy, refById, file, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.addDocument']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -3419,12 +3702,12 @@ export const CourseManagementControllerApiFp = function(configuration?: Configur
         /**
          * 
          * @param {number} topicId 
-         * @param {TopicReferenceRequestDto} topicReferenceRequestDto 
+         * @param {TopicUrlReferenceRequestDto} topicUrlReferenceRequestDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async addUrl(topicId: number, topicReferenceRequestDto: TopicReferenceRequestDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TopicReferenceResponseDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.addUrl(topicId, topicReferenceRequestDto, options);
+        async addUrl(topicId: number, topicUrlReferenceRequestDto: TopicUrlReferenceRequestDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TopicReferenceResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addUrl(topicId, topicUrlReferenceRequestDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.addUrl']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -3432,12 +3715,15 @@ export const CourseManagementControllerApiFp = function(configuration?: Configur
         /**
          * 
          * @param {number} topicId 
-         * @param {TopicReferenceRequestDto} topicReferenceRequestDto 
+         * @param {string} videoTitle 
+         * @param {string} refBy 
+         * @param {string} refById 
+         * @param {File} file 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async addVideo(topicId: number, topicReferenceRequestDto: TopicReferenceRequestDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TopicReferenceResponseDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.addVideo(topicId, topicReferenceRequestDto, options);
+        async addVideo(topicId: number, videoTitle: string, refBy: string, refById: string, file: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TopicReferenceResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addVideo(topicId, videoTitle, refBy, refById, file, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.addVideo']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -3533,6 +3819,18 @@ export const CourseManagementControllerApiFp = function(configuration?: Configur
         },
         /**
          * 
+         * @param {number} referenceId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteDocument(referenceId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteDocument(referenceId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.deleteDocument']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3566,6 +3864,30 @@ export const CourseManagementControllerApiFp = function(configuration?: Configur
             const localVarAxiosArgs = await localVarAxiosParamCreator.deleteTopic(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.deleteTopic']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} referenceId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteUrl(referenceId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteUrl(referenceId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.deleteUrl']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} referenceId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteVideo(referenceId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteVideo(referenceId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.deleteVideo']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -3628,6 +3950,18 @@ export const CourseManagementControllerApiFp = function(configuration?: Configur
         },
         /**
          * 
+         * @param {number} topicId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getDocuments(topicId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TopicReferenceDataDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getDocuments(topicId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.getDocuments']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3661,6 +3995,30 @@ export const CourseManagementControllerApiFp = function(configuration?: Configur
             const localVarAxiosArgs = await localVarAxiosParamCreator.getTopicsByChapterId(chapterId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.getTopicsByChapterId']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} topicId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUrlsByTopicId(topicId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TopicReferenceDataDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUrlsByTopicId(topicId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.getUrlsByTopicId']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} topicId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getVideos(topicId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TopicReferenceDataDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getVideos(topicId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.getVideos']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -3824,32 +4182,38 @@ export const CourseManagementControllerApiFactory = function (configuration?: Co
         /**
          * 
          * @param {number} topicId 
-         * @param {TopicReferenceRequestDto} topicReferenceRequestDto 
+         * @param {string} documentName 
+         * @param {string} refBy 
+         * @param {string} refById 
+         * @param {File} file 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addDocument(topicId: number, topicReferenceRequestDto: TopicReferenceRequestDto, options?: RawAxiosRequestConfig): AxiosPromise<TopicReferenceResponseDto> {
-            return localVarFp.addDocument(topicId, topicReferenceRequestDto, options).then((request) => request(axios, basePath));
+        addDocument(topicId: number, documentName: string, refBy: string, refById: string, file: File, options?: RawAxiosRequestConfig): AxiosPromise<TopicReferenceResponseDto> {
+            return localVarFp.addDocument(topicId, documentName, refBy, refById, file, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {number} topicId 
-         * @param {TopicReferenceRequestDto} topicReferenceRequestDto 
+         * @param {TopicUrlReferenceRequestDto} topicUrlReferenceRequestDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addUrl(topicId: number, topicReferenceRequestDto: TopicReferenceRequestDto, options?: RawAxiosRequestConfig): AxiosPromise<TopicReferenceResponseDto> {
-            return localVarFp.addUrl(topicId, topicReferenceRequestDto, options).then((request) => request(axios, basePath));
+        addUrl(topicId: number, topicUrlReferenceRequestDto: TopicUrlReferenceRequestDto, options?: RawAxiosRequestConfig): AxiosPromise<TopicReferenceResponseDto> {
+            return localVarFp.addUrl(topicId, topicUrlReferenceRequestDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {number} topicId 
-         * @param {TopicReferenceRequestDto} topicReferenceRequestDto 
+         * @param {string} videoTitle 
+         * @param {string} refBy 
+         * @param {string} refById 
+         * @param {File} file 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addVideo(topicId: number, topicReferenceRequestDto: TopicReferenceRequestDto, options?: RawAxiosRequestConfig): AxiosPromise<TopicReferenceResponseDto> {
-            return localVarFp.addVideo(topicId, topicReferenceRequestDto, options).then((request) => request(axios, basePath));
+        addVideo(topicId: number, videoTitle: string, refBy: string, refById: string, file: File, options?: RawAxiosRequestConfig): AxiosPromise<TopicReferenceResponseDto> {
+            return localVarFp.addVideo(topicId, videoTitle, refBy, refById, file, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3921,6 +4285,15 @@ export const CourseManagementControllerApiFactory = function (configuration?: Co
         },
         /**
          * 
+         * @param {number} referenceId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteDocument(referenceId: number, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.deleteDocument(referenceId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3946,6 +4319,24 @@ export const CourseManagementControllerApiFactory = function (configuration?: Co
          */
         deleteTopic(id: number, options?: RawAxiosRequestConfig): AxiosPromise<string> {
             return localVarFp.deleteTopic(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} referenceId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteUrl(referenceId: number, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.deleteUrl(referenceId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} referenceId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteVideo(referenceId: number, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.deleteVideo(referenceId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3992,6 +4383,15 @@ export const CourseManagementControllerApiFactory = function (configuration?: Co
         },
         /**
          * 
+         * @param {number} topicId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDocuments(topicId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<TopicReferenceDataDto>> {
+            return localVarFp.getDocuments(topicId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -4017,6 +4417,24 @@ export const CourseManagementControllerApiFactory = function (configuration?: Co
          */
         getTopicsByChapterId(chapterId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<TopicResponseDto>> {
             return localVarFp.getTopicsByChapterId(chapterId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} topicId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUrlsByTopicId(topicId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<TopicReferenceDataDto>> {
+            return localVarFp.getUrlsByTopicId(topicId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} topicId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getVideos(topicId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<TopicReferenceDataDto>> {
+            return localVarFp.getVideos(topicId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -4145,34 +4563,40 @@ export class CourseManagementControllerApi extends BaseAPI {
     /**
      * 
      * @param {number} topicId 
-     * @param {TopicReferenceRequestDto} topicReferenceRequestDto 
+     * @param {string} documentName 
+     * @param {string} refBy 
+     * @param {string} refById 
+     * @param {File} file 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public addDocument(topicId: number, topicReferenceRequestDto: TopicReferenceRequestDto, options?: RawAxiosRequestConfig) {
-        return CourseManagementControllerApiFp(this.configuration).addDocument(topicId, topicReferenceRequestDto, options).then((request) => request(this.axios, this.basePath));
+    public addDocument(topicId: number, documentName: string, refBy: string, refById: string, file: File, options?: RawAxiosRequestConfig) {
+        return CourseManagementControllerApiFp(this.configuration).addDocument(topicId, documentName, refBy, refById, file, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @param {number} topicId 
-     * @param {TopicReferenceRequestDto} topicReferenceRequestDto 
+     * @param {TopicUrlReferenceRequestDto} topicUrlReferenceRequestDto 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public addUrl(topicId: number, topicReferenceRequestDto: TopicReferenceRequestDto, options?: RawAxiosRequestConfig) {
-        return CourseManagementControllerApiFp(this.configuration).addUrl(topicId, topicReferenceRequestDto, options).then((request) => request(this.axios, this.basePath));
+    public addUrl(topicId: number, topicUrlReferenceRequestDto: TopicUrlReferenceRequestDto, options?: RawAxiosRequestConfig) {
+        return CourseManagementControllerApiFp(this.configuration).addUrl(topicId, topicUrlReferenceRequestDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @param {number} topicId 
-     * @param {TopicReferenceRequestDto} topicReferenceRequestDto 
+     * @param {string} videoTitle 
+     * @param {string} refBy 
+     * @param {string} refById 
+     * @param {File} file 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public addVideo(topicId: number, topicReferenceRequestDto: TopicReferenceRequestDto, options?: RawAxiosRequestConfig) {
-        return CourseManagementControllerApiFp(this.configuration).addVideo(topicId, topicReferenceRequestDto, options).then((request) => request(this.axios, this.basePath));
+    public addVideo(topicId: number, videoTitle: string, refBy: string, refById: string, file: File, options?: RawAxiosRequestConfig) {
+        return CourseManagementControllerApiFp(this.configuration).addVideo(topicId, videoTitle, refBy, refById, file, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -4252,6 +4676,16 @@ export class CourseManagementControllerApi extends BaseAPI {
 
     /**
      * 
+     * @param {number} referenceId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public deleteDocument(referenceId: number, options?: RawAxiosRequestConfig) {
+        return CourseManagementControllerApiFp(this.configuration).deleteDocument(referenceId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {number} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4279,6 +4713,26 @@ export class CourseManagementControllerApi extends BaseAPI {
      */
     public deleteTopic(id: number, options?: RawAxiosRequestConfig) {
         return CourseManagementControllerApiFp(this.configuration).deleteTopic(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} referenceId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public deleteUrl(referenceId: number, options?: RawAxiosRequestConfig) {
+        return CourseManagementControllerApiFp(this.configuration).deleteUrl(referenceId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} referenceId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public deleteVideo(referenceId: number, options?: RawAxiosRequestConfig) {
+        return CourseManagementControllerApiFp(this.configuration).deleteVideo(referenceId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -4331,6 +4785,16 @@ export class CourseManagementControllerApi extends BaseAPI {
 
     /**
      * 
+     * @param {number} topicId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getDocuments(topicId: number, options?: RawAxiosRequestConfig) {
+        return CourseManagementControllerApiFp(this.configuration).getDocuments(topicId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {number} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4358,6 +4822,26 @@ export class CourseManagementControllerApi extends BaseAPI {
      */
     public getTopicsByChapterId(chapterId: number, options?: RawAxiosRequestConfig) {
         return CourseManagementControllerApiFp(this.configuration).getTopicsByChapterId(chapterId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} topicId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getUrlsByTopicId(topicId: number, options?: RawAxiosRequestConfig) {
+        return CourseManagementControllerApiFp(this.configuration).getUrlsByTopicId(topicId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} topicId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getVideos(topicId: number, options?: RawAxiosRequestConfig) {
+        return CourseManagementControllerApiFp(this.configuration).getVideos(topicId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

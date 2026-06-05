@@ -5,12 +5,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **number** |  | [optional] [default to undefined]
-**topicId** | **number** |  | [optional] [default to undefined]
-**refType** | **string** |  | [optional] [default to undefined]
-**refValue** | **{ [key: string]: object; }** |  | [optional] [default to undefined]
-**refBy** | **string** |  | [optional] [default to undefined]
-**refById** | **number** |  | [optional] [default to undefined]
+**success** | **boolean** |  | [optional] [default to undefined]
+**message** | **string** |  | [optional] [default to undefined]
+**data** | [**TopicReferenceDataDto**](TopicReferenceDataDto.md) |  | [optional] [default to undefined]
 
 ## Example
 
@@ -18,12 +15,9 @@ Name | Type | Description | Notes
 import { TopicReferenceResponseDto } from './api';
 
 const instance: TopicReferenceResponseDto = {
-    id,
-    topicId,
-    refType,
-    refValue,
-    refBy,
-    refById,
+    success,
+    message,
+    data,
 };
 ```
 

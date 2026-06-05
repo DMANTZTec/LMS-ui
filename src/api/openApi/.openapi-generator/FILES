@@ -1,6 +1,5 @@
 .gitignore
 .npmignore
-.openapi-generator-ignore
 api.ts
 base.ts
 common.ts
@@ -83,11 +82,12 @@ docs/SubjectResponse.md
 docs/TopicDetailResponse.md
 docs/TopicItem.md
 docs/TopicProgressResponse.md
-docs/TopicReferenceRequestDto.md
+docs/TopicReferenceDataDto.md
 docs/TopicReferenceResponseDto.md
 docs/TopicReferencesDetailResponse.md
 docs/TopicRequestDto.md
 docs/TopicResponseDto.md
+docs/TopicUrlReferenceRequestDto.md
 docs/UpdateClassRequest.md
 docs/UpdateMentorMinutesRequest.md
 docs/WeeklyScheduleResponse.md
