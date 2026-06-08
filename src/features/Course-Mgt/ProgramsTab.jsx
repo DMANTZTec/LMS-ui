@@ -5,6 +5,12 @@ import { Button } from '@/components/ui/button';
 import { ChevronRight, ChevronDown, Eye, Pencil } from 'lucide-react';
 
 import { api } from '@/api/CourseMgtController';
+import ProgramFormDialog from './ProgramsTabComponents/ProgramFormDialog';
+import ProgramViewDialog from './ProgramsTabComponents/ProgramViewDialog';
+import EditProgram from './ProgramsTabComponents/EditProgram';
+import AddCoursesDialog from './ProgramsTabComponents/AddCoursesDialog';
+import RemoveCoursesDialog from './ProgramsTabComponents/RemoveCoursesDialog';
+import DeleteProgramDialog from './ProgramsTabComponents/DeleteProgramDialog';
 
 // const programsData = [
 //     {
@@ -56,7 +62,7 @@ return result.data
 }
 
 
-const {data, isPending, error } = useQuery({
+const {data, isPending, error, refetch } = useQuery({
     queryKey: ['programsData'],
     queryFn: fetchProgamsData,
     staleTime: 2 * 60 * 1000
@@ -75,7 +81,10 @@ if (error) return <div>Error: {error.message}</div>;
     return (
 
         <div className="p-6 bg-gray-100">
-            <h2 className='text-[18px] md:text-3xl font-semibold mb-4'>Programs</h2>
+           <div className="flex items-center justify-between mb-4">
+                <h2 className='text-[18px] md:text-3xl font-semibold'>Programs</h2>
+                <ProgramFormDialog onSubmitSuccess={refetch} />
+            </div>
             <div className="rounded-xl shadow bg-white overflow-x-auto">
                 <Table className="min-w-[700px]">
                     <TableHeader>
@@ -104,23 +113,34 @@ if (error) return <div>Error: {error.message}</div>;
                                     <TableCell>{program.coursesList.length}</TableCell>
                                     <TableCell>{program.fee}</TableCell>
                                     <TableCell className="flex gap-2">
-                                          <Button variant='ghost'>
+                                          {/* <Button variant='ghost'>
                                             <Eye className="w-5 h-5 text-blue-500 cursor-pointer" />
                                           </Button>
                                         <Button variant='ghost'>
                                             <Pencil className="w-5 h-5 text-green-500 cursor-pointer" />
-                                        </Button>
+                                        </Button> */}
+                                        {/* Start */}
+                                          <ProgramViewDialog program={program} />
+                                        <EditProgram program={program} onUpdateSuccess={refetch} />
+                                         <DeleteProgramDialog programId={program.programId} id={program.id} programTitle={program.programTitle} onDeleteSuccess={refetch}/>
+                                        {/* END */}
                                         
                                     </TableCell>
                                 </TableRow>
 
                                 {/* Expanded Row */}
-                                {(openRow === program.id && program.coursesList?.length > 0) && (
+                                {(openRow === program.id && program.coursesList?.length >= 0) && (
 
 
                                     <TableRow>
                                         <TableCell colspan={6} className='bg-gray-100'>
                                             <div className='bg-white rounded-lg overflow-x-auto ml-10 mr-10'>
+                                                {/* Code Add course */}
+                                              <div className="flex justify-between items-center mb-3">
+                                                    <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wide">Program Syllabus Structure</h4>
+                                                    <AddCoursesDialog program={program} onAddSuccess={refetch} />
+                                                </div>
+                                                {/* END  */}
                                                 <Table>
                                                     <TableHeader>
                                                         <TableRow className='bg-gray-200 text-[10px] md:text-[12px]'>
@@ -128,6 +148,7 @@ if (error) return <div>Error: {error.message}</div>;
                                                             <TableHead>SUBJECT NAME</TableHead>
                                                             <TableHead>COURSE NAME</TableHead>
                                                             <TableHead>DURATION</TableHead>
+                                                            <TableHead className="text-right">DISMISS</TableHead>
                                                         </TableRow>
                                                     </TableHeader>
 
@@ -138,6 +159,16 @@ if (error) return <div>Error: {error.message}</div>;
                                                                 <TableCell>{course.subjectNm}</TableCell>
                                                                 <TableCell>{course.courseTitle}</TableCell>
                                                                 <TableCell>{course.duration}</TableCell>
+                                                                      {/* Course Removal Action Trigger Hook */}
+                                                                <TableCell className="text-right">
+                                                                    <RemoveCoursesDialog 
+                                                                        programId={program.programId} 
+                                                                        courseId={course.courseId || course.id} 
+                                                                        courseTitle={course.courseTitle} 
+                                                                        onRemoveSuccess={refetch} 
+                                                                    />
+                                                                </TableCell>
+                                                                {/* END */}
                                                             </TableRow>
                                                         ))}
                                                     </TableBody>

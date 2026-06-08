@@ -5,15 +5,38 @@ import { Textarea } from "@/components/ui/textarea";
 import { createTopic } from "./types";
 import TopicCard from "./TopicCard";
 import { cn } from "@/lib/utils";
+import {List, arrayMove,} from "react-movable";
 
-const ChapterCard = ({chapter,index,errors,onChange,onDelete,onDeleteTopic,onDeleteReference,}) => {
+import toast from "react-hot-toast";
+
+import { api } from "@/api/CourseMgtController";
+
+
+const ChapterCard = ({chapter,index,errors,onChange,onDelete,onDeleteTopic,onDeleteReference,  dragHandleProps,}) => {
+
   return (
-    <div className="rounded-2xl border-2 border-l-4 border-[#9810FA]/40 hover:border-[#9810FA] bg-card p-4 shadow-sm transition-all">
+    <div className="rounded-2xl border-2 border-l-4 border-[#9810FA]/40 hover:border-[#9810FA] bg-card p-4 shadow-sm transition-all" >
 
       {/* HEADER */}
 
       <div className="flex items-center gap-2">
-        <GripVertical className="h-4 w-4" />
+     <div className="flex items-center gap-2">
+  {/* Hooking the specific drag trigger mouse handlers onto this wrap wrapper */}
+  <div 
+    {...(dragHandleProps ? {
+      onMouseDown: dragHandleProps.onMouseDown,
+      onTouchStart: dragHandleProps.onTouchStart
+    } : {})}
+    className={cn(
+      "p-1 rounded cursor-grab active:cursor-grabbing hover:bg-muted", 
+      !dragHandleProps && "opacity-30 cursor-not-allowed"
+    )}
+  >
+    <GripVertical className="h-4 w-4 text-muted-foreground" />
+  </div>
+  
+  {/* Rest of header buttons... */}
+</div>
 
         <button
           onClick={() =>
@@ -126,45 +149,127 @@ const ChapterCard = ({chapter,index,errors,onChange,onDelete,onDeleteTopic,onDel
 
           {/* TOPICS */}
 
-          <div className="space-y-3">
-            {chapter.topics.map(
-              (topic, i) => (
-                <TopicCard
-  key={topic.id}
-  topic={topic}
-  index={i}
-  chapterIndex={index}
-  errors={errors}
-  onChange={(patch) =>
+          <List
+  values={chapter.topics}
+  onChange={async ({
+    oldIndex,
+    newIndex,
+  }) => {
+
+    const reordered =
+      arrayMove(
+        chapter.topics,
+        oldIndex,
+        newIndex
+      );
+
     onChange({
-      topics: chapter.topics.map((t) =>
-        t.id === topic.id
-          ? {
-              ...t,
-              ...patch,
-              isChanged: true,
-            }
-          : t
-      ),
-    })
-  }
-  onDelete={() =>
-    onDeleteTopic(topic)
-  }
-  onDeleteReference={(
-    type,
-    reference
-  ) =>
-    onDeleteReference(
-      topic.id,
-      type,
-      reference
-    )
-  }
+      topics: reordered,
+    });
+
+    try {
+
+      const movedTopic =
+        reordered[newIndex];
+
+      await api.moveTopic(
+        movedTopic.backendId,
+        newIndex + 1
+      );
+
+      toast.success(
+        "Topic moved successfully"
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      toast.error(
+        "Failed to move topic"
+      );
+    }
+  }}
+  renderList={({
+    children,
+    props,
+  }) => (
+    <div
+      {...props}
+      className="space-y-3"   style={{
+      position: "relative",
+    }}
+    >
+      {children}
+    </div>
+  )}
+  renderItem={({  
+    value: topic,
+    props,
+    index: topicIndex,
+    isDragged,
+  }) => (
+   <div
+    {...props}
+    style={{
+      ...props.style,
+      minHeight: isDragged
+        ? props.style?.height || 120
+        : undefined,
+      zIndex: isDragged ? 9999 : 1,
+    }}
+  >
+      <TopicCard
+         topic={{
+    ...topic,
+    expanded: isDragged
+      ? false
+      : topic.expanded,
+  }}
+        index={topicIndex}
+        chapterIndex={index}
+        errors={errors}
+       dragHandleProps={{
+  onMouseDown:
+    props.onMouseDown,
+  onTouchStart:
+    props.onTouchStart,
+}}
+
+        onChange={(patch) =>
+          onChange({
+            topics:
+              chapter.topics.map(
+                (t) =>
+                  t.id === topic.id
+                    ? {
+                        ...t,
+                        ...patch,
+                        isChanged: true,
+                      }
+                    : t
+              ),
+          })
+        }
+
+        onDelete={() =>
+          onDeleteTopic(topic)
+        }
+
+        onDeleteReference={(
+          type,
+          reference
+        ) =>
+          onDeleteReference(
+            topic.id,
+            type,
+            reference
+          )
+        }
+      />
+    </div>
+  )}
 />
-              )
-            )}
-          </div>
 
           {/* TOPIC ARRAY ERROR */}
 

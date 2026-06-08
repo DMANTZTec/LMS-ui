@@ -1,6 +1,6 @@
 import { useState, useEffect,} from "react";
 import { useParams} from "react-router-dom";
-import {List,Plus,Save,Loader2, } from "lucide-react";
+import {List as ListIcon ,Plus,Save,Loader2, } from "lucide-react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import ChapterCard from "./ChapterCard";
 import {createChapter,} from "./types";
 import {courseSchema,} from "./validation";
 import { api } from "@/api/CourseMgtController";
+import {List, arrayMove, } from "react-movable";
 
 const CourseStructureBuilder = () => {
 
@@ -699,7 +700,7 @@ else if (
         ) {
           await api.updateTopic(
             topic.backendId,
-            topicPayload
+            topicPayload,
           );
         }
 
@@ -894,7 +895,7 @@ else if (
 
       <header className="flex items-start relative top-[2px] gap-2">
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl">
-          <List className="h-[32px] w-[32px] text-[#9810FA]" />
+          <ListIcon className="h-[32px] w-[32px] text-[#9810FA]" />
         </div>
 
         <div className="flex-1">
@@ -967,42 +968,75 @@ else if (
 
       {/* CHAPTERS */}
 
-      <div className="mt-6 space-y-4">
-        {course.chapters.map(
-          (
-            chapter,
-            index
-          ) => (
-           <ChapterCard
-  key={chapter.id}
-  chapter={chapter}
-  index={index}
-  errors={errors}
-  onChange={(patch) =>
-    updateChapter(chapter.id, patch)
-  }
-  onDelete={() =>
-    deleteChapter(chapter)
-  }
-  onDeleteTopic={(topic) =>
-    deleteTopic(chapter.id, topic)
-  }
-  onDeleteReference={(
-    topicId,
-    type,
-    reference
-  ) =>
-    deleteReference(
-      chapter.id,
-      topicId,
-      type,
-      reference
-    )
-  }
-/>
-          )
-        )}
+  <div className="mt-6 space-y-4">
+
+
+    {/* ============================================ */}
+
+
+  <div className="mt-6">
+  <List
+    values={course.chapters}
+    onChange={({ oldIndex, newIndex }) => {
+      // 1. Reorder the array locally when an item is dropped
+      const reordered = arrayMove(course.chapters, oldIndex, newIndex);
+      setCourse((prev) => ({
+        ...prev,
+        chapters: reordered,
+      }));
+    }}
+    renderList={({ children, props }) => (
+      // This is the single, unified container holding your list items
+      <div {...props} className="space-y-4">
+        {children}
       </div>
+    )}
+    renderItem={({ value: chapter, props, index, isDragged }) => {
+      // 2. Disable moving tracking altogether if the individual chapter is currently open/expanded
+      const dynamicDragProps = chapter.expanded ? undefined : props;
+
+      return (
+        <div
+          {...dynamicDragProps}
+          style={{
+            ...props.style,
+            zIndex: isDragged ? 9999 : 1,
+          }}
+        >
+          <ChapterCard
+            chapter={chapter}
+            index={index}
+            errors={errors}
+            // 3. Forward drag handle listeners down to the card only if it is collapsed
+            dragHandleProps={chapter.expanded ? null : dynamicDragProps}
+            onChange={(patch) =>
+              updateChapter(chapter.id, patch)
+            }
+            onDelete={() =>
+              deleteChapter(chapter)
+            }
+            onDeleteTopic={(topic) =>
+              deleteTopic(chapter.id, topic)
+            }
+            onDeleteReference={(topicId, type, reference) =>
+              deleteReference(
+                chapter.id,
+                topicId,
+                type,
+                reference
+              )
+            }
+          />
+        </div>
+      );
+    }}
+  />
+</div>
+
+
+  {/* ========================================= */}
+
+</div>
 
       {/* FOOTER */}
 

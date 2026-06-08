@@ -25,14 +25,18 @@ const tabs = [
   },
 ];
 
-const TopicCard = ({ topic, index,chapterIndex,errors,onChange,onDelete, onDeleteReference,}) => {
+const TopicCard = ({ topic, index,chapterIndex,errors,onChange,onDelete, onDeleteReference,dragHandleProps,}) => {
   return (
-    <div className="w-full space-y-3 p-3 relative rounded-[10px] border border-[#BEDBFF] bg-[#EFF6FF] opacity-100">
+    <div className="w-full space-y-3 p-3 relative rounded-[10px] border border-[#BEDBFF] bg-[#EFF6FF] opacity-100"  style={{
+    transform: "translateZ(0)",
+  }}>
 
       {/* HEADER */}
 
       <div className="flex items-center gap-2">
-        <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
+       
+  <GripVertical className="h-4 w-4 text-muted-foreground"/>
+
 
         <button
           onClick={() =>
@@ -70,7 +74,7 @@ const TopicCard = ({ topic, index,chapterIndex,errors,onChange,onDelete, onDelet
       {/* CONTENT */}
 
       {topic.expanded && (
-        <div className="space-y-4 animate-in fade-in slide-in-from-top-1">
+        <div className="space-y-4 ">
 
           {/* INPUTS */}
 
@@ -220,4 +224,4 @@ const TopicCard = ({ topic, index,chapterIndex,errors,onChange,onDelete, onDelet
   );
 };
 
-export default TopicCard;
+export default  TopicCard;
