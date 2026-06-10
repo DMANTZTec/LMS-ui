@@ -10,7 +10,7 @@ const AddNewCourse = () => {
       
       <Button
         onClick={() => navigate("/addCourse")}
-        className="px-6 py-3 text-lg font-semibold rounded-xl shadow-md hover:scale-105 transition-all duration-200"
+        className="px-3 py-3 text-lg font-semibold rounded-sm shadow-md hover:scale-105 transition-all duration-200"
       >
         ➕ Add New Course
       </Button>

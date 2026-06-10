@@ -54,10 +54,7 @@ const [providersLoading, setProvidersLoading] = useState(false);
       const response =
         await providerApi.getAllProviders();
 
-      console.log(
-        "Providers Response",
-        response
-      );
+      //console.log("Providers Response",response);
 
       setProviders(
         response?.data || []

@@ -7,6 +7,7 @@ configuration.ts
 docs/AcknowledgeMentorRequest.md
 docs/AddClassTopicRequest.md
 docs/AssignCourseRequest.md
+docs/AssignInstructorToCourseRequest.md
 docs/AuthControllerApi.md
 docs/ChapterDetailResponse.md
 docs/ChapterProgressResponse.md
@@ -22,13 +23,13 @@ docs/ClassTopicResponse.md
 docs/CourseDetailsResponse.md
 docs/CourseManagementControllerApi.md
 docs/CourseProgressSummaryResponse.md
-docs/CourseRequest.md
 docs/CourseResponse.md
 docs/CreateClassRequest.md
 docs/EnrollStudentRequest.md
 docs/EnrollStudentResponse.md
 docs/ForgotPasswordRequest.md
 docs/HoursSpentResponse.md
+docs/InstructorResponse.md
 docs/LocalTime.md
 docs/MentorPointsResponse.md
 docs/MyCourseResponse.md
@@ -45,6 +46,8 @@ docs/RemoveClassTopicRequest.md
 docs/RemoveStudentRequest.md
 docs/ResetPasswordRequest.md
 docs/StaffControllerApi.md
+docs/StaffCourseControllerApi.md
+docs/StaffCourseResponse.md
 docs/StaffLoginRequest.md
 docs/StaffLoginResponse.md
 docs/StaffOtpVerifyRequest.md
@@ -76,7 +79,6 @@ docs/StudentTaskUpdateRequest.md
 docs/StudentTopicReferenceProgressControllerApi.md
 docs/StudentTopicReferenceProgressRequest.md
 docs/StudentTopicReferenceProgressResponse.md
-docs/StudentUpdateRequest.md
 docs/SubjectRequest.md
 docs/SubjectResponse.md
 docs/TopicDetailResponse.md
@@ -89,6 +91,7 @@ docs/TopicRequestDto.md
 docs/TopicResponseDto.md
 docs/TopicUrlReferenceRequestDto.md
 docs/UpdateClassRequest.md
+docs/UpdateCourseRequest.md
 docs/UpdateMentorMinutesRequest.md
 docs/WeeklyScheduleResponse.md
 git_push.sh

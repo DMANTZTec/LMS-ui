@@ -7,10 +7,11 @@ All URIs are relative to *http://localhost:9090*
 |[**forgotPassword**](#forgotpassword) | **POST** /api/student/forgot-password | |
 |[**getAllStudents**](#getallstudents) | **GET** /api/student/view-students | |
 |[**login**](#login) | **POST** /api/student/login | |
-|[**registerStudent**](#registerstudent) | **POST** /api/student/register | |
+|[**register**](#register) | **POST** /api/student/register | |
 |[**resetPassword**](#resetpassword) | **POST** /api/student/reset-password | |
-|[**updateStudentProfile**](#updatestudentprofile) | **PUT** /api/student/update/{studentId} | |
+|[**updateProfile**](#updateprofile) | **PUT** /api/student/update/{studentId} | |
 |[**verifyOtp**](#verifyotp) | **POST** /api/student/otp-verify | |
+|[**verifyRegistrationOtp**](#verifyregistrationotp) | **POST** /api/student/verify-registration-otp | |
 
 # **forgotPassword**
 > string forgotPassword(forgotPasswordRequest)
@@ -157,8 +158,8 @@ const { status, data } = await apiInstance.login(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **registerStudent**
-> StudentResponse registerStudent(studentRegistrationRequest)
+# **register**
+> StudentResponse register(studentRegistrationRequest)
 
 
 ### Example
@@ -175,7 +176,7 @@ const apiInstance = new StudentControllerApi(configuration);
 
 let studentRegistrationRequest: StudentRegistrationRequest; //
 
-const { status, data } = await apiInstance.registerStudent(
+const { status, data } = await apiInstance.register(
     studentRegistrationRequest
 );
 ```
@@ -259,8 +260,8 @@ const { status, data } = await apiInstance.resetPassword(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **updateStudentProfile**
-> StudentResponse updateStudentProfile(studentUpdateRequest)
+# **updateProfile**
+> StudentResponse updateProfile()
 
 
 ### Example
@@ -268,19 +269,44 @@ const { status, data } = await apiInstance.resetPassword(
 ```typescript
 import {
     StudentControllerApi,
-    Configuration,
-    StudentUpdateRequest
+    Configuration
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new StudentControllerApi(configuration);
 
 let studentId: string; // (default to undefined)
-let studentUpdateRequest: StudentUpdateRequest; //
+let firstNm: string; // (default to undefined)
+let lastNm: string; // (default to undefined)
+let gender: string; // (default to undefined)
+let dob: string; // (default to undefined)
+let addr1: string; // (optional) (default to undefined)
+let addr2: string; // (optional) (default to undefined)
+let city: string; // (optional) (default to undefined)
+let state: string; // (optional) (default to undefined)
+let country: string; // (optional) (default to undefined)
+let pin: string; // (optional) (default to undefined)
+let mobileNum: string; // (optional) (default to undefined)
+let emergencyContactNm: string; // (optional) (default to undefined)
+let emergencyContactNum: string; // (optional) (default to undefined)
+let profileImg: File; // (optional) (default to undefined)
 
-const { status, data } = await apiInstance.updateStudentProfile(
+const { status, data } = await apiInstance.updateProfile(
     studentId,
-    studentUpdateRequest
+    firstNm,
+    lastNm,
+    gender,
+    dob,
+    addr1,
+    addr2,
+    city,
+    state,
+    country,
+    pin,
+    mobileNum,
+    emergencyContactNm,
+    emergencyContactNum,
+    profileImg
 );
 ```
 
@@ -288,8 +314,21 @@ const { status, data } = await apiInstance.updateStudentProfile(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **studentUpdateRequest** | **StudentUpdateRequest**|  | |
 | **studentId** | [**string**] |  | defaults to undefined|
+| **firstNm** | [**string**] |  | defaults to undefined|
+| **lastNm** | [**string**] |  | defaults to undefined|
+| **gender** | [**string**] |  | defaults to undefined|
+| **dob** | [**string**] |  | defaults to undefined|
+| **addr1** | [**string**] |  | (optional) defaults to undefined|
+| **addr2** | [**string**] |  | (optional) defaults to undefined|
+| **city** | [**string**] |  | (optional) defaults to undefined|
+| **state** | [**string**] |  | (optional) defaults to undefined|
+| **country** | [**string**] |  | (optional) defaults to undefined|
+| **pin** | [**string**] |  | (optional) defaults to undefined|
+| **mobileNum** | [**string**] |  | (optional) defaults to undefined|
+| **emergencyContactNm** | [**string**] |  | (optional) defaults to undefined|
+| **emergencyContactNum** | [**string**] |  | (optional) defaults to undefined|
+| **profileImg** | [**File**] |  | (optional) defaults to undefined|
 
 
 ### Return type
@@ -302,7 +341,7 @@ const { status, data } = await apiInstance.updateStudentProfile(
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: multipart/form-data
  - **Accept**: */*
 
 
@@ -346,6 +385,57 @@ const { status, data } = await apiInstance.verifyOtp(
 ### Return type
 
 **StudentLoginResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **verifyRegistrationOtp**
+> string verifyRegistrationOtp(otpVerifyRequest)
+
+
+### Example
+
+```typescript
+import {
+    StudentControllerApi,
+    Configuration,
+    OtpVerifyRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StudentControllerApi(configuration);
+
+let otpVerifyRequest: OtpVerifyRequest; //
+
+const { status, data } = await apiInstance.verifyRegistrationOtp(
+    otpVerifyRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **otpVerifyRequest** | **OtpVerifyRequest**|  | |
+
+
+### Return type
+
+**string**
 
 ### Authorization
 

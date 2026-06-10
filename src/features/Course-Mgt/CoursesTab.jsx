@@ -16,10 +16,17 @@ import {
     SelectItem
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Eye, SquarePen } from 'lucide-react';
+import { Eye, Pencil, SquarePen, Trash } from 'lucide-react';
 import { api } from '@/api/CourseMgtController';
 import { useNavigate } from "react-router-dom";
 import AddNewCourse from '@/pages/staffPages/AddNewCourse';
+import ViewCourse from './coursesTabComponents/CourseView';
+import DeleteCourseDialog from './coursesTabComponents/DeleteCourseDialog';
+
+import {ButtonGroup,  ButtonGroupSeparator,} from "@/components/ui/button-group"
+import { PencilIcon } from 'lucide-react';
+import EditCourse from './coursesTabComponents/EditCourse';
+
 
 const fetchCourses = async () => {
     console.log('entered into fetchCourses function. and the current time is: ', new Date().toLocaleTimeString());
@@ -52,7 +59,7 @@ const CoursesTab = () => {
 
 
    
-    const { data = [], isPending, error } = useQuery({
+    const { data = [], isPending, error ,refetch } = useQuery({
         queryKey: ['courses'],
         queryFn: fetchCourses,
         staleTime: 2 * 60 * 1000
@@ -86,7 +93,7 @@ navigate(`/courseDetails/${courseId}`);
                     <h2 className='text-[18px] md:text-3xl font-semibold text-center mb-6'>Course Management</h2>
 
                     {/* filter */}
-                    <div className='mb-4 bg-gray-100'>
+                    <div className='flex justify-between mb-4 bg-gray-100'>
 
                         <Select onValueChange={setSelectedSubject}>
                             <SelectTrigger className='w-[200px] bg-white text-[10px] md:text-[12px]'>
@@ -103,7 +110,12 @@ navigate(`/courseDetails/${courseId}`);
                         </Select>
 
                         {/* ADD Course Button */}
-                        <AddNewCourse/>
+                        <Button
+                                onClick={() => navigate("/addCourse")}
+                                className="px-3 py-3 text-lg font-semibold rounded-sm shadow-md hover:scale-105 transition-all duration-200"
+                              >
+                                ➕ Add New Course
+                    </Button>
 
 
                     </div>
@@ -119,7 +131,9 @@ navigate(`/courseDetails/${courseId}`);
                                 <TableHead>Course Name</TableHead>
                                 <TableHead>Duration</TableHead>
                                 <TableHead>Fee</TableHead>
+                                 <TableHead>Chapters</TableHead>
                                 <TableHead>Action</TableHead>
+                               
                             </TableRow>
                         </TableHeader>
 
@@ -138,16 +152,35 @@ navigate(`/courseDetails/${courseId}`);
                                     <TableCell>{course.duration}</TableCell>
                                     <TableCell>{course.fee}</TableCell>
                                     <TableCell>
+                                        <ButtonGroup>
+                                        <Button
+                                        className="bg-green-400 hover:bg-green-700 text-white rounded-r-none"size="sm" onClick={() => courseDetail(course.courseId)}>
+                                            View
+                                        </Button>
+                             
+                                        <Button className="bg-blue-400 hover:bg-blue-700 text-white rounded-l-none"size="sm" onClick={() => navigate(`/course-builder/${course.courseId}`)}>
+                                            Edit
+                                        </Button>
+                                        </ButtonGroup>
+                                    </TableCell>
+                                    <TableCell>
                                         <div className='flex gap-2 mt-2'>
-                                            <Button variant='ghost' onClick={() => courseDetail(course.courseId)}>
+                                            {/* <Button variant='ghost' onClick={() => courseDetail(course.courseId)}>
                                                 <Eye className="w-5 h-5 text-blue-500 cursor-pointer" />
                                             </Button>
                                             <Button  onClick={() => navigate(`/course-builder/${course.courseId}`)} variant='ghost'>
                                                 <SquarePen className="w-5 h-5 text-green-500 cursor-pointer" />
-                                            </Button>
-                                        </div>
+                                            </Button> */}
+                                        
+                                            <ViewCourse course={course} />
+                                            {/* <Pencil/> */}
+                                            <EditCourse course={course} onUpdateSuccess={refetch} />
+                                            <DeleteCourseDialog  courseId={course.courseId}  id={course.id} courseTitle={course.courseTitle} onDeleteSuccess={refetch} />
+                                         </div> 
+
                                         
                                     </TableCell>
+
                                 </TableRow>
                                 
                             ))}

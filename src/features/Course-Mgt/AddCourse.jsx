@@ -2,18 +2,22 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { X, Upload, Image as ImageIcon, BookOpen } from "lucide-react";
+import { X, Upload, Image as ImageIcon, BookOpen, Loader2 } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useCloudinaryUpload } from "@/components/useCloudinaryUpload";
+//import { useCloudinaryUpload } from "@/components/useCloudinaryUpload";
 import { api } from "@/api/CourseMgtController";
+import { providerApi } from "@/api/provider-controller.api";
+import toast from "react-hot-toast";
 
+
+import { useQueryClient } from "@tanstack/react-query";
 
 const MAX_IMAGE_SIZE = 100 * 1024 * 1024; // 10MB
 const MAX_VIDEO_SIZE = 1000 * 1024 * 1024; // 100MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
-const ACCEPTED_VIDEO_TYPES = ["image/jpeg", "image/jpg", "image/png","video/mp4", "video/quicktime"]; 
+const ACCEPTED_VIDEO_TYPES = ["video/mp4", "video/quicktime"]; 
 
 const schema = z.object({
   courseId: z.string().min(1, "Course ID is required"),
@@ -33,7 +37,7 @@ const schema = z.object({
       "Only .jpg, .jpeg, and .png formats are supported."
     ),
   courseVideo: z
-    .any()
+    .any() 
     .refine((files) => files?.length === 1, "Course video is required.")
     .refine((files) => files?.[0]?.size <= MAX_VIDEO_SIZE, `Max file size is 100MB.`)
     .refine(
@@ -45,16 +49,14 @@ const schema = z.object({
 const AddCourse = () => {
   const navigate = useNavigate();
   const [previews, setPreviews] = useState({ imgName: "", vidName: "" });
-  const { uploadFile } = useCloudinaryUpload();
+  const [providers, setProviders] = useState([]);
+  const [providersLoading, setProvidersLoading] = useState(false);
+  const [subjects, setSubjects] = useState([]);
+  const [subjectsLoading, setSubjectsLoading] = useState(false);
+  //const { uploadFile } = useCloudinaryUpload();
+  const queryClient = useQueryClient();
 
-  
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    formState: { errors, isSubmitting },
-  } = useForm({
+  const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting },} = useForm({
     resolver: zodResolver(schema),
     mode: "onChange",
   });
@@ -63,11 +65,11 @@ const AddCourse = () => {
     try {
       const res = await api.viewAllCourses();
       const data = res.data;
-      let nextId = "BD001";
+      let nextId = "**001";
       if (data.length > 0) {
         const lastId = data[data.length - 1].courseId;
         const num = parseInt(lastId.replace(/\D/g, ""), 10);
-        nextId = `BD${String(num + 1).padStart(3, "0")}`;
+        nextId = `**${String(num + 1).padStart(3, "0")}`;
       }
       setValue("courseId", nextId);
     } catch (err) {
@@ -75,48 +77,85 @@ const AddCourse = () => {
       setValue("courseId", "BD001");
     }
   };
+    
+  const fetchProviders = async () => {
+    setProvidersLoading(true);
+    try {
+      const result = await providerApi.getAllProviders();
+      if (result && result.data) {
+        setProviders(result.data);
+      }
+    } catch (error) {
+      console.error("Failed to load providers:", error);
+    } finally {
+      setProvidersLoading(false);
+    }
+  };
+
+  const fetchSubjects = async () => {
+    setSubjectsLoading(true);
+    try {
+      const result = await api.viewAllSubjects();
+      if (result && result.data) {
+        setSubjects(result.data);
+      }
+    } catch (error) {
+      console.error("Failed to load subjects:", error);
+    } finally {
+      setSubjectsLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchCourseId();
+    fetchProviders();
+    fetchSubjects();
   }, [setValue]);
 
   const onSubmit = async (data) => {
     try {
-      // 1. Upload files to Cloudinary in parallel
+      const savedUser = JSON.parse(localStorage.getItem("user"));
+      const staffId = savedUser?.staffId || "SF00001";
 
+      const response = await api.createCourse(
+        staffId,
+        data.coursetitle,
+        data.description,
+        data.language,
+   
+      data.skills
+    .split(",")
+    .map((s) => s.trim())
+    .filter((s) => s !== ""),
+        Number(data.subject),
+        Number(data.provider),
+        data.level.toUpperCase(),
+        data.courseImage[0],
+        data.courseVideo[0]
+      );
 
-      const [imageUrl, videoUrl] = await Promise.all([
-        uploadFile(data.courseImage[0], "image"),
-        uploadFile(data.courseVideo[0], "image"),
-      ]);
+      //console.log(response.data);
+        await queryClient.invalidateQueries({
+      queryKey: ["courses"],
+    });
 
+        toast.success("Course created successfully ✅");
+      navigate("/Staff-dashboard")
 
-      // 2. Prepare JSON payload with the returned Cloudinary URLs
-      const payload = {
-        courseTitle: data.coursetitle,
-        description: data.description,
-        language: data.language,
-        skills:data.skills.split(",").map((s) => s.trim()),
-        subjectId: Number(data.subject),
-        providerId: Number(data.provider),
-        level: data.level.toUpperCase(),
-        courseImage: imageUrl, // Backend should now expect URL strings
-        introVideo: videoUrl,
-      };
-
-      console.log("Payload:", payload);
-
-  const savedUser = JSON.parse(localStorage.getItem('user'));
-  const staffId = savedUser?.staffId || "SF00001";
-
-      const response = await api.createCourse(staffId,payload);
-     // console.log("Response:", response.data);
-      alert("Course created ✅");
       reset();
-      setPreviews({ imgName: "", vidName: "" });
+      setPreviews({
+        imgName: "",
+        vidName: "",
+      });
+
       fetchCourseId();
     } catch (err) {
-      alert(err.message || "An error occurred during submission.");
+      console.error(err);
+      toast.error(
+        err?.response?.data?.message ||
+        err.message ||
+        "Failed to create course"
+      );
     }
   };
 
@@ -213,31 +252,58 @@ const AddCourse = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-2">
                 <label htmlFor="subject" className="text-[15px] font-medium text-gray-900">Subject *</label>
-                <select
-                  id="subject"
-                  defaultValue=""
-                  {...register("subject")}
-                  className="w-full h-[46px] px-4 rounded-[8px] bg-[#F5F5F7] border-none focus:ring-2 focus:ring-blue-500/20 outline-none appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M6%209L12%2015L18%209%22%20stroke%3D%22%239CA3AF%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-[length:20px] bg-[position:calc(100%-12px)_center] bg-no-repeat"
-                >
-                  <option value="" disabled>Select subject</option>
-                  <option value="1">Computer Science</option>
-                  <option value="2">Data Science</option>
-                </select>
+                <div className="relative">
+                  <select
+                    id="subject"
+                    defaultValue=""
+                    {...register("subject")}
+                    className="w-full h-[46px] px-4 rounded-[8px] bg-[#F5F5F7] border-none focus:ring-2 focus:ring-blue-500/20 outline-none appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M6%209L12%2015L18%209%22%20stroke%3D%22%239CA3AF%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-[length:20px] bg-[position:calc(100%-12px)_center] bg-no-repeat"
+                    disabled={subjectsLoading}
+                  >
+                    <option value="" disabled>
+                      {subjectsLoading ? "Loading subjects..." : "Select subject"}
+                    </option>
+                    {subjects.map((subj) => (
+                      <option key={subj.subjectId || subj.id} value={subj.subjectId || subj.id}>
+                        {subj.subjectNm || subj.name}
+                      </option>
+                    ))}
+                  </select>
+                  {subjectsLoading && (
+                    <div className="absolute right-8 top-3.5">
+                      <Loader2 size={16} className="animate-spin text-gray-400" />
+                    </div>
+                  )}
+                </div>
                 {errors.subject && <p className="text-red-500 text-xs mt-1">{errors.subject.message}</p>}
               </div>
 
               <div className="space-y-2">
                 <label htmlFor="provider" className="text-[15px] font-medium text-gray-900">Provider *</label>
-                <select
-                  id="provider"
-                  defaultValue=""
-                  {...register("provider")}
-                  className="w-full h-[46px] px-4 rounded-[8px] bg-[#F5F5F7] border-none focus:ring-2 focus:ring-blue-500/20 outline-none appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M6%209L12%2015L18%209%22%20stroke%3D%22%239CA3AF%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-[length:20px] bg-[position:calc(100%-12px)_center] bg-no-repeat"
-                >
-                  <option value="" disabled>Select provider</option>
-                  <option value="1">Internal</option>
-                  <option value="2">External</option>
-                </select>
+                <div className="relative">
+                  <select
+                    id="provider"
+                    defaultValue=""
+                    {...register("provider")}
+                    className="w-full h-[46px] px-4 rounded-[8px] bg-[#F5F5F7] border-none focus:ring-2 focus:ring-blue-500/20 outline-none appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M6%209L12%2015L18%209%22%20stroke%3D%22%239CA3AF%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-[length:20px] bg-[position:calc(100%-12px)_center] bg-no-repeat"
+                    disabled={providersLoading}
+                  >
+                    <option value="" disabled>
+                      {providersLoading ? "Loading providers..." : "Select Provider"}
+                    </option>
+                    {providers.map((provider) => (
+                      <option key={provider.id} value={provider.id}>
+                        {provider.providerName || provider.name || `Provider ${provider.providerId}`}
+                      </option>
+                    ))}
+                  </select>
+                  
+                  {providersLoading && (
+                    <div className="absolute right-8 top-3.5">
+                      <Loader2 size={16} className="animate-spin text-gray-400" />
+                    </div>
+                  )}
+                </div>
                 {errors.provider && <p className="text-red-500 text-xs mt-1">{errors.provider.message}</p>}
               </div>
 

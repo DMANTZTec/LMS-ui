@@ -37,6 +37,8 @@ All URIs are relative to *http://localhost:9090*
 |[**removeCourse**](#removecourse) | **DELETE** /api/remove/course/{id} | |
 |[**updateChapter**](#updatechapter) | **PUT** /api/update/{chapterId} | |
 |[**updateCourse**](#updatecourse) | **PUT** /api/course/update/{courseId} | |
+|[**updateCourseImage**](#updatecourseimage) | **PUT** /api/course/update/{courseId}/image | |
+|[**updateCourseIntroVideo**](#updatecourseintrovideo) | **PUT** /api/course/update/{courseId}/intro-video | |
 |[**updateProgram**](#updateprogram) | **PUT** /api/update/program/{id} | |
 |[**updateSubject**](#updatesubject) | **PUT** /api/subject/update/{subjectId} | |
 |[**updateTopic**](#updatetopic) | **PUT** /api/topics/{id} | |
@@ -328,7 +330,7 @@ const { status, data } = await apiInstance.createChapter(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **createCourse**
-> CourseResponse createCourse(courseRequest)
+> CourseResponse createCourse()
 
 
 ### Example
@@ -336,19 +338,34 @@ const { status, data } = await apiInstance.createChapter(
 ```typescript
 import {
     CourseManagementControllerApi,
-    Configuration,
-    CourseRequest
+    Configuration
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new CourseManagementControllerApi(configuration);
 
 let staffId: string; // (default to undefined)
-let courseRequest: CourseRequest; //
+let courseTitle: string; // (default to undefined)
+let description: string; // (default to undefined)
+let language: string; // (default to undefined)
+let skills: Array<string>; // (default to undefined)
+let subjectId: number; // (default to undefined)
+let providerId: number; // (default to undefined)
+let level: string; // (default to undefined)
+let courseImage: File; // (optional) (default to undefined)
+let introVideo: File; // (optional) (default to undefined)
 
 const { status, data } = await apiInstance.createCourse(
     staffId,
-    courseRequest
+    courseTitle,
+    description,
+    language,
+    skills,
+    subjectId,
+    providerId,
+    level,
+    courseImage,
+    introVideo
 );
 ```
 
@@ -356,8 +373,16 @@ const { status, data } = await apiInstance.createCourse(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **courseRequest** | **CourseRequest**|  | |
 | **staffId** | [**string**] |  | defaults to undefined|
+| **courseTitle** | [**string**] |  | defaults to undefined|
+| **description** | [**string**] |  | defaults to undefined|
+| **language** | [**string**] |  | defaults to undefined|
+| **skills** | **Array&lt;string&gt;** |  | defaults to undefined|
+| **subjectId** | [**number**] |  | defaults to undefined|
+| **providerId** | [**number**] |  | defaults to undefined|
+| **level** | [**string**]**Array<&#39;BEGINNER&#39; &#124; &#39;INTERMEDIATE&#39; &#124; &#39;ADVANCED&#39;>** |  | defaults to undefined|
+| **courseImage** | [**File**] |  | (optional) defaults to undefined|
+| **introVideo** | [**File**] |  | (optional) defaults to undefined|
 
 
 ### Return type
@@ -370,7 +395,7 @@ const { status, data } = await apiInstance.createCourse(
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: multipart/form-data
  - **Accept**: */*
 
 
@@ -1699,7 +1724,7 @@ const { status, data } = await apiInstance.updateChapter(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **updateCourse**
-> CourseResponse updateCourse(courseRequest)
+> CourseResponse updateCourse(updateCourseRequest)
 
 
 ### Example
@@ -1708,7 +1733,7 @@ const { status, data } = await apiInstance.updateChapter(
 import {
     CourseManagementControllerApi,
     Configuration,
-    CourseRequest
+    UpdateCourseRequest
 } from './api';
 
 const configuration = new Configuration();
@@ -1716,12 +1741,12 @@ const apiInstance = new CourseManagementControllerApi(configuration);
 
 let courseId: number; // (default to undefined)
 let staffId: string; // (default to undefined)
-let courseRequest: CourseRequest; //
+let updateCourseRequest: UpdateCourseRequest; //
 
 const { status, data } = await apiInstance.updateCourse(
     courseId,
     staffId,
-    courseRequest
+    updateCourseRequest
 );
 ```
 
@@ -1729,7 +1754,7 @@ const { status, data } = await apiInstance.updateCourse(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **courseRequest** | **CourseRequest**|  | |
+| **updateCourseRequest** | **UpdateCourseRequest**|  | |
 | **courseId** | [**number**] |  | defaults to undefined|
 | **staffId** | [**string**] |  | defaults to undefined|
 
@@ -1745,6 +1770,118 @@ const { status, data } = await apiInstance.updateCourse(
 ### HTTP request headers
 
  - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **updateCourseImage**
+> CourseResponse updateCourseImage()
+
+
+### Example
+
+```typescript
+import {
+    CourseManagementControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CourseManagementControllerApi(configuration);
+
+let courseId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
+let courseImage: File; // (default to undefined)
+
+const { status, data } = await apiInstance.updateCourseImage(
+    courseId,
+    staffId,
+    courseImage
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **courseId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
+| **courseImage** | [**File**] |  | defaults to undefined|
+
+
+### Return type
+
+**CourseResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **updateCourseIntroVideo**
+> CourseResponse updateCourseIntroVideo()
+
+
+### Example
+
+```typescript
+import {
+    CourseManagementControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CourseManagementControllerApi(configuration);
+
+let courseId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
+let introVideo: File; // (default to undefined)
+
+const { status, data } = await apiInstance.updateCourseIntroVideo(
+    courseId,
+    staffId,
+    introVideo
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **courseId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
+| **introVideo** | [**File**] |  | defaults to undefined|
+
+
+### Return type
+
+**CourseResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
  - **Accept**: */*
 
 

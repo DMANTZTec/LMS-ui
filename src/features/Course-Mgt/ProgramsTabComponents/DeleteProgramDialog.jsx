@@ -49,8 +49,12 @@ const DeleteProgramDialog = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <Trash2 className="h-4 w-4 text-red-500" />
+       <Button 
+                 variant="ghost" 
+                 size="icon" 
+                 className="hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors duration-200"
+               >
+          <Trash2 className="h-4 w-4" />
         </Button>
       </DialogTrigger>
 

@@ -121,7 +121,7 @@ const ProgramViewDialog = ({ program }) => {
                     <div className="w-full h-32 bg-slate-100 rounded-lg mb-3 overflow-hidden flex items-center justify-center border border-slate-200 relative group">
                       {course.courseImage && course.courseImage !== "string" ? (
                         <img 
-                          src={`/images/courses/${course.courseImage}`} 
+                          src={`${course.courseImage}`} 
                           alt={course.courseTitle}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           onError={(e) => {

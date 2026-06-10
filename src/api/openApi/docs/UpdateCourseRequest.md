@@ -1,0 +1,32 @@
+# UpdateCourseRequest
+
+
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**courseTitle** | **string** |  | [default to undefined]
+**description** | **string** |  | [default to undefined]
+**language** | **string** |  | [default to undefined]
+**skills** | **Array&lt;string&gt;** |  | [default to undefined]
+**subjectId** | **number** |  | [default to undefined]
+**providerId** | **number** |  | [default to undefined]
+**level** | **string** |  | [default to undefined]
+
+## Example
+
+```typescript
+import { UpdateCourseRequest } from './api';
+
+const instance: UpdateCourseRequest = {
+    courseTitle,
+    description,
+    language,
+    skills,
+    subjectId,
+    providerId,
+    level,
+};
+```
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
