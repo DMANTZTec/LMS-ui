@@ -13,9 +13,6 @@ Name | Type | Description | Notes
 **startTime** | [**LocalTime**](LocalTime.md) |  | [optional] [default to undefined]
 **endTime** | [**LocalTime**](LocalTime.md) |  | [optional] [default to undefined]
 **staffName** | **string** |  | [optional] [default to undefined]
-**mode** | **string** |  | [optional] [default to undefined]
-**meetingLink** | **string** |  | [optional] [default to undefined]
-**location** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -31,9 +28,6 @@ const instance: ClassScheduleRequest = {
     startTime,
     endTime,
     staffName,
-    mode,
-    meetingLink,
-    location,
 };
 ```
 

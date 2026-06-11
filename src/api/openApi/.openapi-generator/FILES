@@ -1,5 +1,6 @@
 .gitignore
 .npmignore
+.openapi-generator-ignore
 api.ts
 base.ts
 common.ts
@@ -25,6 +26,7 @@ docs/CourseManagementControllerApi.md
 docs/CourseProgressSummaryResponse.md
 docs/CourseResponse.md
 docs/CreateClassRequest.md
+docs/DayTimeSlot.md
 docs/EnrollStudentRequest.md
 docs/EnrollStudentResponse.md
 docs/ForgotPasswordRequest.md

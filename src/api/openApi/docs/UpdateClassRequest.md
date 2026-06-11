@@ -8,7 +8,6 @@ Name | Type | Description | Notes
 **className** | **string** |  | [optional] [default to undefined]
 **startDate** | **string** |  | [optional] [default to undefined]
 **endDate** | **string** |  | [optional] [default to undefined]
-**capacity** | **number** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -19,7 +18,6 @@ const instance: UpdateClassRequest = {
     className,
     startDate,
     endDate,
-    capacity,
 };
 ```
 

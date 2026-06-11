@@ -6,19 +6,18 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **scheduleId** | **number** |  | [optional] [default to undefined]
-**classId** | **number** |  | [optional] [default to undefined]
+**batchId** | **number** |  | [optional] [default to undefined]
 **className** | **string** |  | [optional] [default to undefined]
-**courseId** | **number** |  | [optional] [default to undefined]
-**courseName** | **string** |  | [optional] [default to undefined]
-**staffId** | **number** |  | [optional] [default to undefined]
-**staffName** | **string** |  | [optional] [default to undefined]
 **classDate** | **string** |  | [optional] [default to undefined]
+**dayOfWeek** | **string** |  | [optional] [default to undefined]
 **startTime** | [**LocalTime**](LocalTime.md) |  | [optional] [default to undefined]
 **endTime** | [**LocalTime**](LocalTime.md) |  | [optional] [default to undefined]
+**staffId** | **string** |  | [optional] [default to undefined]
+**staffName** | **string** |  | [optional] [default to undefined]
 **mode** | **string** |  | [optional] [default to undefined]
-**status** | **string** |  | [optional] [default to undefined]
 **meetingLink** | **string** |  | [optional] [default to undefined]
 **location** | **string** |  | [optional] [default to undefined]
+**status** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -27,19 +26,18 @@ import { ClassScheduleResponse } from './api';
 
 const instance: ClassScheduleResponse = {
     scheduleId,
-    classId,
+    batchId,
     className,
-    courseId,
-    courseName,
-    staffId,
-    staffName,
     classDate,
+    dayOfWeek,
     startTime,
     endTime,
+    staffId,
+    staffName,
     mode,
-    status,
     meetingLink,
     location,
+    status,
 };
 ```
 

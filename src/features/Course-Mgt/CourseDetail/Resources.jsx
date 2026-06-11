@@ -7,6 +7,7 @@ const Resources = ({ topic, topicResource, openResource }) => {
     const openRes = (topicId, resource) => {
         openResource(topicId, resource);
     };
+console.log("value of topic is: ", topic);
 
     return (
         <>
@@ -27,50 +28,74 @@ const Resources = ({ topic, topicResource, openResource }) => {
 
 
             {topicResource === "documents" && <>
+                <div className="bg-white mt-4 p-4 rounded">
 
-
-
-                <div className="bg-white mt-4 p-4 rounded flex justify-between">
-
-                    <div className="flex gap-3">
+                        {topic.resources.documents.map((document,index) => (
+                    <div key={document.id} className="flex items-center justify-between mb-3">
+                      <div className="flex gap-3">
                         <div>
                             <FileText className="text-green-600 w-5 h-5" />
                         </div>
                         <div>
-                            <h4 className="font-medium text-gray-900">{topic.resources.documents[0]?.refValue.url}</h4>
+                            <h4 className="font-medium text-gray-900">{document.refValue.fileUrl}</h4>
 
                         </div>
-                    </div>
+                    <div>
                     <div><ExternalLink className="text-gray-400 w-5 h-5" /></div>
                 </div>
+                </div>
+                </div>
+                    ))}
+                        
+                        </div>
             </>
             }
-            {topicResource === "videos" && <div className="bg-white mt-4 p-4 rounded flex justify-between">
+            {topicResource === "videos" && <>
+                <div className="bg-white mt-4 p-4 rounded">
 
-                <div className="flex gap-3">
-                    <div>
-                        <Video className="text-green-600 w-5 h-5" />
-                    </div>
-                    <div>
-                        <h4 className="font-medium text-gray-900">{topic.resources.videos[0]?.refValue.url}</h4>
+                        {topic.resources.videos.map((video,index) => (
+                    <div key={video.id} className="flex items-center justify-between mb-3">
+                      <div className="flex gap-3">
+                        <div>
+                            <Video className="text-green-600 w-5 h-5" />
+                        </div>
+                        <div>
+                            <h4 className="font-medium text-gray-900">{video.refValue.fileUrl}</h4>
 
-                    </div>
+                        </div>
+                    <div>
+                    <div><ExternalLink className="text-gray-400 w-5 h-5" /></div>
                 </div>
-                <div><ExternalLink className="text-gray-400 w-5 h-5" /></div>
-            </div>}
-            {topicResource === "urls" && <div className="bg-white mt-4 p-4 rounded flex justify-between">
-
-                <div className="flex gap-3">
-                    <div>
-                        <Link className="text-green-600 w-5 h-5" />
-                    </div>
-                    <div>
-                        <h4 className="font-medium text-gray-900">{topic.resources.urls[0]?.refValue.url}</h4>
-
-                    </div>
                 </div>
-                <div><ExternalLink className="text-gray-400 w-5 h-5" /></div>
-            </div>}
+                </div>
+                    ))}
+                        
+                        </div>
+            </>
+            }
+            {topicResource === "urls" && <>
+                <div className="bg-white mt-4 p-4 rounded">
+
+                        {topic.resources.urls.map((url,index) => (
+                    <div key={url.id} className="flex items-center justify-between mb-3">
+                      <div className="flex gap-3">
+                        <div>
+                            <Link className="text-green-600 w-5 h-5" />
+                        </div>
+                        <div>
+                            <h4 className="font-medium text-gray-900">{url.refValue.url}</h4>
+
+                        </div>
+                    <div>
+                    <div><ExternalLink className="text-gray-400 w-5 h-5" /></div>
+                </div>
+                </div>
+                </div>
+                    ))}
+                        
+                        </div>
+            </>
+            }
         </>
     );
 }

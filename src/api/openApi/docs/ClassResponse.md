@@ -6,12 +6,14 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **batchId** | **number** |  | [optional] [default to undefined]
-**courseId** | **number** |  | [optional] [default to undefined]
+**courseId** | **string** |  | [optional] [default to undefined]
 **courseName** | **string** |  | [optional] [default to undefined]
+**status** | **string** |  | [optional] [default to undefined]
 **className** | **string** |  | [optional] [default to undefined]
 **startDate** | **string** |  | [optional] [default to undefined]
 **endDate** | **string** |  | [optional] [default to undefined]
-**capacity** | **number** |  | [optional] [default to undefined]
+**totalSchedulesGenerated** | **number** |  | [optional] [default to undefined]
+**schedules** | [**Array&lt;ClassScheduleResponse&gt;**](ClassScheduleResponse.md) |  | [optional] [default to undefined]
 
 ## Example
 
@@ -22,10 +24,12 @@ const instance: ClassResponse = {
     batchId,
     courseId,
     courseName,
+    status,
     className,
     startDate,
     endDate,
-    capacity,
+    totalSchedulesGenerated,
+    schedules,
 };
 ```
 

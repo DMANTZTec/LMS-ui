@@ -5,10 +5,12 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**className** | **string** |  | [default to undefined]
-**startDate** | **string** |  | [default to undefined]
+**batchName** | **string** |  | [default to undefined]
+**beginDate** | **string** |  | [default to undefined]
 **endDate** | **string** |  | [default to undefined]
-**capacity** | **number** |  | [optional] [default to undefined]
+**selectedDays** | **Array&lt;string&gt;** |  | [default to undefined]
+**dayTimes** | [**{ [key: string]: DayTimeSlot; }**](DayTimeSlot.md) |  | [default to undefined]
+**selectedInstructors** | **Array&lt;string&gt;** |  | [default to undefined]
 
 ## Example
 
@@ -16,10 +18,12 @@ Name | Type | Description | Notes
 import { CreateClassRequest } from './api';
 
 const instance: CreateClassRequest = {
-    className,
-    startDate,
+    batchName,
+    beginDate,
     endDate,
-    capacity,
+    selectedDays,
+    dayTimes,
+    selectedInstructors,
 };
 ```
 
