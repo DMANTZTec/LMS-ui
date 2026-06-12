@@ -1,20 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import {
-    Table,
-    TableHeader,
-    TableBody,
-    TableRow,
-    TableHead,
-    TableCell
-} from '@/components/ui/table';
-import {
-    Select,
-    SelectTrigger,
-    SelectValue,
-    SelectContent,
-    SelectItem
-} from '@/components/ui/select';
+import {Table,TableHeader,TableBody,TableRow,TableHead,TableCell} from '@/components/ui/table';
+import {Select,SelectTrigger,SelectValue,SelectContent,SelectItem} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Eye, Pencil, SquarePen, Trash } from 'lucide-react';
 import { api } from '@/api/CourseMgtController';
@@ -26,13 +13,14 @@ import DeleteCourseDialog from './coursesTabComponents/DeleteCourseDialog';
 import {ButtonGroup,  ButtonGroupSeparator,} from "@/components/ui/button-group"
 import { PencilIcon } from 'lucide-react';
 import EditCourse from './coursesTabComponents/EditCourse';
+import AssignInstructorDialog from './coursesTabComponents/AssignInstructorsDialog';
 
 
 const fetchCourses = async () => {
     console.log('entered into fetchCourses function. and the current time is: ', new Date().toLocaleTimeString());
     const result = await api.viewAllCourses();
 
-    console.log("result is: ", result);
+    //console.log("result is: ", result);
     return result.data;
 };
 
@@ -93,7 +81,7 @@ navigate(`/courseDetails/${courseId}`);
                     <h2 className='text-[18px] md:text-3xl font-semibold text-center mb-6'>Course Management</h2>
 
                     {/* filter */}
-                    <div className='flex justify-between mb-4 bg-gray-100'>
+                    <div className='mb-4 bg-gray-100'>
 
                         <Select onValueChange={setSelectedSubject}>
                             <SelectTrigger className='w-[200px] bg-white text-[10px] md:text-[12px]'>
@@ -110,12 +98,7 @@ navigate(`/courseDetails/${courseId}`);
                         </Select>
 
                         {/* ADD Course Button */}
-                        <Button
-                                onClick={() => navigate("/addCourse")}
-                                className="px-3 py-3 text-lg font-semibold rounded-sm shadow-md hover:scale-105 transition-all duration-200"
-                              >
-                                ➕ Add New Course
-                    </Button>
+                        <AddNewCourse/>
 
 
                     </div>
@@ -133,6 +116,7 @@ navigate(`/courseDetails/${courseId}`);
                                 <TableHead>Fee</TableHead>
                                  <TableHead>Chapters</TableHead>
                                 <TableHead>Action</TableHead>
+                                <TableHead>Instructors</TableHead>
                                
                             </TableRow>
                         </TableHeader>
@@ -151,18 +135,25 @@ navigate(`/courseDetails/${courseId}`);
                                     <TableCell>{course.courseTitle}</TableCell>
                                     <TableCell>{course.duration}</TableCell>
                                     <TableCell>{course.fee}</TableCell>
-                                    <TableCell>
-                                        <ButtonGroup>
-                                        <Button
-                                        className="bg-green-400 hover:bg-green-700 text-white rounded-r-none"size="sm" onClick={() => courseDetail(course.courseId)}>
-                                            View
-                                        </Button>
-                             
-                                        <Button className="bg-blue-400 hover:bg-blue-700 text-white rounded-l-none"size="sm" onClick={() => navigate(`/course-builder/${course.courseId}`)}>
-                                            Edit
-                                        </Button>
-                                        </ButtonGroup>
-                                    </TableCell>
+<TableCell>
+  <ButtonGroup>
+    <Button
+      className="bg-green-400 hover:bg-green-700 text-white rounded-r-none"
+      size="sm"
+      onClick={() => courseDetail(course.courseId)}
+    >
+      View
+    </Button>
+         <ButtonGroupSeparator/>                       
+    <Button
+      className="bg-blue-400 hover:bg-blue-700 text-white rounded-l-none"
+      size="sm"
+      onClick={() => navigate(`/course-builder/${course.courseId}`)}
+    >
+      Edit
+    </Button>
+  </ButtonGroup>
+</TableCell>
                                     <TableCell>
                                         <div className='flex gap-2 mt-2'>
                                             {/* <Button variant='ghost' onClick={() => courseDetail(course.courseId)}>
@@ -179,6 +170,9 @@ navigate(`/courseDetails/${courseId}`);
                                          </div> 
 
                                         
+                                    </TableCell>
+                                    <TableCell>
+                                      <AssignInstructorDialog course={course} onAssignSuccess={refetch} />
                                     </TableCell>
 
                                 </TableRow>

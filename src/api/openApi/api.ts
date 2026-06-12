@@ -6335,6 +6335,39 @@ export const StaffCourseControllerApiAxiosParamCreator = function (configuration
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllInstructors: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/staff-course/instructors`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} staffId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6478,6 +6511,17 @@ export const StaffCourseControllerApiFp = function(configuration?: Configuration
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllInstructors(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<InstructorResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllInstructors(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffCourseControllerApi.getAllInstructors']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {string} staffId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6534,6 +6578,14 @@ export const StaffCourseControllerApiFactory = function (configuration?: Configu
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllInstructors(options?: RawAxiosRequestConfig): AxiosPromise<Array<InstructorResponse>> {
+            return localVarFp.getAllInstructors(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {string} staffId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6576,6 +6628,15 @@ export class StaffCourseControllerApi extends BaseAPI {
      */
     public assignInstructorsToCourse(courseId: string, assignInstructorToCourseRequest: AssignInstructorToCourseRequest, options?: RawAxiosRequestConfig) {
         return StaffCourseControllerApiFp(this.configuration).assignInstructorsToCourse(courseId, assignInstructorToCourseRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getAllInstructors(options?: RawAxiosRequestConfig) {
+        return StaffCourseControllerApiFp(this.configuration).getAllInstructors(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
