@@ -156,11 +156,8 @@ h2 {
   margin: 0 0 8px;
   @media (max-width: 1024px) {
     font-size: 20px;
-  } 
+  }
 }*/
-p {
-  margin: 0;
-}
 
 code,
 .counter {
