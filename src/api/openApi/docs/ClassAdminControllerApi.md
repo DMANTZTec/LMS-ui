@@ -10,6 +10,7 @@ All URIs are relative to *http://localhost:9090*
 |[**assignCourseToStudent**](#assigncoursetostudent) | **POST** /api/admin/students/{studentId}/courses | |
 |[**cancelClass**](#cancelclass) | **PATCH** /api/admin/courseschedule/classes/{batchId}/cancel | |
 |[**cancelSchedule**](#cancelschedule) | **PATCH** /api/admin/schedules/{scheduleId}/cancel | |
+|[**getAllSchedules**](#getallschedules) | **GET** /api/admin/schedules | |
 |[**getClassesByCourse**](#getclassesbycourse) | **GET** /api/admin/courseschedule/{courseId}/classes | |
 |[**getSchedulesByBatch**](#getschedulesbybatch) | **GET** /api/admin/courseschedule/{batchId}/schedules | |
 |[**getSchedulesByStaff**](#getschedulesbystaff) | **GET** /api/admin/schedules/staff/{staffId} | |
@@ -316,6 +317,49 @@ const { status, data } = await apiInstance.cancelSchedule(
 ### Return type
 
 **ClassScheduleResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getAllSchedules**
+> Array<ClassScheduleResponse> getAllSchedules()
+
+
+### Example
+
+```typescript
+import {
+    ClassAdminControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ClassAdminControllerApi(configuration);
+
+const { status, data } = await apiInstance.getAllSchedules();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**Array<ClassScheduleResponse>**
 
 ### Authorization
 

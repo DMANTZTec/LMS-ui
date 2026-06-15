@@ -225,7 +225,16 @@ export interface MyCourseResponse {
 export interface OtpVerifyRequest {
     'studentId'?: string;
     'otp'?: string;
+    'channel'?: OtpVerifyRequestChannelEnum;
 }
+
+export const OtpVerifyRequestChannelEnum = {
+    Email: 'EMAIL',
+    Mobile: 'MOBILE',
+} as const;
+
+export type OtpVerifyRequestChannelEnum = typeof OtpVerifyRequestChannelEnum[keyof typeof OtpVerifyRequestChannelEnum];
+
 export interface OverallProgressResponse {
     'totalReferences'?: number;
     'completedReferences'?: number;
@@ -430,7 +439,16 @@ export interface StudentRegistrationRequest {
     'mobileNum': string;
     'password': string;
     'currentStatus'?: string;
+    'otpChannel': StudentRegistrationRequestOtpChannelEnum;
 }
+
+export const StudentRegistrationRequestOtpChannelEnum = {
+    Email: 'EMAIL',
+    Mobile: 'MOBILE',
+} as const;
+
+export type StudentRegistrationRequestOtpChannelEnum = typeof StudentRegistrationRequestOtpChannelEnum[keyof typeof StudentRegistrationRequestOtpChannelEnum];
+
 export interface StudentResponse {
     'id'?: number;
     'studentId'?: string;
@@ -1073,6 +1091,39 @@ export const ClassAdminControllerApiAxiosParamCreator = function (configuration?
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllSchedules: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/admin/schedules`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} courseId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1547,6 +1598,17 @@ export const ClassAdminControllerApiFp = function(configuration?: Configuration)
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllSchedules(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ClassScheduleResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllSchedules(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ClassAdminControllerApi.getAllSchedules']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {string} courseId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1736,6 +1798,14 @@ export const ClassAdminControllerApiFactory = function (configuration?: Configur
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllSchedules(options?: RawAxiosRequestConfig): AxiosPromise<Array<ClassScheduleResponse>> {
+            return localVarFp.getAllSchedules(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {string} courseId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1895,6 +1965,15 @@ export class ClassAdminControllerApi extends BaseAPI {
      */
     public cancelSchedule(scheduleId: number, options?: RawAxiosRequestConfig) {
         return ClassAdminControllerApiFp(this.configuration).cancelSchedule(scheduleId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getAllSchedules(options?: RawAxiosRequestConfig) {
+        return ClassAdminControllerApiFp(this.configuration).getAllSchedules(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

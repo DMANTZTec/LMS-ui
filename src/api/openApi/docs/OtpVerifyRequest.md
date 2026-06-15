@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **studentId** | **string** |  | [optional] [default to undefined]
 **otp** | **string** |  | [optional] [default to undefined]
+**channel** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -16,6 +17,7 @@ import { OtpVerifyRequest } from './api';
 const instance: OtpVerifyRequest = {
     studentId,
     otp,
+    channel,
 };
 ```
 
