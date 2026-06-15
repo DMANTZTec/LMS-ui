@@ -7,10 +7,10 @@ import CourseIcon from '../CourseIcon';
 const Header = () => {
     return (
         <header className="bg-white">
-            <div className="flex flex-col md:flex-row items-center justify-between px-4 md:px-6 py-4 gap-4">
-                <div className="flex items-center gap-4">
-                    <img src={logo.MCP} className="w-14 h-16 md:w-[85px] md:h-[94px]" />
-                    <img src={logo.MCPText} className="w-[180px] md:w-[341px]" />
+            <div className="flex flex-col md:flex-row items-center justify-between px-4 md:px-6 py-2 gap-3">
+                <div className="flex items-center gap-3">
+                    <img src={logo.MCP} className="w-10 h-11 md:w-14 md:h-[62px]" />
+                    <img src={logo.MCPText} className="w-[140px] md:w-[220px]" />
                 </div>
 
                 <div className="flex gap-3">
@@ -23,9 +23,9 @@ const Header = () => {
                 </div>
             </div>
 
-            <CourseIcon />
-
-            <hr className="border-b-[3px] border-[#5862CE]" />
+            <div className="bg-[#F8F9FC] border-t border-b-[3px] border-[#5862CE]">
+                <CourseIcon />
+            </div>
         </header>
     );
 };

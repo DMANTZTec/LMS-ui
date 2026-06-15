@@ -19,11 +19,11 @@ const CourseIcon = () => {
     ];
 
     return (
-        <div className="flex flex-wrap justify-center gap-3 md:gap-4 px-4 py-4">
+        <div className="flex flex-wrap justify-center gap-2 md:gap-3 px-4 py-2">
             {courses.map((course) => (
-                <div key={course.id} className="flex flex-col items-center gap-1 w-16 md:w-20 bg-white rounded-md p-2">
-                    <img src={course.src} className="w-10 h-10 md:w-12 md:h-12 object-contain rounded-md" />
-                    <span className="text-xs md:text-sm font-bold text-[#445AC8] text-center">{course.name}</span>
+                <div key={course.id} className="flex flex-col items-center gap-1 w-14 md:w-16 bg-white rounded-md p-1.5">
+                    <img src={course.src} className="w-8 h-8 md:w-9 md:h-9 object-contain rounded-md" />
+                    <span className="text-[10px] md:text-xs font-bold text-[#445AC8] text-center">{course.name}</span>
                 </div>
             ))}
         </div>
