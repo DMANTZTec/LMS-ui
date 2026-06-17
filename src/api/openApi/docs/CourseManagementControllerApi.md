@@ -17,6 +17,7 @@ All URIs are relative to *http://localhost:9090*
 |[**deleteCourse**](#deletecourse) | **DELETE** /api/course/delete/{courseId} | |
 |[**deleteDocument**](#deletedocument) | **DELETE** /api/references/document/{referenceId} | |
 |[**deleteProgram**](#deleteprogram) | **DELETE** /api/delete/program/{id} | |
+|[**deleteProgramCourse**](#deleteprogramcourse) | **DELETE** /api/delete/course/program | |
 |[**deleteSubject**](#deletesubject) | **DELETE** /api/subject/delete/{subjectId} | |
 |[**deleteTopic**](#deletetopic) | **DELETE** /api/topics/{id} | |
 |[**deleteUrl**](#deleteurl) | **DELETE** /api/references/url/{referenceId} | |
@@ -34,7 +35,6 @@ All URIs are relative to *http://localhost:9090*
 |[**getVideos**](#getvideos) | **GET** /api/topics/{topicId}/references/videos | |
 |[**moveChapter**](#movechapter) | **PUT** /api/{chapterId}/movechapter | |
 |[**moveTopic**](#movetopic) | **PUT** /api/{topicId}/movetopic | |
-|[**removeCourse**](#removecourse) | **DELETE** /api/remove/course/{id} | |
 |[**updateChapter**](#updatechapter) | **PUT** /api/update/{chapterId} | |
 |[**updateCourse**](#updatecourse) | **PUT** /api/course/update/{courseId} | |
 |[**updateCourseImage**](#updatecourseimage) | **PUT** /api/course/update/{courseId}/image | |
@@ -758,6 +758,57 @@ const { status, data } = await apiInstance.deleteProgram(
 ### HTTP request headers
 
  - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **deleteProgramCourse**
+> string deleteProgramCourse(deleteProgramCourseRequest)
+
+
+### Example
+
+```typescript
+import {
+    CourseManagementControllerApi,
+    Configuration,
+    DeleteProgramCourseRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CourseManagementControllerApi(configuration);
+
+let deleteProgramCourseRequest: DeleteProgramCourseRequest; //
+
+const { status, data } = await apiInstance.deleteProgramCourse(
+    deleteProgramCourseRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **deleteProgramCourseRequest** | **DeleteProgramCourseRequest**|  | |
+
+
+### Return type
+
+**string**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
  - **Accept**: */*
 
 
@@ -1593,56 +1644,6 @@ const { status, data } = await apiInstance.moveTopic(
 |------------- | ------------- | ------------- | -------------|
 | **topicId** | [**number**] |  | defaults to undefined|
 | **targetPosition** | [**number**] |  | defaults to undefined|
-
-
-### Return type
-
-**string**
-
-### Authorization
-
-[BearerAuth](../README.md#BearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **removeCourse**
-> string removeCourse()
-
-
-### Example
-
-```typescript
-import {
-    CourseManagementControllerApi,
-    Configuration
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new CourseManagementControllerApi(configuration);
-
-let id: number; // (default to undefined)
-
-const { status, data } = await apiInstance.removeCourse(
-    id
-);
-```
-
-### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **id** | [**number**] |  | defaults to undefined|
 
 
 ### Return type

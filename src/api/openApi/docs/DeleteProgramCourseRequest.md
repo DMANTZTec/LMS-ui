@@ -1,21 +1,21 @@
-# ForgotPasswordRequest
+# DeleteProgramCourseRequest
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**getEmailIdOrMobileNo** | **string** |  | [default to undefined]
-**otpChannel** | **string** |  | [optional] [default to undefined]
+**programId** | **string** |  | [default to undefined]
+**courseId** | **string** |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { ForgotPasswordRequest } from './api';
+import { DeleteProgramCourseRequest } from './api';
 
-const instance: ForgotPasswordRequest = {
-    getEmailIdOrMobileNo,
-    otpChannel,
+const instance: DeleteProgramCourseRequest = {
+    programId,
+    courseId,
 };
 ```
 

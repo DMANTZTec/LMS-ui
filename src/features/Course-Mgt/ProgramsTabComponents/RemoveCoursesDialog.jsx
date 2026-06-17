@@ -2,16 +2,33 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Trash2 } from 'lucide-react';
+import { api } from '@/api/CourseMgtController';
 
 const RemoveCoursesDialog = ({ programId, courseId, courseTitle, onRemoveSuccess }) => {
   const [open, setOpen] = useState(false);
 
-  const handleConfirmDelete = () => {
-    // Action: Connect to api.removeCourseFromProgram(programId, courseId) here
-    console.log(`Removed Course ${courseId} from Program ${programId}`);
+  const handleConfirmDelete = async () => {
+  try {
+    const payload = {
+      programId,
+      courseId,
+    };
+
+    await api.deleteProgramCourse(payload);
+
+    console.log(
+      `Removed Course ${courseId} from Program ${programId}`
+    );
+
+    if (onRemoveSuccess) {
+      await onRemoveSuccess(); // React Query refetch
+    }
+
     setOpen(false);
-    if (onRemoveSuccess) onRemoveSuccess();
-  };
+  } catch (error) {
+    console.error("Failed to remove course:", error);
+  }
+};
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**studentId** | **string** |  | [optional] [default to undefined]
+**emailIdOrMobileNo** | **string** |  | [optional] [default to undefined]
 **otp** | **string** |  | [optional] [default to undefined]
 **channel** | **string** |  | [optional] [default to undefined]
 
@@ -15,7 +15,7 @@ Name | Type | Description | Notes
 import { OtpVerifyRequest } from './api';
 
 const instance: OtpVerifyRequest = {
-    studentId,
+    emailIdOrMobileNo,
     otp,
     channel,
 };

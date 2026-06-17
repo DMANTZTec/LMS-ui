@@ -4,6 +4,7 @@ import LoginForm from '@/components/LoginForm';
 import LoginIcon from '@/assets/images/loginicon.png'
 //import { studentApi } from '@/api/student-controller.api';
 import { authapi } from '@/api/auth-controller.api';
+import { studentApi } from '@/api/student-controller.api';
 
 const StudentLogin = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,7 +18,7 @@ const StudentLogin = () => {
         password: data.password,
       };
       
-      const res = await authapi.studentLogin(payload);
+      const res = await studentApi.login(payload);
 
       
       console.log(res)

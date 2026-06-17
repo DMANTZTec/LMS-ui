@@ -1,20 +1,24 @@
-# ForgotPasswordRequest
+# ResendOtpRequest
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**getEmailIdOrMobileNo** | **string** |  | [default to undefined]
+**emailId** | **string** |  | [optional] [default to undefined]
+**mobileNum** | **string** |  | [optional] [default to undefined]
+**purpose** | **string** |  | [optional] [default to undefined]
 **otpChannel** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
 ```typescript
-import { ForgotPasswordRequest } from './api';
+import { ResendOtpRequest } from './api';
 
-const instance: ForgotPasswordRequest = {
-    getEmailIdOrMobileNo,
+const instance: ResendOtpRequest = {
+    emailId,
+    mobileNum,
+    purpose,
     otpChannel,
 };
 ```

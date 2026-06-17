@@ -26,6 +26,7 @@ docs/CourseProgressSummaryResponse.md
 docs/CourseResponse.md
 docs/CreateClassRequest.md
 docs/DayTimeSlot.md
+docs/DeleteProgramCourseRequest.md
 docs/EnrollStudentRequest.md
 docs/EnrollStudentResponse.md
 docs/ForgotPasswordRequest.md
@@ -43,8 +44,10 @@ docs/ProgramResponse.md
 docs/ProviderControllerApi.md
 docs/ProviderRequest.md
 docs/ProviderResponse.md
+docs/RegistrationResponse.md
 docs/RemoveClassTopicRequest.md
 docs/RemoveStudentRequest.md
+docs/ResendOtpRequest.md
 docs/ResetPasswordRequest.md
 docs/StaffControllerApi.md
 docs/StaffCourseControllerApi.md

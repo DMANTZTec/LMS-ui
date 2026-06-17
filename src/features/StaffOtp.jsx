@@ -74,10 +74,10 @@ export default function StaffOtp() {
         <Field className="space-y-4">
           <div className="flex items-center justify-between">
             <FieldLabel>Verification code</FieldLabel>
-            {/* <Button variant="outline" size="sm" className="h-8 gap-1">
+             <Button variant="outline" size="sm" className="h-8 gap-1">
               <RefreshCwIcon className="h-3 w-3" />
               Resend
-            </Button> */}
+            </Button> 
           </div>
 
           <div className="flex justify-center">

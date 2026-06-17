@@ -6,12 +6,14 @@ All URIs are relative to *http://localhost:9090*
 |------------- | ------------- | -------------|
 |[**forgotPassword**](#forgotpassword) | **POST** /api/student/forgot-password | |
 |[**getAllStudents**](#getallstudents) | **GET** /api/student/view-students | |
+|[**getStudentById**](#getstudentbyid) | **GET** /api/student/{studentId} | |
 |[**login**](#login) | **POST** /api/student/login | |
 |[**register**](#register) | **POST** /api/student/register | |
+|[**resendOtp**](#resendotp) | **POST** /api/student/resend-otp | |
 |[**resetPassword**](#resetpassword) | **POST** /api/student/reset-password | |
 |[**updateProfile**](#updateprofile) | **PUT** /api/student/update/{studentId} | |
-|[**verifyOtp**](#verifyotp) | **POST** /api/student/otp-verify | |
-|[**verifyRegistrationOtp**](#verifyregistrationotp) | **POST** /api/student/verify-registration-otp | |
+|[**verifyLoginOtp**](#verifyloginotp) | **POST** /api/student/verify-login-otp | |
+|[**verifyOtp**](#verifyotp) | **POST** /api/student/registration/verify-otp | |
 
 # **forgotPassword**
 > string forgotPassword(forgotPasswordRequest)
@@ -107,6 +109,56 @@ This endpoint does not have any parameters.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **getStudentById**
+> StudentResponse getStudentById()
+
+
+### Example
+
+```typescript
+import {
+    StudentControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StudentControllerApi(configuration);
+
+let studentId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.getStudentById(
+    studentId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **studentId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**StudentResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **login**
 > StudentLoginResponse login(studentLoginRequest)
 
@@ -159,7 +211,7 @@ const { status, data } = await apiInstance.login(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **register**
-> StudentResponse register(studentRegistrationRequest)
+> RegistrationResponse register(studentRegistrationRequest)
 
 
 ### Example
@@ -190,7 +242,58 @@ const { status, data } = await apiInstance.register(
 
 ### Return type
 
-**StudentResponse**
+**RegistrationResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **resendOtp**
+> RegistrationResponse resendOtp(resendOtpRequest)
+
+
+### Example
+
+```typescript
+import {
+    StudentControllerApi,
+    Configuration,
+    ResendOtpRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StudentControllerApi(configuration);
+
+let resendOtpRequest: ResendOtpRequest; //
+
+const { status, data } = await apiInstance.resendOtp(
+    resendOtpRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **resendOtpRequest** | **ResendOtpRequest**|  | |
+
+
+### Return type
+
+**RegistrationResponse**
 
 ### Authorization
 
@@ -352,8 +455,8 @@ const { status, data } = await apiInstance.updateProfile(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **verifyOtp**
-> StudentLoginResponse verifyOtp(otpVerifyRequest)
+# **verifyLoginOtp**
+> StudentLoginResponse verifyLoginOtp(otpVerifyRequest)
 
 
 ### Example
@@ -370,7 +473,7 @@ const apiInstance = new StudentControllerApi(configuration);
 
 let otpVerifyRequest: OtpVerifyRequest; //
 
-const { status, data } = await apiInstance.verifyOtp(
+const { status, data } = await apiInstance.verifyLoginOtp(
     otpVerifyRequest
 );
 ```
@@ -403,8 +506,8 @@ const { status, data } = await apiInstance.verifyOtp(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **verifyRegistrationOtp**
-> string verifyRegistrationOtp(otpVerifyRequest)
+# **verifyOtp**
+> StudentResponse verifyOtp(otpVerifyRequest)
 
 
 ### Example
@@ -421,7 +524,7 @@ const apiInstance = new StudentControllerApi(configuration);
 
 let otpVerifyRequest: OtpVerifyRequest; //
 
-const { status, data } = await apiInstance.verifyRegistrationOtp(
+const { status, data } = await apiInstance.verifyOtp(
     otpVerifyRequest
 );
 ```
@@ -435,7 +538,7 @@ const { status, data } = await apiInstance.verifyRegistrationOtp(
 
 ### Return type
 
-**string**
+**StudentResponse**
 
 ### Authorization
 
