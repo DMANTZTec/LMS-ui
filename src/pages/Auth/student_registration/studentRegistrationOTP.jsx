@@ -14,15 +14,21 @@ export default function StudentRegistrationOTP() {
    const [loading, setLoading] = useState(false);
    const navigate = useNavigate();
 
-const [studentData,setStudentData] = useAtom(studentDataAtom);
-console.log("student data in automs is: ",studentData);
+ const [studentData,setStudentData] = useAtom(studentDataAtom);
+ console.log("student data in automs is: ",studentData);
  const savedUser = JSON.parse(
      sessionStorage.getItem("stuRegData") || "{}"
  );
 
-   const studentId = savedUser?.studentId;
-   const email = savedUser?.emailId;
+useEffect(() => {
+  if(!studentData && !sessionStorage.getItem("stuRegData"))
+    navigate("/studentLogin");
+  if(localStorage.getItem("LmsJwTtoken"))
+    navigate("/student-dashboard")
+},[]); 
 
+ //const studentId = savedUser?.studentId || studentData?.studentId;
+   const emailIdOrMobileNo = (savedUser?.emailId || studentData?.emailId) || (savedUser?.mobileNum || studentData?.mobileNum);
 
 
   const handleVerify = async () => {
@@ -34,17 +40,19 @@ console.log("student data in automs is: ",studentData);
     setLoading(true);
 
     try {
-      const payload = { studentId, otp: value };
-      const res = await studentApi.verifyRegistrationOtp(payload);
-
+      const payload = { emailIdOrMobileNo, otp: value, channel: "EMAIL" };
+      const res = await studentApi.verifyOtp(payload);
       alert(res.data.message || "Verified ✅");
       const { token } = res.data;
        if (token) {
           localStorage.setItem("LmsJwTtoken", token);
        }
-
+       sessionStorage.setItem("stuRegData",JSON.stringify(res.data));
  
-      navigate("/student-dashboard");
+      
+      
+       navigate("/student-register");
+      
 
     } catch (error) {
       alert(typeof error.response?.data === 'string' ? error.response.data : "Invalid OTP ❌");
@@ -53,7 +61,7 @@ console.log("student data in automs is: ",studentData);
     }
   };
 
-  if (!studentId) return null;
+  //if (!studentId) return null;
 
 
 
@@ -64,7 +72,7 @@ console.log("student data in automs is: ",studentData);
         <CardDescription>
           Enter the code sent to:{" "}
           <span className="font-medium text-black">
-            {email || "your email"}
+            {(JSON.parse(sessionStorage.getItem("stuRegData"))?.emailId|| studentData?.emailId) || "your email"}
           {/* {"your entered email"}  */}
           </span>
         </CardDescription>

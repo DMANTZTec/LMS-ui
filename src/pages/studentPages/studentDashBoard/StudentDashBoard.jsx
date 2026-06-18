@@ -11,6 +11,7 @@ import { WeeklySchedule } from "./WeeklySchedule";
 import TaskManagement from "./TaskManagement";
 
 import LoginIcon from "@/assets/images/loginicon.png";
+import NavbarAvatar from "@/features/Avatar/student/NavbarAvatar";
 
 export function StudentDashBoard() {
   return (
@@ -43,14 +44,15 @@ export function StudentDashBoard() {
                  Explore More Courses
           </Button>
 
-        <div className="h-9 w-9 sm:h-10 sm:w-10 overflow-hidden rounded-full border bg-secondary">
-          <img
+        <div>
+          {/* <img
             src={LoginIcon}
             alt="Profile"
             className="h-full w-full object-cover"
-          />
+          /> */}
+        <NavbarAvatar />                                                                               {/* shashikanth has added */}
         </div>
-
+        
       </div>
     </header>
 

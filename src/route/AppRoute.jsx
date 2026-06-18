@@ -7,6 +7,7 @@ import StudentOtp from '@/features/StudentOtp';
 import StaffOtp from '@/features/StaffOtp';
 import StudentRegistration from '@/pages/Auth/student_registration/studentRegistration';
 import StudentRegistrationOTP from '@/pages/Auth/student_registration/studentRegistrationOTP';
+import StudentProfile from '@/features/Avatar/student/profile/StudentProfile';
 
 const StaffDashBoard = lazy(() => import('@/pages/staffPages/StaffDashBoard'));
 
@@ -49,6 +50,7 @@ const AppRoute = () => {
                     {/* STUDENT Routes */}
                     <Route element={<AuthGuard allowedRole="STUDENT" />}>
                         <Route path="/student-dashboard" element={<StudentDashBoard />} />
+                        <Route path="/studentProfile" element={<StudentProfile /> }/>  
                     </Route>
 
 
@@ -60,4 +62,4 @@ const AppRoute = () => {
     );
 }
 
-export default AppRoute;
+export default AppRoute;	

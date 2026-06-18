@@ -8,6 +8,7 @@ All URIs are relative to *http://localhost:9090*
 |[**addScheduleToClass**](#addscheduletoclass) | **POST** /api/admin/addschedule-to-class | |
 |[**addTopicsToClass**](#addtopicstoclass) | **POST** /api/admin/classes/{batchId}/topics | |
 |[**assignCourseToStudent**](#assigncoursetostudent) | **POST** /api/admin/students/{studentId}/courses | |
+|[**assignInstructor**](#assigninstructor) | **POST** /api/admin/{scheduleId}/assign-instructor | |
 |[**cancelClass**](#cancelclass) | **PATCH** /api/admin/courseschedule/classes/{batchId}/cancel | |
 |[**cancelSchedule**](#cancelschedule) | **PATCH** /api/admin/schedules/{scheduleId}/cancel | |
 |[**getAllSchedules**](#getallschedules) | **GET** /api/admin/schedules | |
@@ -217,6 +218,60 @@ const { status, data } = await apiInstance.assignCourseToStudent(
 ### Return type
 
 **StudentCourseResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **assignInstructor**
+> string assignInstructor(assignInstructorRequest)
+
+
+### Example
+
+```typescript
+import {
+    ClassAdminControllerApi,
+    Configuration,
+    AssignInstructorRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ClassAdminControllerApi(configuration);
+
+let scheduleId: number; // (default to undefined)
+let assignInstructorRequest: AssignInstructorRequest; //
+
+const { status, data } = await apiInstance.assignInstructor(
+    scheduleId,
+    assignInstructorRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **assignInstructorRequest** | **AssignInstructorRequest**|  | |
+| **scheduleId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**string**
 
 ### Authorization
 

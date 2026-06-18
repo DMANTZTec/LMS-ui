@@ -1,5 +1,6 @@
 .gitignore
 .npmignore
+.openapi-generator-ignore
 api.ts
 base.ts
 common.ts
@@ -7,6 +8,7 @@ configuration.ts
 docs/AcknowledgeMentorRequest.md
 docs/AddClassTopicRequest.md
 docs/AssignCourseRequest.md
+docs/AssignInstructorRequest.md
 docs/AssignInstructorToCourseRequest.md
 docs/AuthControllerApi.md
 docs/ChapterDetailResponse.md

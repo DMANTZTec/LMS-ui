@@ -32,6 +32,9 @@ export interface AddClassTopicRequest {
 export interface AssignCourseRequest {
     'courseId': string;
 }
+export interface AssignInstructorRequest {
+    'staffId': string;
+}
 export interface AssignInstructorToCourseRequest {
     'staffIds': Array<string>;
 }
@@ -93,6 +96,7 @@ export interface ClassResponse {
 }
 export interface ClassScheduleRequest {
     'scheduleId'?: number;
+    'className'?: string;
     'courseName'?: string;
     'classId': number;
     'staffId': number;
@@ -104,6 +108,7 @@ export interface ClassScheduleRequest {
 export interface ClassScheduleResponse {
     'scheduleId'?: number;
     'batchId'?: number;
+    'batchName'?: string;
     'className'?: string;
     'classDate'?: string;
     'dayOfWeek'?: string;
@@ -993,6 +998,48 @@ export const ClassAdminControllerApiAxiosParamCreator = function (configuration?
         },
         /**
          * 
+         * @param {number} scheduleId 
+         * @param {AssignInstructorRequest} assignInstructorRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        assignInstructor: async (scheduleId: number, assignInstructorRequest: AssignInstructorRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('assignInstructor', 'scheduleId', scheduleId)
+            // verify required parameter 'assignInstructorRequest' is not null or undefined
+            assertParamExists('assignInstructor', 'assignInstructorRequest', assignInstructorRequest)
+            const localVarPath = `/api/admin/{scheduleId}/assign-instructor`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(assignInstructorRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {number} batchId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1550,6 +1597,19 @@ export const ClassAdminControllerApiFp = function(configuration?: Configuration)
         },
         /**
          * 
+         * @param {number} scheduleId 
+         * @param {AssignInstructorRequest} assignInstructorRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async assignInstructor(scheduleId: number, assignInstructorRequest: AssignInstructorRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.assignInstructor(scheduleId, assignInstructorRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ClassAdminControllerApi.assignInstructor']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} batchId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1756,6 +1816,16 @@ export const ClassAdminControllerApiFactory = function (configuration?: Configur
         },
         /**
          * 
+         * @param {number} scheduleId 
+         * @param {AssignInstructorRequest} assignInstructorRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        assignInstructor(scheduleId: number, assignInstructorRequest: AssignInstructorRequest, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.assignInstructor(scheduleId, assignInstructorRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {number} batchId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1921,6 +1991,17 @@ export class ClassAdminControllerApi extends BaseAPI {
      */
     public assignCourseToStudent(studentId: string, assignCourseRequest: AssignCourseRequest, options?: RawAxiosRequestConfig) {
         return ClassAdminControllerApiFp(this.configuration).assignCourseToStudent(studentId, assignCourseRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} scheduleId 
+     * @param {AssignInstructorRequest} assignInstructorRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public assignInstructor(scheduleId: number, assignInstructorRequest: AssignInstructorRequest, options?: RawAxiosRequestConfig) {
+        return ClassAdminControllerApiFp(this.configuration).assignInstructor(scheduleId, assignInstructorRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

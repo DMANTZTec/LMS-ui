@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **scheduleId** | **number** |  | [optional] [default to undefined]
 **batchId** | **number** |  | [optional] [default to undefined]
+**batchName** | **string** |  | [optional] [default to undefined]
 **className** | **string** |  | [optional] [default to undefined]
 **classDate** | **string** |  | [optional] [default to undefined]
 **dayOfWeek** | **string** |  | [optional] [default to undefined]
@@ -27,6 +28,7 @@ import { ClassScheduleResponse } from './api';
 const instance: ClassScheduleResponse = {
     scheduleId,
     batchId,
+    batchName,
     className,
     classDate,
     dayOfWeek,

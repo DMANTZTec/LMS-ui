@@ -6,6 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **scheduleId** | **number** |  | [optional] [default to undefined]
+**className** | **string** |  | [optional] [default to undefined]
 **courseName** | **string** |  | [optional] [default to undefined]
 **classId** | **number** |  | [default to undefined]
 **staffId** | **number** |  | [default to undefined]
@@ -21,6 +22,7 @@ import { ClassScheduleRequest } from './api';
 
 const instance: ClassScheduleRequest = {
     scheduleId,
+    className,
     courseName,
     classId,
     staffId,

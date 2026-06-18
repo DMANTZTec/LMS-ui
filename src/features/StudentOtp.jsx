@@ -7,13 +7,15 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Field, FieldLabel } from "@/components/ui/field";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { studentApi } from '@/api/student-controller.api';
+import { useAtom } from 'jotai';
+import { studentDataAtom } from "@/store/atoms/authAtoms";
 
 export default function StudentOtp() {
   const [value, setValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [timer, setTimer] = useState(120); 
-  
+const [studentDetail, setStudentDetail] = useAtom(studentDataAtom);  
   const navigate = useNavigate();
 
   const savedUser = JSON.parse(
@@ -21,7 +23,8 @@ export default function StudentOtp() {
   );
 
   const studentId = savedUser?.studentId;
-  const email = savedUser?.email;
+  const emailIdOrMobileNo = savedUser?.email;
+  //const email = savedUser?.email;
 
   // Countdown timer logic
   useEffect(() => {
@@ -73,10 +76,19 @@ export default function StudentOtp() {
     setLoading(true);
 
     try {
-      const payload = { emailIdOrMobileNo: email, otp: value, channel: "EMAIL" };
+      //const payload = { emailIdOrMobileNo: email, otp: value, channel: "EMAIL" };
+        const payload = { emailIdOrMobileNo, otp: value , channel: "EMAIL" };
       const res = await studentApi.verifyLoginOtp(payload);
 
       toast.success(res.data.message || "Verified successfully! ✅");
+
+let studentId = res.data.studentId;
+     const studentDetailsRes = await studentApi.getStudentById(studentId);
+     console.log("studentDetailsRes is: ",studentDetailsRes);
+     setStudentDetail(studentDetailsRes.data);
+     console.log("studentDetail in jotai atom is: ",studentDetail);
+     sessionStorage.setItem("stuRegData",JSON.stringify(studentDetailsRes.data));
+
       const { token } = res.data;
       if (token) {
         localStorage.setItem("LmsJwTtoken", token);
@@ -104,7 +116,7 @@ export default function StudentOtp() {
         <CardDescription>
           Enter the code sent to:{" "}
           <span className="font-medium text-black">
-            {email || "your email"}
+            {emailIdOrMobileNo || "your email"}
           </span>
         </CardDescription>
       </CardHeader>
