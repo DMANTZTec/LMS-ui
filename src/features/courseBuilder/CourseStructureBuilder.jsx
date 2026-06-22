@@ -9,9 +9,12 @@ import {createChapter,} from "./types";
 import {courseSchema,} from "./validation";
 import { api } from "@/api/CourseMgtController";
 import {List, arrayMove, } from "react-movable";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 const CourseStructureBuilder = () => {
 
+  const navigate = useNavigate();
   const { courseId } = useParams();
   const savedUser = JSON.parse( sessionStorage.getItem("otpStaff"));
   const staffId = savedUser?.staffId;
@@ -894,6 +897,13 @@ else if (
       {/* HEADER */}
 
       <header className="flex items-start relative top-[2px] gap-2">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex h-12 w-12 items-center justify-center rounded-2xl border bg-background hover:bg-muted transition-all duration-200 active:scale-95 group mr-1"
+          title="Go Back"
+        >
+          <ArrowLeft className="h-5 w-5 text-[#717182] group-hover:text-black transition-colors" />
+        </button>
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl">
           <ListIcon className="h-[32px] w-[32px] text-[#9810FA]" />
         </div>

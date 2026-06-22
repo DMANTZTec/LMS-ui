@@ -66,11 +66,11 @@ if (studentId) {
       isSubmitting={isSubmitting}
       bottomLinks={
         <>
-          <Link to="/student-register" className="hover:text-[#00BBA7] hover:underline transition-colors">
+          <Link to="/student-register" className="hover:text-[#00BBA7] underline transition-colors">
             Register
           </Link>
           {" | "}
-          <Link to="/forgot-password" className="hover:text-[#00BBA7] hover:underline transition-colors">
+          <Link to="/forgot-password" className="hover:text-[#00BBA7] underline transition-colors">
             Forgot Password?
           </Link>
         </>

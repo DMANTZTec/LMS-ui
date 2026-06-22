@@ -91,7 +91,10 @@ const LoginForm = ({ title, iconSrc, onSubmit, isSubmitting, bottomLinks }) => {
           </div>
 
           {/* Submit Button */}
-          <button
+          {/* ==================
+          only Submit Button
+          ===================== */}
+          {/* <button
             type="submit"
             disabled={!isValid || isSubmitting}
             className={`w-full lg:w-[330.67px] h-[36px] rounded-[8px] text-white font-medium transition-all duration-200 mt-2
@@ -102,7 +105,30 @@ const LoginForm = ({ title, iconSrc, onSubmit, isSubmitting, bottomLinks }) => {
             `}
           >
             {isSubmitting ? "Logging in..." : "Login"}
-          </button>
+          </button> */}
+
+{/* =============== */}
+<div className="flex flex-col w-full lg:w-[330.67px] gap-3 mt-2">
+  
+  {/* Submit Button */}
+<button
+  type="submit"
+  disabled={!isValid || isSubmitting}
+  className={`w-full h-[40px] rounded-lg font-semibold transition-all duration-200 shadow-sm border
+    ${
+      !isValid || isSubmitting
+        ? "border-sky-300 text-sky-700 cursor-not-allowed"
+        : "bg-gradient-to-r text-white from-blue-400 to-blue-500 hover:from-sky-500 hover:to-blue-600 active:scale-95"
+    }`}
+>
+  {isSubmitting ? "Logging in..." : "Login"}
+</button>
+
+<button type="button" onClick={() => navigate(-1)} className="w-full h-[36px] rounded-[8px] shadow-sm border border-red-300 text-red-700 font-medium hover:bg-red-700 hover:text-white transition-colors active:scale-[0.98]" > Cancel </button>
+</div>
+{/*  ================
+New Code End 
+====================*/}
         </form>
 
         {/* Footer Links */}

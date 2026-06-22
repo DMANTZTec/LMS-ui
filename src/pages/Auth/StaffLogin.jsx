@@ -54,7 +54,7 @@ if (staffId) {
       onSubmit={handleStaffLogin}
       isSubmitting={isSubmitting}
       bottomLinks={
-        <Link to="/forgot-password" className="hover:text-[#00BBA7] hover:underline transition-colors">
+        <Link to="/forgot-password" className="hover:text-[#00BBA7] underline transition-colors">
           Forgot Password?
         </Link>
       }
