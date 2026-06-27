@@ -5,6 +5,7 @@ All URIs are relative to *http://localhost:9090*
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
 |[**addClass**](#addclass) | **POST** /api/admin/courseschedule/{courseId}/classes | |
+|[**addInstructorsToBatch**](#addinstructorstobatch) | **POST** /api/admin/courseschedule/classes/{batchId}/instructors | |
 |[**addScheduleToClass**](#addscheduletoclass) | **POST** /api/admin/addschedule-to-class | |
 |[**addTopicsToClass**](#addtopicstoclass) | **POST** /api/admin/classes/{batchId}/topics | |
 |[**assignCourseToStudent**](#assigncoursetostudent) | **POST** /api/admin/students/{studentId}/courses | |
@@ -12,7 +13,10 @@ All URIs are relative to *http://localhost:9090*
 |[**cancelClass**](#cancelclass) | **PATCH** /api/admin/courseschedule/classes/{batchId}/cancel | |
 |[**cancelSchedule**](#cancelschedule) | **PATCH** /api/admin/schedules/{scheduleId}/cancel | |
 |[**getAllSchedules**](#getallschedules) | **GET** /api/admin/schedules | |
+|[**getBatchById**](#getbatchbyid) | **GET** /api/admin/courseschedule/classes/{batchId} | |
 |[**getClassesByCourse**](#getclassesbycourse) | **GET** /api/admin/courseschedule/{courseId}/classes | |
+|[**getInstructorsByBatchId**](#getinstructorsbybatchid) | **GET** /api/admin/courseschedule/classes/{batchId}/instructors | |
+|[**getScheduleById**](#getschedulebyid) | **GET** /api/admin/schedules/{scheduleId} | |
 |[**getSchedulesByBatch**](#getschedulesbybatch) | **GET** /api/admin/courseschedule/{batchId}/schedules | |
 |[**getSchedulesByStaff**](#getschedulesbystaff) | **GET** /api/admin/schedules/staff/{staffId} | |
 |[**getStaffDailySchedule**](#getstaffdailyschedule) | **GET** /api/admin/staff/{staffId}/dailySchedules | |
@@ -21,6 +25,7 @@ All URIs are relative to *http://localhost:9090*
 |[**modifyClass**](#modifyclass) | **PUT** /api/admin/modify/courseschedule/classes/{batchId} | |
 |[**modifySchedule**](#modifyschedule) | **PUT** /api/admin/courseschedule/{scheduleId} | |
 |[**removeTopicsFromClass**](#removetopicsfromclass) | **DELETE** /api/admin/classes/{batchId}/topics | |
+|[**updateInstructorsForBatch**](#updateinstructorsforbatch) | **PUT** /api/admin/courseschedule/classes/{batchId}/instructors | |
 |[**viewStudents**](#viewstudents) | **GET** /api/admin/view-students | |
 
 # **addClass**
@@ -77,8 +82,8 @@ const { status, data } = await apiInstance.addClass(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **addScheduleToClass**
-> ClassScheduleResponse addScheduleToClass(classScheduleRequest)
+# **addInstructorsToBatch**
+> Array<BatchInstructorResponse> addInstructorsToBatch(batchInstructorRequest)
 
 
 ### Example
@@ -87,16 +92,18 @@ const { status, data } = await apiInstance.addClass(
 import {
     ClassAdminControllerApi,
     Configuration,
-    ClassScheduleRequest
+    BatchInstructorRequest
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new ClassAdminControllerApi(configuration);
 
-let classScheduleRequest: ClassScheduleRequest; //
+let batchId: number; // (default to undefined)
+let batchInstructorRequest: BatchInstructorRequest; //
 
-const { status, data } = await apiInstance.addScheduleToClass(
-    classScheduleRequest
+const { status, data } = await apiInstance.addInstructorsToBatch(
+    batchId,
+    batchInstructorRequest
 );
 ```
 
@@ -104,7 +111,59 @@ const { status, data } = await apiInstance.addScheduleToClass(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **classScheduleRequest** | **ClassScheduleRequest**|  | |
+| **batchInstructorRequest** | **BatchInstructorRequest**|  | |
+| **batchId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**Array<BatchInstructorResponse>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **addScheduleToClass**
+> ClassScheduleResponse addScheduleToClass(addScheduleRequest)
+
+
+### Example
+
+```typescript
+import {
+    ClassAdminControllerApi,
+    Configuration,
+    AddScheduleRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ClassAdminControllerApi(configuration);
+
+let addScheduleRequest: AddScheduleRequest; //
+
+const { status, data } = await apiInstance.addScheduleToClass(
+    addScheduleRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **addScheduleRequest** | **AddScheduleRequest**|  | |
 
 
 ### Return type
@@ -433,6 +492,56 @@ This endpoint does not have any parameters.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **getBatchById**
+> ClassResponse getBatchById()
+
+
+### Example
+
+```typescript
+import {
+    ClassAdminControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ClassAdminControllerApi(configuration);
+
+let batchId: number; // (default to undefined)
+
+const { status, data } = await apiInstance.getBatchById(
+    batchId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **batchId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**ClassResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **getClassesByCourse**
 > Array<ClassResponse> getClassesByCourse()
 
@@ -465,6 +574,106 @@ const { status, data } = await apiInstance.getClassesByCourse(
 ### Return type
 
 **Array<ClassResponse>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getInstructorsByBatchId**
+> Array<BatchInstructorResponse> getInstructorsByBatchId()
+
+
+### Example
+
+```typescript
+import {
+    ClassAdminControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ClassAdminControllerApi(configuration);
+
+let batchId: number; // (default to undefined)
+
+const { status, data } = await apiInstance.getInstructorsByBatchId(
+    batchId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **batchId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**Array<BatchInstructorResponse>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getScheduleById**
+> ClassScheduleResponse getScheduleById()
+
+
+### Example
+
+```typescript
+import {
+    ClassAdminControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ClassAdminControllerApi(configuration);
+
+let scheduleId: number; // (default to undefined)
+
+const { status, data } = await apiInstance.getScheduleById(
+    scheduleId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **scheduleId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**ClassScheduleResponse**
 
 ### Authorization
 
@@ -791,7 +1000,7 @@ const { status, data } = await apiInstance.modifyClass(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **modifySchedule**
-> ClassScheduleResponse modifySchedule(classScheduleRequest)
+> ClassScheduleResponse modifySchedule(addScheduleRequest)
 
 
 ### Example
@@ -800,18 +1009,18 @@ const { status, data } = await apiInstance.modifyClass(
 import {
     ClassAdminControllerApi,
     Configuration,
-    ClassScheduleRequest
+    AddScheduleRequest
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new ClassAdminControllerApi(configuration);
 
 let scheduleId: number; // (default to undefined)
-let classScheduleRequest: ClassScheduleRequest; //
+let addScheduleRequest: AddScheduleRequest; //
 
 const { status, data } = await apiInstance.modifySchedule(
     scheduleId,
-    classScheduleRequest
+    addScheduleRequest
 );
 ```
 
@@ -819,7 +1028,7 @@ const { status, data } = await apiInstance.modifySchedule(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **classScheduleRequest** | **ClassScheduleRequest**|  | |
+| **addScheduleRequest** | **AddScheduleRequest**|  | |
 | **scheduleId** | [**number**] |  | defaults to undefined|
 
 
@@ -880,6 +1089,60 @@ const { status, data } = await apiInstance.removeTopicsFromClass(
 ### Return type
 
 **string**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **updateInstructorsForBatch**
+> Array<BatchInstructorResponse> updateInstructorsForBatch(batchInstructorRequest)
+
+
+### Example
+
+```typescript
+import {
+    ClassAdminControllerApi,
+    Configuration,
+    BatchInstructorRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ClassAdminControllerApi(configuration);
+
+let batchId: number; // (default to undefined)
+let batchInstructorRequest: BatchInstructorRequest; //
+
+const { status, data } = await apiInstance.updateInstructorsForBatch(
+    batchId,
+    batchInstructorRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **batchInstructorRequest** | **BatchInstructorRequest**|  | |
+| **batchId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**Array<BatchInstructorResponse>**
 
 ### Authorization
 

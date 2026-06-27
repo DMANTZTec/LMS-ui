@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **courseId** | **string** |  | [optional] [default to undefined]
 **courseName** | **string** |  | [optional] [default to undefined]
 **status** | **string** |  | [optional] [default to undefined]
-**className** | **string** |  | [optional] [default to undefined]
+**batchName** | **string** |  | [optional] [default to undefined]
 **startDate** | **string** |  | [optional] [default to undefined]
 **endDate** | **string** |  | [optional] [default to undefined]
 **totalSchedulesGenerated** | **number** |  | [optional] [default to undefined]
@@ -25,7 +25,7 @@ const instance: ClassResponse = {
     courseId,
     courseName,
     status,
-    className,
+    batchName,
     startDate,
     endDate,
     totalSchedulesGenerated,

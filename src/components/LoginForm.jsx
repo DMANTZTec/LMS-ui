@@ -3,7 +3,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const loginSchema = z.object({
@@ -18,6 +18,7 @@ const loginSchema = z.object({
 
 const LoginForm = ({ title, iconSrc, onSubmit, isSubmitting, bottomLinks }) => {
   const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
 
   const { register, handleSubmit,reset,formState: { errors, isValid },} = useForm({ resolver: zodResolver(loginSchema),mode: "onChange",});
 
@@ -124,7 +125,7 @@ const LoginForm = ({ title, iconSrc, onSubmit, isSubmitting, bottomLinks }) => {
   {isSubmitting ? "Logging in..." : "Login"}
 </button>
 
-<button type="button" onClick={() => navigate(-1)} className="w-full h-[36px] rounded-[8px] shadow-sm border border-red-300 text-red-700 font-medium hover:bg-red-700 hover:text-white transition-colors active:scale-[0.98]" > Cancel </button>
+<button type="button" onClick={() => navigate("/")} className="w-full h-[36px] rounded-[8px] shadow-sm border border-red-300 text-red-700 font-medium hover:bg-red-700 hover:text-white transition-colors active:scale-[0.98]" > Cancel </button>
 </div>
 {/*  ================
 New Code End 

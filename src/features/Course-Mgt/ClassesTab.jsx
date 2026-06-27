@@ -12,7 +12,7 @@ import SCheduleCourse from './course-Schedule/ScheduleCourse';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 // Import our decoupled sub-view component
-import BatchCalendarView from './classesTabComponents.jsx/BatchCalendarView';
+import BatchCalendarView from './classesTabComponents/BatchCalendarView';
 
 // ─── Individual Batch Row Component with Nested Toggle Structure ────────────
 const BatchRowContainer = ({ batch, courseId }) => {

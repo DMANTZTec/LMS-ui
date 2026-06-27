@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import * as tabs from './index';
 
 import { Avatar, MCP } from '@/assets/images';
+import StaffNavbarAvatar from '../Avatar/staff/StaffNavbarAvatar';
 
 
 const Main = () => {
@@ -25,8 +26,11 @@ const Main = () => {
                     </h1>
 
                     {/* RIGHT - Profile */}
-                    <div className="border rounded-full p-1 md:p-2">
+                    {/* <div className="border rounded-full p-1 md:p-2">
                         <img src={Avatar} className="w-8 h-8 md:w-10 md:h-10" />
+                    </div> */}
+                     <div className="flex items-center">
+                        <StaffNavbarAvatar />
                     </div>
                 </div>
                 {/* Tabs */}
