@@ -37,9 +37,16 @@ export default function NavbarAvatar() {
     return `${first}${last}`;
   };
 
+  const getProfileImage = () => {
+    const image = studentData?.profileImg || stuData?.profileImg ;
+  return image;
+  }
+
   const handleLogout = () => {
     // Clear your session storage and redirect
-    localStorage.removeItem('LmsJwTtoken');
+    //localStorage.removeItem('LmsJwTtoken');
+    localStorage.clear();
+    sessionStorage.clear();
     window.location.href = "/studentLogin"; 
   };
 
@@ -51,9 +58,10 @@ export default function NavbarAvatar() {
           <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0 hover:bg-transparent focus-visible:ring-2 focus-visible:ring-blue-500">
             <Avatar className="h-10 w-10 border border-gray-200 transition-transform duration-200 hover:scale-105">
               {/* If backend provides an image URL, show it, otherwise fallback */}
-              <AvatarImage src={studentData?.profilePicUrl} alt="Student Avatar" />
+              <AvatarImage src={studentData?.profileImg || stuData?.profileImg} alt={getInitials()} />
               <AvatarFallback className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-semibold text-sm">
                 {getInitials()}
+                
               </AvatarFallback>
             </Avatar>
             

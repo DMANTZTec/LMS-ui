@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,6 +12,7 @@ import { studentDataAtom } from '@/store/atoms/authAtoms';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Field from '@/components/common/Field';
+import ChangePassword from './ChangePassword';
 
 // Shared baseline styled wrapper class matching your system UI specs
 const inputCls = (hasError) =>
@@ -25,72 +26,91 @@ const selectCls = (hasError) =>
    ${hasError ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-blue-400"}`;
 
 const StudentProfile = () => {
-const [studentData, setStudentData] = useAtom(studentDataAtom);
+  const [studentData, setStudentData] = useAtom(studentDataAtom);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [globalError, setGlobalError] = useState(null);
 
-  // Grab cached registration attributes cleanly out of session data fallback
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  
   const cachedRegData = JSON.parse(sessionStorage.getItem("stuRegData") || "{}");
+
+  const getData = () => {
+
+
+    return {
+      firstNm: studentData?.firstNm || cachedRegData?.firstNm || "",
+      lastNm: studentData?.lastNm || cachedRegData?.lastNm || "",
+      gender: studentData?.gender || cachedRegData?.gender || "",
+      dob: studentData?.dob || cachedRegData?.dob || "",
+      currentStatus: studentData?.currentStatus || cachedRegData?.currentStatus || "",
+      profilePicture: studentData?.profilePicture || cachedRegData?.profilePicture || "",
+      emailId: studentData?.emailId || cachedRegData?.emailId || "",
+      mobileNum: studentData?.mobileNum || cachedRegData?.mobileNum || "",
+      addr1: studentData?.addr1 || cachedRegData?.addr1 || "",
+      addr2: studentData?.addr2 || cachedRegData?.addr2 || "",
+      city: studentData?.city || cachedRegData?.city || "",
+      state: studentData?.state || cachedRegData?.state || "",
+      pin: studentData?.pin || cachedRegData?.pin || "",
+      country: studentData?.country || cachedRegData?.country || "",
+      emergencyContactNm: studentData?.emergencyContactNm || cachedRegData?.emergencyContactNm || "",
+      emergencyContactNum: studentData?.emergencyContactNum || cachedRegData?.emergencyContactNum || "",
+    }
+  }
 
   const {
     register,
     handleSubmit,
     setError,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
+    watch,
+    reset
   } = useForm({
     resolver: zodResolver(StudentProfileSchema),
-    defaultValues: {
-      firstNm: studentData?.firstNm || cachedRegData.firstNm || "",
-      lastNm: studentData?.lastNm || cachedRegData.lastNm || "",
-      gender: "",
-      dateOfBirth: "",
-      currentStatus: studentData?.currentStatus || cachedRegData.currentStatus || "",
-      emailId: studentData?.emailId || cachedRegData.emailId || "",
-      mobileNum: studentData?.mobileNum || cachedRegData.mobileNum || "",
-      addressLine1: "",
-      addressLine2: "",
-      city: "",
-      state: "",
-      pinCode: "",
-      country: "",
-      password: "",
-      confirm_password: "",
-      emergencyContactName: "",
-      emergencyContactNumber: "",
-    },
+    defaultValues: getData()
   });
+
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     setGlobalError(null);
-console.log("data is: ", data);
     try {
-      // API invocation against Spring Boot backend controller endpoint
+
+
+      // because Zod converted it into a full JS Date Object.
+      // 1. Safely extract and format the date back into a string YYYY-MM-DD
+      const formattedDob = data.dob instanceof Date
+        ? data.dob.toISOString().split('T')[0]
+        : data.dob;
+
       const response = await studentApi.updateProfile(
-  cachedRegData.studentId,
-  data.firstNm,
-  data.lastNm,
-  data.gender,
-  data.dateOfBirth,
-  data.addressLine1,
-  data.addressLine2,
-  data.city,
-  data.state,
-  data.country,
-  data.pinCode,
-  data.mobileNum,
-  data.emergencyContactName,
-  data.emergencyContactNumber,
-  data.profilePicture?.[0]);
-      console.log("value of updated profile data is: ", data);
-      setStudentData(response.data);
-      alert("Profile saved successfully! 🎉");
+        cachedRegData.studentId,
+        data.firstNm,
+        data.lastNm,
+        data.gender,
+        formattedDob,         // instead of data.dateOfBirth
+        data.addr1,
+        data.addr2,
+        data.city,
+        data.state,
+        data.country,
+        data.pin,
+        data.mobileNum,
+        data.emergencyContactNm,
+        data.emergencyContactNum,
+        data.profilePicture?.[0]);
+
+      const freshProfileData = response.data;
+      setStudentData(freshProfileData);
+      sessionStorage.setItem("stuRegData", JSON.stringify(freshProfileData));
+      console.log("studentData and stuRegData are: ", studentData, cachedRegData);
+
+
+      reset(freshProfileData);
+
     } catch (error) {
-      console.log("entered into catch block and error is: ",error);
-          console.log("data.firstNm is: ", data.firstNm);
+
       const backendErrors = error.response?.data?.fieldErrors;
       if (backendErrors) {
-        // Dynamic error assignment routine discussed earlier
         Object.keys(backendErrors).forEach((field) => {
           setError(field, {
             type: "server",
@@ -98,6 +118,7 @@ console.log("data is: ", data);
           });
         });
       } else {
+        console.log("error is: ", error);
         setGlobalError(error.response?.data?.message || "Internal system upgrade failure.");
       }
     } finally {
@@ -108,12 +129,13 @@ console.log("data is: ", data);
   return (
     <div className="min-h-screen bg-[#f4f7fa] py-12 px-4 sm:px-6 lg:px-8">
 
-<Link to="/student-dashboard">
-<ChevronLeft className='text-blue-500'/>
-</Link>
+      <Link to="/student-dashboard">
+        <ChevronLeft className='text-blue-500' />
+      </Link>
 
       <div className="max-w-4xl mx-auto space-y-6">
-        
+
+
         <h1 className="text-2xl font-bold text-center text-slate-800 tracking-tight">Student Profile</h1>
 
         {globalError && (
@@ -123,7 +145,7 @@ console.log("data is: ", data);
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
-          
+
           {/* ────────────────────────────────────────────────────────────── */}
           {/* SECTION 1: Personal Information                               */}
           {/* ────────────────────────────────────────────────────────────── */}
@@ -152,8 +174,8 @@ console.log("data is: ", data);
                 </select>
               </Field>
 
-              <Field label="Date of Birth *" error={errors.dateOfBirth?.message}>
-                <Input type="date" {...register("dateOfBirth")} className={inputCls(!!errors.dateOfBirth)} />
+              <Field label="Date of Birth *" error={errors.dob?.message}>
+                <Input type="date" {...register("dob")} className={inputCls(!!errors.dob)} />
               </Field>
 
               <Field label="Current Status (Optional)" error={errors.currentStatus?.message}>
@@ -198,12 +220,12 @@ console.log("data is: ", data);
                 </Field>
               </div>
 
-              <Field label="Address Line 1 *" error={errors.addressLine1?.message}>
-                <Input {...register("addressLine1")} className={inputCls(!!errors.addressLine1)} placeholder="Street address, apartment, suite, etc." />
+              <Field label="Address Line 1 *" error={errors.addr1?.message}>
+                <Input {...register("addr1")} className={inputCls(!!errors.addr1)} placeholder="Street address, apartment, suite, etc." />
               </Field>
 
-              <Field label="Address Line 2" error={errors.addressLine2?.message}>
-                <Input {...register("addressLine2")} className={inputCls(!!errors.addressLine2)} placeholder="Additional address information (optional)" />
+              <Field label="Address Line 2" error={errors.addr2?.message}>
+                <Input {...register("addr2")} className={inputCls(!!errors.addr2)} placeholder="Additional address information (optional)" />
               </Field>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -215,8 +237,8 @@ console.log("data is: ", data);
                   <Input {...register("state")} className={inputCls(!!errors.state)} placeholder="State" />
                 </Field>
 
-                <Field label="Pin / Zip Code *" error={errors.pinCode?.message}>
-                  <Input {...register("pinCode")} className={inputCls(!!errors.pinCode)} placeholder="12345" />
+                <Field label="Pin / Zip Code *" error={errors.pin?.message}>
+                  <Input {...register("pin")} className={inputCls(!!errors.pin)} placeholder="12345" />
                 </Field>
               </div>
 
@@ -236,21 +258,20 @@ console.log("data is: ", data);
               <h2 className="text-base font-semibold text-slate-800">Security & Emergency Contact</h2>
             </div>
 
+            <button type="button" onClick={() => setIsPasswordModalOpen(true)}
+              className="text-blue-500 hover:underline text-sm font-medium focus:outline-none"
+            >
+              Change password
+            </button>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <Field label="Password *" error={errors.password?.message}>
-                <Input type="password" {...register("password")} className={inputCls(!!errors.password)} placeholder="Enter password" />
+
+              <Field label="Emergency Contact Name *" error={errors.emergencyContactNm?.message}>
+                <Input {...register("emergencyContactNm")} className={inputCls(!!errors.emergencyContactNm)} placeholder="Full name" />
               </Field>
 
-              <Field label="Confirm Password *" error={errors.confirm_password?.message}>
-                <Input type="password" {...register("confirm_password")} className={inputCls(!!errors.confirm_password)} placeholder="Re-enter password" />
-              </Field>
-
-              <Field label="Emergency Contact Name *" error={errors.emergencyContactName?.message}>
-                <Input {...register("emergencyContactName")} className={inputCls(!!errors.emergencyContactName)} placeholder="Full name" />
-              </Field>
-
-              <Field label="Emergency Contact Number *" error={errors.emergencyContactNumber?.message}>
-                <Input {...register("emergencyContactNumber")} className={inputCls(!!errors.emergencyContactNumber)} placeholder="(123) 456-7890" />
+              <Field label="Emergency Contact Number *" error={errors.emergencyContactNum?.message}>
+                <Input {...register("emergencyContactNum")} className={inputCls(!!errors.emergencyContactNum)} placeholder="(123) 456-7890" />
               </Field>
             </div>
           </div>
@@ -258,11 +279,13 @@ console.log("data is: ", data);
           {/* Submit Action Execution Button */}
           <Button
             type="submit"
-            disabled={isSubmitting}
+
+            disabled={isSubmitSuccessful}
             className="h-12 w-full rounded-xl bg-[#1d4ed8] text-sm font-semibold text-white transition hover:bg-blue-800 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isSubmitting ? (
               <>
+
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Saving Profile...
               </>
@@ -271,9 +294,17 @@ console.log("data is: ", data);
             )}
           </Button>
         </form>
+
+        <ChangePassword 
+          open={isPasswordModalOpen} 
+          onOpenChange={setIsPasswordModalOpen} 
+        />
+
       </div>
     </div>
   );
 }
 
 export default StudentProfile;
+
+

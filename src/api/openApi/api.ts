@@ -140,6 +140,59 @@ export interface ClassTopicResponse {
     'topicName'?: string;
     'status'?: string;
 }
+export interface ContactUsRequest {
+    'fullName': string;
+    'mobileNumber': string;
+    'email': string;
+    'currentPosition': ContactUsRequestCurrentPositionEnum;
+    'location': string;
+}
+
+export const ContactUsRequestCurrentPositionEnum = {
+    Student: 'STUDENT',
+    Developer: 'DEVELOPER',
+    WorkingProfessional: 'WORKING_PROFESSIONAL',
+    Freelancer: 'FREELANCER',
+    DevopsEngineer: 'DEVOPS_ENGINEER',
+    TestEngineer: 'TEST_ENGINEER',
+    QaEngineer: 'QA_ENGINEER',
+    Other: 'OTHER',
+} as const;
+
+export type ContactUsRequestCurrentPositionEnum = typeof ContactUsRequestCurrentPositionEnum[keyof typeof ContactUsRequestCurrentPositionEnum];
+
+export interface ContactUsResponse {
+    'id'?: number;
+    'fullName'?: string;
+    'mobileNumber'?: string;
+    'email'?: string;
+    'currentPosition'?: ContactUsResponseCurrentPositionEnum;
+    'location'?: string;
+    'status'?: ContactUsResponseStatusEnum;
+    'message'?: string;
+}
+
+export const ContactUsResponseCurrentPositionEnum = {
+    Student: 'STUDENT',
+    Developer: 'DEVELOPER',
+    WorkingProfessional: 'WORKING_PROFESSIONAL',
+    Freelancer: 'FREELANCER',
+    DevopsEngineer: 'DEVOPS_ENGINEER',
+    TestEngineer: 'TEST_ENGINEER',
+    QaEngineer: 'QA_ENGINEER',
+    Other: 'OTHER',
+} as const;
+
+export type ContactUsResponseCurrentPositionEnum = typeof ContactUsResponseCurrentPositionEnum[keyof typeof ContactUsResponseCurrentPositionEnum];
+export const ContactUsResponseStatusEnum = {
+    New: 'NEW',
+    InProgress: 'IN_PROGRESS',
+    Resolved: 'RESOLVED',
+    Closed: 'CLOSED',
+} as const;
+
+export type ContactUsResponseStatusEnum = typeof ContactUsResponseStatusEnum[keyof typeof ContactUsResponseStatusEnum];
+
 export interface CourseDetailsResponse {
     'courseTitle'?: string;
     'description'?: string;
@@ -2684,6 +2737,237 @@ export class ClassStudentControllerApi extends BaseAPI {
      */
     public removeStudents(removeStudentRequest: RemoveStudentRequest, options?: RawAxiosRequestConfig) {
         return ClassStudentControllerApiFp(this.configuration).removeStudents(removeStudentRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ContactUsControllerApi - axios parameter creator
+ */
+export const ContactUsControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {ContactUsRequest} contactUsRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createContactUs: async (contactUsRequest: ContactUsRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'contactUsRequest' is not null or undefined
+            assertParamExists('createContactUs', 'contactUsRequest', contactUsRequest)
+            const localVarPath = `/api/contact-us/raise-enquiry`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(contactUsRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllContactUs: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/contact-us`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getContactUsById: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getContactUsById', 'id', id)
+            const localVarPath = `/api/contact-us/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ContactUsControllerApi - functional programming interface
+ */
+export const ContactUsControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ContactUsControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {ContactUsRequest} contactUsRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createContactUs(contactUsRequest: ContactUsRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactUsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createContactUs(contactUsRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ContactUsControllerApi.createContactUs']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllContactUs(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ContactUsResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllContactUs(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ContactUsControllerApi.getAllContactUs']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getContactUsById(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactUsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getContactUsById(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ContactUsControllerApi.getContactUsById']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ContactUsControllerApi - factory interface
+ */
+export const ContactUsControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ContactUsControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {ContactUsRequest} contactUsRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createContactUs(contactUsRequest: ContactUsRequest, options?: RawAxiosRequestConfig): AxiosPromise<ContactUsResponse> {
+            return localVarFp.createContactUs(contactUsRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllContactUs(options?: RawAxiosRequestConfig): AxiosPromise<Array<ContactUsResponse>> {
+            return localVarFp.getAllContactUs(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getContactUsById(id: number, options?: RawAxiosRequestConfig): AxiosPromise<ContactUsResponse> {
+            return localVarFp.getContactUsById(id, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ContactUsControllerApi - object-oriented interface
+ */
+export class ContactUsControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {ContactUsRequest} contactUsRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public createContactUs(contactUsRequest: ContactUsRequest, options?: RawAxiosRequestConfig) {
+        return ContactUsControllerApiFp(this.configuration).createContactUs(contactUsRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getAllContactUs(options?: RawAxiosRequestConfig) {
+        return ContactUsControllerApiFp(this.configuration).getAllContactUs(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getContactUsById(id: number, options?: RawAxiosRequestConfig) {
+        return ContactUsControllerApiFp(this.configuration).getContactUsById(id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

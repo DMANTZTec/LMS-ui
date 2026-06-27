@@ -23,7 +23,8 @@ export const StudentProfileSchema = z.object({
 
     gender: z.string().min(1, "Gender is required"),
     
-    dateOfBirth: z.string().min(1, "date of birth is required"),
+    dob: z.coerce.date({ errorMap: () => ({ message: "date of birth is required" }) })
+    .max(new Date(), { message: "Date of birth cannot be in the future" }),
     
     currentStatus: z.string()
     .trim()
@@ -45,40 +46,44 @@ export const StudentProfileSchema = z.object({
     .min(1, "Mobile number is required")
     .regex(/^\+?[1-9]\d{1,14}$/, "Enter a valid mobile number"),
 
-    addressLine1: z.string().min(1, "Adress Line 1 is required."),
+    addr1: z.string().min(1, "Adress Line 1 is required."),
 
-    addressLine2: z.string().optional(),
+    addr2: z.string().optional(),
 
     city: z.string().min(1, "city is required"),
 
     state: z.string().min(1, "state is required"),
 
-    pinCode: z.string().min(1, "Enter a valid pin or zip code"),
+    pin: z.string()
+  .nonempty("PIN code is required")
+  .regex(/^\d{6}$/, "PIN code must be exactly 6 digits"),
 
     country: z.string().min(1, "Country is required"),
 
     // Section 3: Security & Emergency Contact
-  password: z
-    .string()
-    .min(1, "Password is required")
-    // Enforces length between 8 and 12 characters
-    .min(8, "Password must be at least 8 characters long")
-    .max(12, "Password cannot exceed 12 characters")
-    // Enforces at least one uppercase, one lowercase, one number, and one special character(unlimited number of chareters)
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()\-_\=+\[\]{}|;:',.<>\/\?~``])[A-Za-z\d@$!%*?&#^()\-_\=+\[\]{}|;:',.<>\/\?~``]{8,}$/,
-      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
-    ),
   
-  confirm_password: z.string().min(1, "Confirm password is required"),
   
-  emergencyContactName: z.string().min(1, "Emergency contact name is required"),
+    //   password: z
+  //   .string()
+  //   .min(1, "Password is required")
+  //   // Enforces length between 8 and 12 characters
+  //   .min(8, "Password must be at least 8 characters long")
+  //   .max(12, "Password cannot exceed 12 characters")
+  //   // Enforces at least one uppercase, one lowercase, one number, and one special character(unlimited number of chareters)
+  //   .regex(
+  //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()\-_\=+\[\]{}|;:',.<>\/\?~``])[A-Za-z\d@$!%*?&#^()\-_\=+\[\]{}|;:',.<>\/\?~``]{8,}$/,
+  //     "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+  //   ),
   
-  emergencyContactNumber: z
+  // confirm_password: z.string().min(1, "Confirm password is required"),
+  
+  emergencyContactNm: z.string().min(1, "Emergency contact name is required"),
+  
+  emergencyContactNum: z
     .string()
     .trim()
     .min(1, "Emergency Contact Number is required")
-    .regex(/^\+?[1-9]\d{1,14}$/, "Enter a valid Emargency Contact Number"), 
+    .regex(/^(?:\+91[\-\s]?)?(?:[6-9]\d{9}|0\d{2,4}[\-\s]?\d{6,8})$/, "Enter a valid Emargency Contact Number"), 
 
 }).refine((data) => data.password === data.confirm_password , {
     message: "password and confirm password do not match",

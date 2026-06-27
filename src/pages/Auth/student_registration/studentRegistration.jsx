@@ -57,7 +57,7 @@ const studentSchema = z.object({
     .string()
     .trim()
     .min(1, "Mobile number is required")
-    .regex(/^\+?[1-9]\d{9}$/, "Enter a valid mobile number"),
+    .regex(/^(?:\+91 ?[6-9]\d{9}|[6-9]\d{9})$/, "Enter a valid mobile number"),
 
   emailId: z
     .string()
@@ -246,7 +246,7 @@ const StudentRegistration = () => {
             <Field label="Mobile Number" error={errors.mobileNum?.message}>
               <Input
                 type="tel"
-                placeholder="(123) 456-7890"
+                placeholder="+91 9876543210"
                 autoComplete="tel"
                 {...register("mobileNum")}
                 className={inputCls(!!errors.mobileNum)}
