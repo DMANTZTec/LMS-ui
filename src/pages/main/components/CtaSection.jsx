@@ -1,7 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../components/ui/button';
 
 const CtaSection = () => {
+
+    const navigate = useNavigate();
+    
     return (
         <div className="bg-gradient-to-r from-[#0F766E] to-[#445AC8] px-4 py-8 md:py-10">
             <div className="max-w-[896px] mx-auto flex flex-col items-center text-center">
@@ -15,7 +19,7 @@ const CtaSection = () => {
                     <Button className="h-12 px-6 bg-white hover:bg-white/90 text-[#0F766E] text-base font-semibold rounded-lg">
                         Enroll Now
                     </Button>
-                    <Button className="h-12 px-6 bg-transparent hover:bg-white/10 border-2 border-white text-white text-base font-semibold rounded-lg">
+                    <Button className="h-12 px-6 bg-transparent hover:bg-white/10 border-2 border-white text-white text-base font-semibold rounded-lg" onClick={() => navigate('/contactUs')}>
                         Contact Us
                     </Button>
                 </div>

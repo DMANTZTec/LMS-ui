@@ -61,7 +61,7 @@ const StudentProfile = () => {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isSubmitSuccessful },
+    formState: { errors, isSubmitSuccessful, isDirty },
     watch,
     reset
   } = useForm({
@@ -69,8 +69,15 @@ const StudentProfile = () => {
     defaultValues: getData()
   });
 
+ // const formValues = watch();
+
+  useEffect(() => {
+if (isDirty)
+setGlobalError(null);
+  },[isDirty]);
 
   const onSubmit = async (data) => {
+    
     setIsSubmitting(true);
     setGlobalError(null);
     try {
@@ -104,7 +111,7 @@ const StudentProfile = () => {
       sessionStorage.setItem("stuRegData", JSON.stringify(freshProfileData));
       console.log("studentData and stuRegData are: ", studentData, cachedRegData);
 
-
+alert("Profile saved successfully! 🎉");
       reset(freshProfileData);
 
     } catch (error) {
@@ -118,8 +125,8 @@ const StudentProfile = () => {
           });
         });
       } else {
-        console.log("error is: ", error);
-        setGlobalError(error.response?.data?.message || "Internal system upgrade failure.");
+        const fallbackMessage = error.response?.data?.message || "Internal system upgrade failure.";
+        setGlobalError(fallbackMessage);
       }
     } finally {
       setIsSubmitting(false);
@@ -280,7 +287,7 @@ const StudentProfile = () => {
           <Button
             type="submit"
 
-            disabled={isSubmitSuccessful}
+            disabled={!isDirty || isSubmitting}
             className="h-12 w-full rounded-xl bg-[#1d4ed8] text-sm font-semibold text-white transition hover:bg-blue-800 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isSubmitting ? (

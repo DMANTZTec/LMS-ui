@@ -8,7 +8,7 @@ import StaffOtp from '@/features/StaffOtp';
 import StudentRegistration from '@/pages/Auth/student_registration/studentRegistration';
 import StudentRegistrationOTP from '@/pages/Auth/student_registration/studentRegistrationOTP';
 import StudentProfile from '@/features/Avatar/student/profile/StudentProfile';
-
+import ContactUs from '@/pages/public/contactUs/contactUsMain';
 
 const StaffDashBoard = lazy(() => import('@/pages/staffPages/StaffDashBoard'));
 
@@ -38,7 +38,8 @@ const AppRoute = () => {
                     <Route path="/verify-staff-otp" element={<StaffOtp />} />
                     <Route path="/student-register" element={<StudentRegistration />} />
                     <Route path="/verify-student-reg-otp" element={<StudentRegistrationOTP />}/>
-                    
+                    <Route path="/contactUs" element={<ContactUs />} />
+		
                     {/* STAFF Routes */}
                     <Route element={<AuthGuard allowedRole="STAFF" />}>
                         <Route path="/Staff-dashboard" element={<StaffDashBoard />} />
