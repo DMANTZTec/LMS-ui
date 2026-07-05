@@ -1,12 +1,13 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState }from 'react';
+import ContactUsMain from '@/pages/public/contactUs/contactUsMain';
 import { GraduationCap, Phone, MessageCircle } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
+
 import { FacebookIcon, YoutubeIcon } from './SocialIcons';
 
 const ActionSidebar = () => {
 
-const navigate = useNavigate();
+const [isContactUsModalOpen, setIsContactUsModalOpen] = useState(false);
 
     return (
         <div className="flex flex-col gap-6">
@@ -16,7 +17,7 @@ const navigate = useNavigate();
                     View Courses
                 </Button>
                 <Button className="w-full h-12 bg-[#445AC8] hover:bg-[#445AC8]/90 text-white text-base font-semibold rounded-lg gap-2"
-                 onClick={() => navigate('/contactUs')}>
+                 onClick={() => setIsContactUsModalOpen(true)}>
                     <Phone className="size-5" />
                     Contact Us
                 </Button>
@@ -42,6 +43,11 @@ const navigate = useNavigate();
                 <p className="text-sm text-[#4A5565]">Watch our introduction video</p>
                 <div className="w-full aspect-video bg-gray-200 rounded-lg mt-2" />
             </div>
+
+<ContactUsMain
+         open={isContactUsModalOpen}
+         onOpenChange={setIsContactUsModalOpen} />
+
         </div>
     );
 };
