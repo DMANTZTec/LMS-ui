@@ -5,7 +5,7 @@ import ContactUsMain from '@/pages/public/contactUs/contactUsMain';
 const CtaSection = () => {
 
 const [isContactUsModalOpen, setIsContactUsModalOpen] = useState(false);
-    
+
     return (
         <div className="bg-gradient-to-r from-[#0F766E] to-[#445AC8] px-4 py-8 md:py-10">
             <div className="max-w-[896px] mx-auto flex flex-col items-center text-center">
@@ -19,17 +19,19 @@ const [isContactUsModalOpen, setIsContactUsModalOpen] = useState(false);
                     <Button className="h-12 px-6 bg-white hover:bg-white/90 text-[#0F766E] text-base font-semibold rounded-lg">
                         Enroll Now
                     </Button>
-                    <Button className="h-12 px-6 bg-transparent hover:bg-white/10 border-2 border-white text-white text-base font-semibold rounded-lg" onClick={() => setIsContactUsModalOpen(true)}>
+                    <Button className="h-12 px-6 bg-transparent hover:bg-white/10 border-2 border-white text-white text-base font-semibold rounded-lg"
+                     onClick={() => setIsContactUsModalOpen(true)}>
                         Contact Us
                     </Button>
                 </div>
             </div>
 
-<ContactUsMain
+        <ContactUsMain
          open={isContactUsModalOpen}
          onOpenChange={setIsContactUsModalOpen} />
 
         </div>
+
     );
 };
 

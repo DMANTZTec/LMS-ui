@@ -8,6 +8,8 @@ import StaffOtp from '@/features/StaffOtp';
 import StudentRegistration from '@/pages/Auth/student_registration/studentRegistration';
 import StudentRegistrationOTP from '@/pages/Auth/student_registration/studentRegistrationOTP';
 import StudentProfile from '@/features/Avatar/student/profile/StudentProfile';
+import StudentForgotPwd from '@/pages/Auth/student_forgot_password/StuForgotPwd';
+import StudentResetPwd from '@/pages/Auth/student_forgot_password/StuResetPwd';
 import ContactUs from '@/pages/public/contactUs/contactUsMain';
 
 const StaffDashBoard = lazy(() => import('@/pages/staffPages/StaffDashBoard'));
@@ -39,7 +41,9 @@ const AppRoute = () => {
                     <Route path="/student-register" element={<StudentRegistration />} />
                     <Route path="/verify-student-reg-otp" element={<StudentRegistrationOTP />}/>
                     <Route path="/contactUs" element={<ContactUs />} />
-		
+		    <Route path="/stuFPwd" element={<StudentForgotPwd />} />
+                    <Route path="/stuResetPwd" element={<StudentResetPwd />} />
+
                     {/* STAFF Routes */}
                     <Route element={<AuthGuard allowedRole="STAFF" />}>
                         <Route path="/Staff-dashboard" element={<StaffDashBoard />} />

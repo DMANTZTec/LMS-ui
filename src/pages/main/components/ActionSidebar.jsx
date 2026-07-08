@@ -5,9 +5,11 @@ import { Button } from '../../../components/ui/button';
 
 import { FacebookIcon, YoutubeIcon } from './SocialIcons';
 
-const ActionSidebar = () => {
 
-const [isContactUsModalOpen, setIsContactUsModalOpen] = useState(false);
+const ActionSidebar = () => {
+    
+    const [isContactUsModalOpen, setIsContactUsModalOpen] = useState(false);
+    
 
     return (
         <div className="flex flex-col gap-6">
@@ -16,8 +18,8 @@ const [isContactUsModalOpen, setIsContactUsModalOpen] = useState(false);
                     <GraduationCap className="size-5" />
                     View Courses
                 </Button>
-                <Button className="w-full h-12 bg-[#445AC8] hover:bg-[#445AC8]/90 text-white text-base font-semibold rounded-lg gap-2"
-                 onClick={() => setIsContactUsModalOpen(true)}>
+                <Button className="w-full h-12 bg-[#445AC8] hover:bg-[#445AC8]/90 text-white text-base font-semibold rounded-lg gap-2" 
+                onClick={() => setIsContactUsModalOpen(true)}>
                     <Phone className="size-5" />
                     Contact Us
                 </Button>
@@ -44,7 +46,7 @@ const [isContactUsModalOpen, setIsContactUsModalOpen] = useState(false);
                 <div className="w-full aspect-video bg-gray-200 rounded-lg mt-2" />
             </div>
 
-<ContactUsMain
+            <ContactUsMain
          open={isContactUsModalOpen}
          onOpenChange={setIsContactUsModalOpen} />
 

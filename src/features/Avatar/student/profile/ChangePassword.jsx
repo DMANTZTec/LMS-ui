@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { studentDataAtom } from '@/store/atoms';
 import { useForm } from 'react-hook-form';
@@ -43,9 +43,23 @@ const ChangePassword = ({ open, onOpenChange }) => {
     const [backendError, setBackendError] = useState(null);
     const [studentData_jotai, setStudentData_jotai] = useAtom(studentDataAtom);
 
-    const { register, handleSubmit, reset, setError, formState: { errors } } = useForm({
-        resolver: zodResolver(changePWDScheema)
+    const { register, handleSubmit, reset, setError, formState: { errors }, watch } = useForm({
+        resolver: zodResolver(changePWDScheema),
+        defaultValues: { 
+            "currentPWD": "",
+            "newPWD":"",
+            "confirmPWD":""             
+        }
     });
+
+    const [currentPWD, newPWD, confirmPWD] = watch(["currentPWD", "newPWD", "confirmPWD"]);
+    
+    useEffect(() => {
+    console.log("entered into useEffect hook. ");
+    setSubmitted(false);
+    setBackendError(null);
+    },[currentPWD,newPWD,confirmPWD]); 
+
 
     const handleOpenChange = (isOpen) => {
         //setOpen(isOpen);
@@ -60,6 +74,9 @@ const ChangePassword = ({ open, onOpenChange }) => {
     };
 
     const save = async (data) => {
+        
+        setBackendError(null);
+        setSubmitted(false);
         console.log("entered into save() function and the data is: ", data);
         console.log("new password is: ", data.newPWD);
         const studentData_ss = JSON.parse(sessionStorage.getItem("stuRegData"));
@@ -77,10 +94,10 @@ const ChangePassword = ({ open, onOpenChange }) => {
             const response = await studentApi.changePassword(payload);
             console.log("response?.data is: ", response?.data);
             console.log("response is: ", response);
-            setBackendError(null);
+            
             setSubmitted(true);
 
-            reset();
+            //reset();
         } catch (error) {
             
             setSubmitted(false);
@@ -88,11 +105,22 @@ const ChangePassword = ({ open, onOpenChange }) => {
             console.log("(error.response?.data).trim().toLowerCase() is: ", (error.response?.data).trim().toLowerCase())
             let backend_error_one = "Current password is incorrect";
             let backend_error_two = "New password must be different from Current password";
-            if ((error.response?.data).trim().toLowerCase() === "old password is incorrect")
+            if ((error.response?.data).trim().toLowerCase() === "old password is incorrect") {
                 setBackendError(backend_error_one);
+
+            setError("currentPWD", {
+            type: "server",
+            message: backend_error_one,
+          })
+         }
             if ((error.response?.data).trim().toLowerCase() === "new password must be different from old password")
                 setBackendError(backend_error_two);
+    setError("newPWD", {
+            type: "server",
+            message: backend_error_two,
+          })
 
+          
         }
 
     }

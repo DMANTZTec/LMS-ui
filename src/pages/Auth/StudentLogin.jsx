@@ -71,7 +71,7 @@ if (studentId) {
             Register
           </Link>
           {" | "}
-          <Link to="/forgot-password" className="hover:text-[#00BBA7] underline transition-colors">
+          <Link to="/stuFPwd" className="hover:text-[#00BBA7] underline transition-colors">
             Forgot Password?
           </Link>
         </>
