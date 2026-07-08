@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **gender** | **string** |  | [optional] [default to undefined]
 **dob** | **string** |  | [optional] [default to undefined]
 **addr1** | **string** |  | [optional] [default to undefined]
+**addr2** | **string** |  | [optional] [default to undefined]
 **city** | **string** |  | [optional] [default to undefined]
 **state** | **string** |  | [optional] [default to undefined]
 **country** | **string** |  | [optional] [default to undefined]
@@ -43,6 +44,7 @@ const instance: StudentResponse = {
     gender,
     dob,
     addr1,
+    addr2,
     city,
     state,
     country,

@@ -1,6 +1,5 @@
 .gitignore
 .npmignore
-.openapi-generator-ignore
 api.ts
 base.ts
 common.ts
@@ -8,9 +7,10 @@ configuration.ts
 docs/AcknowledgeMentorRequest.md
 docs/AddClassTopicRequest.md
 docs/AddScheduleRequest.md
-docs/AssignCourseRequest.md
 docs/AssignInstructorRequest.md
 docs/AssignInstructorToCourseRequest.md
+docs/AssignProgramRequest.md
+docs/AssignProgramResponse.md
 docs/AuthControllerApi.md
 docs/BatchInstructorRequest.md
 docs/BatchInstructorResponse.md
@@ -29,6 +29,10 @@ docs/ContactUsControllerApi.md
 docs/ContactUsRequest.md
 docs/ContactUsResponse.md
 docs/CourseDetailsResponse.md
+docs/CourseFeeControllerApi.md
+docs/CourseFeeHistoryResponse.md
+docs/CourseFeeRequest.md
+docs/CourseFeeSettingResponse.md
 docs/CourseManagementControllerApi.md
 docs/CourseProgressSummaryResponse.md
 docs/CourseResponse.md
@@ -47,6 +51,10 @@ docs/OtpVerifyRequest.md
 docs/OverallProgressResponse.md
 docs/ProgramCourseRequest.md
 docs/ProgramCourseResponse.md
+docs/ProgramFeeControllerApi.md
+docs/ProgramFeeHistoryResponse.md
+docs/ProgramFeeRequest.md
+docs/ProgramFeeSettingResponse.md
 docs/ProgramRequest.md
 docs/ProgramResponse.md
 docs/ProviderControllerApi.md
@@ -78,6 +86,7 @@ docs/StudentLoginRequest.md
 docs/StudentLoginResponse.md
 docs/StudentMyCoursesResponse.md
 docs/StudentNeedHelpRequest.md
+docs/StudentProgramControllerApi.md
 docs/StudentRegistrationRequest.md
 docs/StudentResponse.md
 docs/StudentTaskControllerApi.md

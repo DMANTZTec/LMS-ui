@@ -8,7 +8,6 @@ All URIs are relative to *http://localhost:9090*
 |[**addInstructorsToBatch**](#addinstructorstobatch) | **POST** /api/admin/courseschedule/classes/{batchId}/instructors | |
 |[**addScheduleToClass**](#addscheduletoclass) | **POST** /api/admin/addschedule-to-class | |
 |[**addTopicsToClass**](#addtopicstoclass) | **POST** /api/admin/classes/{batchId}/topics | |
-|[**assignCourseToStudent**](#assigncoursetostudent) | **POST** /api/admin/students/{studentId}/courses | |
 |[**assignInstructor**](#assigninstructor) | **POST** /api/admin/{scheduleId}/assign-instructor | |
 |[**cancelClass**](#cancelclass) | **PATCH** /api/admin/courseschedule/classes/{batchId}/cancel | |
 |[**cancelSchedule**](#cancelschedule) | **PATCH** /api/admin/schedules/{scheduleId}/cancel | |
@@ -223,60 +222,6 @@ const { status, data } = await apiInstance.addTopicsToClass(
 ### Return type
 
 **string**
-
-### Authorization
-
-[BearerAuth](../README.md#BearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: */*
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **assignCourseToStudent**
-> StudentCourseResponse assignCourseToStudent(assignCourseRequest)
-
-
-### Example
-
-```typescript
-import {
-    ClassAdminControllerApi,
-    Configuration,
-    AssignCourseRequest
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new ClassAdminControllerApi(configuration);
-
-let studentId: string; // (default to undefined)
-let assignCourseRequest: AssignCourseRequest; //
-
-const { status, data } = await apiInstance.assignCourseToStudent(
-    studentId,
-    assignCourseRequest
-);
-```
-
-### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **assignCourseRequest** | **AssignCourseRequest**|  | |
-| **studentId** | [**string**] |  | defaults to undefined|
-
-
-### Return type
-
-**StudentCourseResponse**
 
 ### Authorization
 

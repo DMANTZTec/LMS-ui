@@ -1,19 +1,21 @@
-# UpdateClassRequest
+# AssignProgramRequest
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**batchName** | **string** |  | [optional] [default to undefined]
+**studentId** | **string** |  | [default to undefined]
+**programId** | **string** |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { UpdateClassRequest } from './api';
+import { AssignProgramRequest } from './api';
 
-const instance: UpdateClassRequest = {
-    batchName,
+const instance: AssignProgramRequest = {
+    studentId,
+    programId,
 };
 ```
 

@@ -39,15 +39,33 @@ export interface AddScheduleRequest {
     'staffName'?: string;
     'batchId'?: number;
 }
-export interface AssignCourseRequest {
-    'courseId': string;
-}
 export interface AssignInstructorRequest {
     'staffId': string;
 }
 export interface AssignInstructorToCourseRequest {
     'staffIds': Array<string>;
 }
+export interface AssignProgramRequest {
+    'studentId': string;
+    'programId': string;
+}
+export interface AssignProgramResponse {
+    'enrollmentId'?: number;
+    'studentId'?: string;
+    'programId'?: string;
+    'programTitle'?: string;
+    'status'?: AssignProgramResponseStatusEnum;
+    'enrolledCourseIds'?: Array<string>;
+}
+
+export const AssignProgramResponseStatusEnum = {
+    Planned: 'PLANNED',
+    Ongoing: 'ONGOING',
+    Completed: 'COMPLETED',
+} as const;
+
+export type AssignProgramResponseStatusEnum = typeof AssignProgramResponseStatusEnum[keyof typeof AssignProgramResponseStatusEnum];
+
 export interface BatchInstructorRequest {
     'staffIds'?: Array<string>;
 }
@@ -198,6 +216,61 @@ export interface CourseDetailsResponse {
     'description'?: string;
     'chapters'?: Array<ChapterDetailResponse>;
 }
+export interface CourseFeeHistoryResponse {
+    'serialNumber'?: number;
+    'effectiveDate'?: string;
+    'fee'?: number;
+    'discount'?: number;
+    'courseDuration'?: CourseFeeHistoryResponseCourseDurationEnum;
+    'courseDurationLabel'?: string;
+}
+
+export const CourseFeeHistoryResponseCourseDurationEnum = {
+    TwoWeeks: 'TWO_WEEKS',
+    FourWeeks: 'FOUR_WEEKS',
+    SixWeeks: 'SIX_WEEKS',
+    EightWeeks: 'EIGHT_WEEKS',
+    TenWeeks: 'TEN_WEEKS',
+    TwelveWeeks: 'TWELVE_WEEKS',
+    FourteenWeeks: 'FOURTEEN_WEEKS',
+    SixteenWeeks: 'SIXTEEN_WEEKS',
+    EighteenWeeks: 'EIGHTEEN_WEEKS',
+    TwentyWeeks: 'TWENTY_WEEKS',
+} as const;
+
+export type CourseFeeHistoryResponseCourseDurationEnum = typeof CourseFeeHistoryResponseCourseDurationEnum[keyof typeof CourseFeeHistoryResponseCourseDurationEnum];
+
+export interface CourseFeeRequest {
+    'effectiveDate': string;
+    'fee': number;
+    'discount'?: number;
+    'courseDuration'?: CourseFeeRequestCourseDurationEnum;
+}
+
+export const CourseFeeRequestCourseDurationEnum = {
+    TwoWeeks: 'TWO_WEEKS',
+    FourWeeks: 'FOUR_WEEKS',
+    SixWeeks: 'SIX_WEEKS',
+    EightWeeks: 'EIGHT_WEEKS',
+    TenWeeks: 'TEN_WEEKS',
+    TwelveWeeks: 'TWELVE_WEEKS',
+    FourteenWeeks: 'FOURTEEN_WEEKS',
+    SixteenWeeks: 'SIXTEEN_WEEKS',
+    EighteenWeeks: 'EIGHTEEN_WEEKS',
+    TwentyWeeks: 'TWENTY_WEEKS',
+} as const;
+
+export type CourseFeeRequestCourseDurationEnum = typeof CourseFeeRequestCourseDurationEnum[keyof typeof CourseFeeRequestCourseDurationEnum];
+
+export interface CourseFeeSettingResponse {
+    'courseId'?: string;
+    'courseTitle'?: string;
+    'subjectNm'?: string;
+    'courseDuration'?: string;
+    'currentFee'?: CourseFeeHistoryResponse;
+    'feeHistory'?: Array<CourseFeeHistoryResponse>;
+    'totalHistoryRecords'?: number;
+}
 export interface CourseProgressSummaryResponse {
     'courseId'?: string;
     'courseName'?: string;
@@ -333,6 +406,64 @@ export interface ProgramCourseResponse {
     'id'?: number;
     'programId'?: string;
     'courseId'?: string;
+}
+export interface ProgramFeeHistoryResponse {
+    'effectiveDate'?: string;
+    'fee'?: number;
+    'discount'?: number;
+    'duration'?: ProgramFeeHistoryResponseDurationEnum;
+    'durationLabel'?: string;
+    'setBy'?: string;
+}
+
+export const ProgramFeeHistoryResponseDurationEnum = {
+    OneMonth: 'ONE_MONTH',
+    TwoMonths: 'TWO_MONTHS',
+    ThreeMonths: 'THREE_MONTHS',
+    FourMonths: 'FOUR_MONTHS',
+    FiveMonths: 'FIVE_MONTHS',
+    SixMonths: 'SIX_MONTHS',
+    SevenMonths: 'SEVEN_MONTHS',
+    EightMonths: 'EIGHT_MONTHS',
+    NineMonths: 'NINE_MONTHS',
+    TenMonths: 'TEN_MONTHS',
+    ElevenMonths: 'ELEVEN_MONTHS',
+    TwelveMonths: 'TWELVE_MONTHS',
+} as const;
+
+export type ProgramFeeHistoryResponseDurationEnum = typeof ProgramFeeHistoryResponseDurationEnum[keyof typeof ProgramFeeHistoryResponseDurationEnum];
+
+export interface ProgramFeeRequest {
+    'effectiveDate': string;
+    'fee': number;
+    'discount'?: number;
+    'duration'?: ProgramFeeRequestDurationEnum;
+}
+
+export const ProgramFeeRequestDurationEnum = {
+    OneMonth: 'ONE_MONTH',
+    TwoMonths: 'TWO_MONTHS',
+    ThreeMonths: 'THREE_MONTHS',
+    FourMonths: 'FOUR_MONTHS',
+    FiveMonths: 'FIVE_MONTHS',
+    SixMonths: 'SIX_MONTHS',
+    SevenMonths: 'SEVEN_MONTHS',
+    EightMonths: 'EIGHT_MONTHS',
+    NineMonths: 'NINE_MONTHS',
+    TenMonths: 'TEN_MONTHS',
+    ElevenMonths: 'ELEVEN_MONTHS',
+    TwelveMonths: 'TWELVE_MONTHS',
+} as const;
+
+export type ProgramFeeRequestDurationEnum = typeof ProgramFeeRequestDurationEnum[keyof typeof ProgramFeeRequestDurationEnum];
+
+export interface ProgramFeeSettingResponse {
+    'programId'?: string;
+    'programTitle'?: string;
+    'duration'?: string;
+    'currentFee'?: ProgramFeeHistoryResponse;
+    'feeHistory'?: Array<ProgramFeeHistoryResponse>;
+    'totalHistoryRecords'?: number;
 }
 export interface ProgramRequest {
     'programTitle': string;
@@ -584,6 +715,7 @@ export interface StudentResponse {
     'gender'?: string;
     'dob'?: string;
     'addr1'?: string;
+    'addr2'?: string;
     'city'?: string;
     'state'?: string;
     'country'?: string;
@@ -768,9 +900,7 @@ export interface TopicUrlReferenceRequestDto {
     'refById'?: string;
 }
 export interface UpdateClassRequest {
-    'className'?: string;
-    'startDate'?: string;
-    'endDate'?: string;
+    'batchName'?: string;
 }
 export interface UpdateCourseRequest {
     'courseTitle': string;
@@ -1066,48 +1196,6 @@ export const ClassAdminControllerApiAxiosParamCreator = function (configuration?
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(addClassTopicRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} studentId 
-         * @param {AssignCourseRequest} assignCourseRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        assignCourseToStudent: async (studentId: string, assignCourseRequest: AssignCourseRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'studentId' is not null or undefined
-            assertParamExists('assignCourseToStudent', 'studentId', studentId)
-            // verify required parameter 'assignCourseRequest' is not null or undefined
-            assertParamExists('assignCourseToStudent', 'assignCourseRequest', assignCourseRequest)
-            const localVarPath = `/api/admin/students/{studentId}/courses`
-                .replace(`{${"studentId"}}`, encodeURIComponent(String(studentId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            localVarHeaderParameter['Accept'] = '*/*';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(assignCourseRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1868,19 +1956,6 @@ export const ClassAdminControllerApiFp = function(configuration?: Configuration)
         },
         /**
          * 
-         * @param {string} studentId 
-         * @param {AssignCourseRequest} assignCourseRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async assignCourseToStudent(studentId: string, assignCourseRequest: AssignCourseRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentCourseResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.assignCourseToStudent(studentId, assignCourseRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ClassAdminControllerApi.assignCourseToStudent']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @param {number} scheduleId 
          * @param {AssignInstructorRequest} assignInstructorRequest 
          * @param {*} [options] Override http request option.
@@ -2149,16 +2224,6 @@ export const ClassAdminControllerApiFactory = function (configuration?: Configur
         },
         /**
          * 
-         * @param {string} studentId 
-         * @param {AssignCourseRequest} assignCourseRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        assignCourseToStudent(studentId: string, assignCourseRequest: AssignCourseRequest, options?: RawAxiosRequestConfig): AxiosPromise<StudentCourseResponse> {
-            return localVarFp.assignCourseToStudent(studentId, assignCourseRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {number} scheduleId 
          * @param {AssignInstructorRequest} assignInstructorRequest 
          * @param {*} [options] Override http request option.
@@ -2371,17 +2436,6 @@ export class ClassAdminControllerApi extends BaseAPI {
      */
     public addTopicsToClass(batchId: number, addClassTopicRequest: AddClassTopicRequest, options?: RawAxiosRequestConfig) {
         return ClassAdminControllerApiFp(this.configuration).addTopicsToClass(batchId, addClassTopicRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {string} studentId 
-     * @param {AssignCourseRequest} assignCourseRequest 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    public assignCourseToStudent(studentId: string, assignCourseRequest: AssignCourseRequest, options?: RawAxiosRequestConfig) {
-        return ClassAdminControllerApiFp(this.configuration).assignCourseToStudent(studentId, assignCourseRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2968,6 +3022,347 @@ export class ContactUsControllerApi extends BaseAPI {
      */
     public getContactUsById(id: number, options?: RawAxiosRequestConfig) {
         return ContactUsControllerApiFp(this.configuration).getContactUsById(id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * CourseFeeControllerApi - axios parameter creator
+ */
+export const CourseFeeControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} courseId 
+         * @param {string} staffId 
+         * @param {CourseFeeRequest} courseFeeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createCourseFee: async (courseId: string, staffId: string, courseFeeRequest: CourseFeeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'courseId' is not null or undefined
+            assertParamExists('createCourseFee', 'courseId', courseId)
+            // verify required parameter 'staffId' is not null or undefined
+            assertParamExists('createCourseFee', 'staffId', staffId)
+            // verify required parameter 'courseFeeRequest' is not null or undefined
+            assertParamExists('createCourseFee', 'courseFeeRequest', courseFeeRequest)
+            const localVarPath = `/api/course-fee/{courseId}`
+                .replace(`{${"courseId"}}`, encodeURIComponent(String(courseId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (staffId !== undefined) {
+                localVarQueryParameter['staffId'] = staffId;
+            }
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(courseFeeRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} courseId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCourseFeeSetting: async (courseId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'courseId' is not null or undefined
+            assertParamExists('getCourseFeeSetting', 'courseId', courseId)
+            const localVarPath = `/api/course-fee/{courseId}`
+                .replace(`{${"courseId"}}`, encodeURIComponent(String(courseId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} courseId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getFeeHistory1: async (courseId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'courseId' is not null or undefined
+            assertParamExists('getFeeHistory1', 'courseId', courseId)
+            const localVarPath = `/api/course-fee/{courseId}/history`
+                .replace(`{${"courseId"}}`, encodeURIComponent(String(courseId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} courseId 
+         * @param {string} staffId 
+         * @param {CourseFeeRequest} courseFeeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateCourseFee: async (courseId: string, staffId: string, courseFeeRequest: CourseFeeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'courseId' is not null or undefined
+            assertParamExists('updateCourseFee', 'courseId', courseId)
+            // verify required parameter 'staffId' is not null or undefined
+            assertParamExists('updateCourseFee', 'staffId', staffId)
+            // verify required parameter 'courseFeeRequest' is not null or undefined
+            assertParamExists('updateCourseFee', 'courseFeeRequest', courseFeeRequest)
+            const localVarPath = `/api/course-fee/{courseId}`
+                .replace(`{${"courseId"}}`, encodeURIComponent(String(courseId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (staffId !== undefined) {
+                localVarQueryParameter['staffId'] = staffId;
+            }
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(courseFeeRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * CourseFeeControllerApi - functional programming interface
+ */
+export const CourseFeeControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = CourseFeeControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} courseId 
+         * @param {string} staffId 
+         * @param {CourseFeeRequest} courseFeeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createCourseFee(courseId: string, staffId: string, courseFeeRequest: CourseFeeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CourseFeeHistoryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createCourseFee(courseId, staffId, courseFeeRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CourseFeeControllerApi.createCourseFee']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} courseId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getCourseFeeSetting(courseId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CourseFeeSettingResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCourseFeeSetting(courseId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CourseFeeControllerApi.getCourseFeeSetting']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} courseId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getFeeHistory1(courseId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<CourseFeeHistoryResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getFeeHistory1(courseId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CourseFeeControllerApi.getFeeHistory1']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} courseId 
+         * @param {string} staffId 
+         * @param {CourseFeeRequest} courseFeeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateCourseFee(courseId: string, staffId: string, courseFeeRequest: CourseFeeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CourseFeeSettingResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateCourseFee(courseId, staffId, courseFeeRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CourseFeeControllerApi.updateCourseFee']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * CourseFeeControllerApi - factory interface
+ */
+export const CourseFeeControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = CourseFeeControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {string} courseId 
+         * @param {string} staffId 
+         * @param {CourseFeeRequest} courseFeeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createCourseFee(courseId: string, staffId: string, courseFeeRequest: CourseFeeRequest, options?: RawAxiosRequestConfig): AxiosPromise<CourseFeeHistoryResponse> {
+            return localVarFp.createCourseFee(courseId, staffId, courseFeeRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} courseId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCourseFeeSetting(courseId: string, options?: RawAxiosRequestConfig): AxiosPromise<CourseFeeSettingResponse> {
+            return localVarFp.getCourseFeeSetting(courseId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} courseId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getFeeHistory1(courseId: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<CourseFeeHistoryResponse>> {
+            return localVarFp.getFeeHistory1(courseId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} courseId 
+         * @param {string} staffId 
+         * @param {CourseFeeRequest} courseFeeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateCourseFee(courseId: string, staffId: string, courseFeeRequest: CourseFeeRequest, options?: RawAxiosRequestConfig): AxiosPromise<CourseFeeSettingResponse> {
+            return localVarFp.updateCourseFee(courseId, staffId, courseFeeRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * CourseFeeControllerApi - object-oriented interface
+ */
+export class CourseFeeControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {string} courseId 
+     * @param {string} staffId 
+     * @param {CourseFeeRequest} courseFeeRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public createCourseFee(courseId: string, staffId: string, courseFeeRequest: CourseFeeRequest, options?: RawAxiosRequestConfig) {
+        return CourseFeeControllerApiFp(this.configuration).createCourseFee(courseId, staffId, courseFeeRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} courseId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getCourseFeeSetting(courseId: string, options?: RawAxiosRequestConfig) {
+        return CourseFeeControllerApiFp(this.configuration).getCourseFeeSetting(courseId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} courseId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getFeeHistory1(courseId: string, options?: RawAxiosRequestConfig) {
+        return CourseFeeControllerApiFp(this.configuration).getFeeHistory1(courseId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} courseId 
+     * @param {string} staffId 
+     * @param {CourseFeeRequest} courseFeeRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public updateCourseFee(courseId: string, staffId: string, courseFeeRequest: CourseFeeRequest, options?: RawAxiosRequestConfig) {
+        return CourseFeeControllerApiFp(this.configuration).updateCourseFee(courseId, staffId, courseFeeRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -6164,6 +6559,347 @@ export type CreateCourseLevelEnum = typeof CreateCourseLevelEnum[keyof typeof Cr
 
 
 /**
+ * ProgramFeeControllerApi - axios parameter creator
+ */
+export const ProgramFeeControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} programId 
+         * @param {string} staffId 
+         * @param {ProgramFeeRequest} programFeeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createProgramFee: async (programId: string, staffId: string, programFeeRequest: ProgramFeeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'programId' is not null or undefined
+            assertParamExists('createProgramFee', 'programId', programId)
+            // verify required parameter 'staffId' is not null or undefined
+            assertParamExists('createProgramFee', 'staffId', staffId)
+            // verify required parameter 'programFeeRequest' is not null or undefined
+            assertParamExists('createProgramFee', 'programFeeRequest', programFeeRequest)
+            const localVarPath = `/api/program-fee/{programId}`
+                .replace(`{${"programId"}}`, encodeURIComponent(String(programId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (staffId !== undefined) {
+                localVarQueryParameter['staffId'] = staffId;
+            }
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(programFeeRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} programId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getFeeHistory: async (programId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'programId' is not null or undefined
+            assertParamExists('getFeeHistory', 'programId', programId)
+            const localVarPath = `/api/program-fee/{programId}/history`
+                .replace(`{${"programId"}}`, encodeURIComponent(String(programId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} programId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProgramFeeSetting: async (programId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'programId' is not null or undefined
+            assertParamExists('getProgramFeeSetting', 'programId', programId)
+            const localVarPath = `/api/program-fee/{programId}`
+                .replace(`{${"programId"}}`, encodeURIComponent(String(programId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} programId 
+         * @param {string} staffId 
+         * @param {ProgramFeeRequest} programFeeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateProgramFee: async (programId: string, staffId: string, programFeeRequest: ProgramFeeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'programId' is not null or undefined
+            assertParamExists('updateProgramFee', 'programId', programId)
+            // verify required parameter 'staffId' is not null or undefined
+            assertParamExists('updateProgramFee', 'staffId', staffId)
+            // verify required parameter 'programFeeRequest' is not null or undefined
+            assertParamExists('updateProgramFee', 'programFeeRequest', programFeeRequest)
+            const localVarPath = `/api/program-fee/{programId}`
+                .replace(`{${"programId"}}`, encodeURIComponent(String(programId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (staffId !== undefined) {
+                localVarQueryParameter['staffId'] = staffId;
+            }
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(programFeeRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ProgramFeeControllerApi - functional programming interface
+ */
+export const ProgramFeeControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ProgramFeeControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} programId 
+         * @param {string} staffId 
+         * @param {ProgramFeeRequest} programFeeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createProgramFee(programId: string, staffId: string, programFeeRequest: ProgramFeeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProgramFeeHistoryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createProgramFee(programId, staffId, programFeeRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProgramFeeControllerApi.createProgramFee']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} programId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getFeeHistory(programId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProgramFeeHistoryResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getFeeHistory(programId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProgramFeeControllerApi.getFeeHistory']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} programId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getProgramFeeSetting(programId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProgramFeeSettingResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getProgramFeeSetting(programId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProgramFeeControllerApi.getProgramFeeSetting']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} programId 
+         * @param {string} staffId 
+         * @param {ProgramFeeRequest} programFeeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateProgramFee(programId: string, staffId: string, programFeeRequest: ProgramFeeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProgramFeeSettingResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateProgramFee(programId, staffId, programFeeRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProgramFeeControllerApi.updateProgramFee']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ProgramFeeControllerApi - factory interface
+ */
+export const ProgramFeeControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ProgramFeeControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {string} programId 
+         * @param {string} staffId 
+         * @param {ProgramFeeRequest} programFeeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createProgramFee(programId: string, staffId: string, programFeeRequest: ProgramFeeRequest, options?: RawAxiosRequestConfig): AxiosPromise<ProgramFeeHistoryResponse> {
+            return localVarFp.createProgramFee(programId, staffId, programFeeRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} programId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getFeeHistory(programId: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<ProgramFeeHistoryResponse>> {
+            return localVarFp.getFeeHistory(programId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} programId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProgramFeeSetting(programId: string, options?: RawAxiosRequestConfig): AxiosPromise<ProgramFeeSettingResponse> {
+            return localVarFp.getProgramFeeSetting(programId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} programId 
+         * @param {string} staffId 
+         * @param {ProgramFeeRequest} programFeeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateProgramFee(programId: string, staffId: string, programFeeRequest: ProgramFeeRequest, options?: RawAxiosRequestConfig): AxiosPromise<ProgramFeeSettingResponse> {
+            return localVarFp.updateProgramFee(programId, staffId, programFeeRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ProgramFeeControllerApi - object-oriented interface
+ */
+export class ProgramFeeControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {string} programId 
+     * @param {string} staffId 
+     * @param {ProgramFeeRequest} programFeeRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public createProgramFee(programId: string, staffId: string, programFeeRequest: ProgramFeeRequest, options?: RawAxiosRequestConfig) {
+        return ProgramFeeControllerApiFp(this.configuration).createProgramFee(programId, staffId, programFeeRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} programId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getFeeHistory(programId: string, options?: RawAxiosRequestConfig) {
+        return ProgramFeeControllerApiFp(this.configuration).getFeeHistory(programId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} programId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getProgramFeeSetting(programId: string, options?: RawAxiosRequestConfig) {
+        return ProgramFeeControllerApiFp(this.configuration).getProgramFeeSetting(programId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} programId 
+     * @param {string} staffId 
+     * @param {ProgramFeeRequest} programFeeRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public updateProgramFee(programId: string, staffId: string, programFeeRequest: ProgramFeeRequest, options?: RawAxiosRequestConfig) {
+        return ProgramFeeControllerApiFp(this.configuration).updateProgramFee(programId, staffId, programFeeRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * ProviderControllerApi - axios parameter creator
  */
 export const ProviderControllerApiAxiosParamCreator = function (configuration?: Configuration) {
@@ -9102,6 +9838,108 @@ export const GetMyCoursesStatusEnum = {
     Completed: 'COMPLETED',
 } as const;
 export type GetMyCoursesStatusEnum = typeof GetMyCoursesStatusEnum[keyof typeof GetMyCoursesStatusEnum];
+
+
+/**
+ * StudentProgramControllerApi - axios parameter creator
+ */
+export const StudentProgramControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {AssignProgramRequest} assignProgramRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        assignProgramToStudent: async (assignProgramRequest: AssignProgramRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'assignProgramRequest' is not null or undefined
+            assertParamExists('assignProgramToStudent', 'assignProgramRequest', assignProgramRequest)
+            const localVarPath = `/api/student-programs/assign`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(assignProgramRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * StudentProgramControllerApi - functional programming interface
+ */
+export const StudentProgramControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = StudentProgramControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {AssignProgramRequest} assignProgramRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async assignProgramToStudent(assignProgramRequest: AssignProgramRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AssignProgramResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.assignProgramToStudent(assignProgramRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StudentProgramControllerApi.assignProgramToStudent']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * StudentProgramControllerApi - factory interface
+ */
+export const StudentProgramControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = StudentProgramControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {AssignProgramRequest} assignProgramRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        assignProgramToStudent(assignProgramRequest: AssignProgramRequest, options?: RawAxiosRequestConfig): AxiosPromise<AssignProgramResponse> {
+            return localVarFp.assignProgramToStudent(assignProgramRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * StudentProgramControllerApi - object-oriented interface
+ */
+export class StudentProgramControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {AssignProgramRequest} assignProgramRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public assignProgramToStudent(assignProgramRequest: AssignProgramRequest, options?: RawAxiosRequestConfig) {
+        return StudentProgramControllerApiFp(this.configuration).assignProgramToStudent(assignProgramRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
 
 
 /**
