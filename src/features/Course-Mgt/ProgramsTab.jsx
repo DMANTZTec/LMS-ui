@@ -5,12 +5,14 @@ import { Button } from '@/components/ui/button';
 import { ChevronRight, ChevronDown, Eye, Pencil } from 'lucide-react';
 
 import { api } from '@/api/CourseMgtController';
+import { programFeeApi } from '@/api/program-fee-controller';
 import ProgramFormDialog from './ProgramsTabComponents/ProgramFormDialog';
 import ProgramViewDialog from './ProgramsTabComponents/ProgramViewDialog';
 import EditProgram from './ProgramsTabComponents/EditProgram';
 import AddCoursesDialog from './ProgramsTabComponents/AddCoursesDialog';
 import RemoveCoursesDialog from './ProgramsTabComponents/RemoveCoursesDialog';
 import DeleteProgramDialog from './ProgramsTabComponents/DeleteProgramDialog';
+import ProgramFeeDialog, { durationLabel } from './ProgramsTabComponents/ProgramFeeDialog';
 
 // const programsData = [
 //     {
@@ -48,6 +50,38 @@ import DeleteProgramDialog from './ProgramsTabComponents/DeleteProgramDialog';
 //     }
 
 // ];
+
+
+// Fetches the current fee & duration for a single program from
+// getProgramFeeSetting and renders the FEE / DURATION table cells.
+// Shares the ['programFee', programId] cache key with ProgramFeeDialog,
+// so opening that dialog and this cell never triggers duplicate requests.
+const ProgramFeeCells = ({ program }) => {
+    const { data: feeData, isLoading } = useQuery({
+        queryKey: ['programFee', program.programId],
+        queryFn: async () => {
+            const response = await programFeeApi.getProgramFeeSetting(program.programId);
+            return response.data;
+        },
+        staleTime: 2 * 60 * 1000,
+    });
+
+    const fee = feeData?.currentFee?.fee;
+    const durationText = feeData?.currentFee?.durationLabel
+        || durationLabel(feeData?.currentFee?.duration)
+        || feeData?.duration;
+
+    return (
+        <>
+            <TableCell>
+                {isLoading ? '…' : (fee != null ? `₹${Number(fee).toLocaleString('en-IN')}` : '#NA')}
+            </TableCell>
+            <TableCell>
+                {isLoading ? '…' : (durationText || '0 Months')}
+            </TableCell>
+        </>
+    );
+};
 
 
 
@@ -94,6 +128,7 @@ if (error) return <div>Error: {error.message}</div>;
                             <TableHead>PROGRAM NAME</TableHead>
                             <TableHead>NO OF COURSES</TableHead>
                             <TableHead>FEE</TableHead>
+                            <TableHead>DURATION</TableHead>
                             <TableHead>ACTIONS</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -111,7 +146,7 @@ if (error) return <div>Error: {error.message}</div>;
                                     <TableCell>{program.programId}</TableCell>
                                     <TableCell>{program.programTitle}</TableCell>
                                     <TableCell>{program.coursesList.length}</TableCell>
-                                    <TableCell>{program.fee}</TableCell>
+                                    <ProgramFeeCells program={program} />
                                     <TableCell className="flex gap-2">
                                           {/* <Button variant='ghost'>
                                             <Eye className="w-5 h-5 text-blue-500 cursor-pointer" />
@@ -122,7 +157,9 @@ if (error) return <div>Error: {error.message}</div>;
                                         {/* Start */}
                                           <ProgramViewDialog program={program} />
                                         <EditProgram program={program} onUpdateSuccess={refetch} />
+                                        <ProgramFeeDialog program={program} onSaveSuccess={refetch} />
                                          <DeleteProgramDialog programId={program.programId} id={program.id} programTitle={program.programTitle} onDeleteSuccess={refetch}/>
+                                         
                                         {/* END */}
                                         
                                     </TableCell>
@@ -133,7 +170,7 @@ if (error) return <div>Error: {error.message}</div>;
 
 
                                     <TableRow>
-                                        <TableCell colspan={6} className='bg-gray-100'>
+                                        <TableCell colspan={7} className='bg-gray-100'>
                                             <div className='bg-white rounded-lg overflow-x-auto ml-10 mr-10'>
                                                 {/* Code Add course */}
                                               <div className="flex justify-between items-center mb-3">
