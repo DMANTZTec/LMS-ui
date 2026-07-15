@@ -1,4 +1,4 @@
-import { AuthControllerApi } from "./openApi";
-import axiosInstance from './axios/setupInterceptors';
+// import { AuthControllerApi } from "./openApi";
+// import axiosInstance from './axios/setupInterceptors';
 
-export const authapi= new AuthControllerApi(undefined, undefined, axiosInstance);
+// export const authapi= new AuthControllerApi(undefined, undefined, axiosInstance);

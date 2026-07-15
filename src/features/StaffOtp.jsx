@@ -32,12 +32,13 @@ export default function StaffOtp() {
 
     try {
       const payload = {
-      staffId: staffId,
+      //staffId: staffId,
+      emailId: JSON.parse(sessionStorage.getItem('otpStaff') || "{}").email,                         // modified 
       otp: value,
     };
 
-      const res = await staffApi.verifyOtp1(payload);
-
+      //const res = await staffApi.verifyOtp1(payload);
+        const res = await staffApi.verifyStaffOtp(payload);   
       alert(res.data.message || "Verified ✅");
        const { token } = res.data;
        if (token) {

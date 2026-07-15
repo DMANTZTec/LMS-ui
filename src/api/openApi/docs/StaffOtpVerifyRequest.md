@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**staffId** | **string** |  | [optional] [default to undefined]
+**emailId** | **string** |  | [optional] [default to undefined]
 **otp** | **string** |  | [optional] [default to undefined]
 
 ## Example
@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 import { StaffOtpVerifyRequest } from './api';
 
 const instance: StaffOtpVerifyRequest = {
-    staffId,
+    emailId,
     otp,
 };
 ```

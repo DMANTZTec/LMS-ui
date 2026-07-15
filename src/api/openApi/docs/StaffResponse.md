@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **lastNm** | **string** |  | [optional] [default to undefined]
 **email** | **string** |  | [optional] [default to undefined]
 **mobileNum** | **string** |  | [optional] [default to undefined]
+**dateOfJoining** | **string** |  | [optional] [default to undefined]
 **designation** | **string** |  | [optional] [default to undefined]
 **status** | **string** |  | [optional] [default to undefined]
 **enabled** | **string** |  | [optional] [default to undefined]
@@ -30,6 +31,7 @@ const instance: StaffResponse = {
     lastNm,
     email,
     mobileNum,
+    dateOfJoining,
     designation,
     status,
     enabled,

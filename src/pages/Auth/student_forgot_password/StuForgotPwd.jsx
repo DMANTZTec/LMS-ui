@@ -8,6 +8,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader } from "lucide-react";
+import { toast } from 'react-hot-toast';
 
 import { studentApi } from '@/api/student-controller.api';
 
@@ -50,7 +51,11 @@ const StuForgotPwd = () => {
             const response = await studentApi.forgotPassword({ getEmailIdOrMobileNo: data.emailOrmobile, otpChannel: "EMAIL" });
             console.log("response is: ", response);
             console.log("response.data is:", response.data);
-            navigate("/stuResetPwd", { state: { EmailIdOrMobileNo: data.emailOrmobile } });
+            toast.success("OTP sent to entered mail", { duration:5000,className: '!bg-green-800 !text-white' });
+            setTimeout(() => {
+              navigate("/stuResetPwd", { state: { EmailIdOrMobileNo: data.emailOrmobile } });  
+            },5000);
+            
             reset();
         } catch (error) {
             const backendErrors = error.response?.data?.fieldErrors;

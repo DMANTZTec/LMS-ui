@@ -5,7 +5,6 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**studentId** | **string** |  | [optional] [default to undefined]
 **emailIdOrMobileNo** | **string** |  | [default to undefined]
 **otp** | **string** |  | [default to undefined]
 **newPassword** | **string** |  | [default to undefined]
@@ -16,7 +15,6 @@ Name | Type | Description | Notes
 import { ResetPasswordRequest } from './api';
 
 const instance: ResetPasswordRequest = {
-    studentId,
     emailIdOrMobileNo,
     otp,
     newPassword,

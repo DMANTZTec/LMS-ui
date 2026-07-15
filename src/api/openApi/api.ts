@@ -398,6 +398,27 @@ export interface OverallProgressResponse {
     'overallPercentage'?: number;
     'completed'?: boolean;
 }
+export interface PageStaffResponse {
+    'totalPages'?: number;
+    'totalElements'?: number;
+    'first'?: boolean;
+    'last'?: boolean;
+    'size'?: number;
+    'content'?: Array<StaffResponse>;
+    'number'?: number;
+    'sort'?: SortObject;
+    'numberOfElements'?: number;
+    'pageable'?: PageableObject;
+    'empty'?: boolean;
+}
+export interface PageableObject {
+    'offset'?: number;
+    'sort'?: SortObject;
+    'pageSize'?: number;
+    'pageNumber'?: number;
+    'unpaged'?: boolean;
+    'paged'?: boolean;
+}
 export interface ProgramCourseRequest {
     'programId': string;
     'courseIds': Array<string>;
@@ -549,10 +570,19 @@ export const ResendOtpRequestOtpChannelEnum = {
 export type ResendOtpRequestOtpChannelEnum = typeof ResendOtpRequestOtpChannelEnum[keyof typeof ResendOtpRequestOtpChannelEnum];
 
 export interface ResetPasswordRequest {
-    'studentId'?: string;
     'emailIdOrMobileNo': string;
     'otp': string;
     'newPassword': string;
+}
+export interface SetStaffPasswordRequest {
+    'token': string;
+    'password': string;
+    'confirmPassword': string;
+}
+export interface SortObject {
+    'empty'?: boolean;
+    'sorted'?: boolean;
+    'unsorted'?: boolean;
 }
 export interface StaffCourseResponse {
     'id'?: number;
@@ -574,7 +604,7 @@ export interface StaffLoginResponse {
     'message'?: string;
 }
 export interface StaffOtpVerifyRequest {
-    'staffId'?: string;
+    'emailId'?: string;
     'otp'?: string;
 }
 export interface StaffPasswordResponse {
@@ -612,6 +642,7 @@ export interface StaffResponse {
     'lastNm'?: string;
     'email'?: string;
     'mobileNum'?: string;
+    'dateOfJoining'?: string;
     'designation'?: string;
     'status'?: string;
     'enabled'?: string;
@@ -930,108 +961,6 @@ export interface WeeklyScheduleResponse {
     'totalClasses'?: number;
     'classes'?: Array<ClassScheduleResponse>;
 }
-
-/**
- * AuthControllerApi - axios parameter creator
- */
-export const AuthControllerApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @param {StaffLoginRequest} staffLoginRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        staffLogin: async (staffLoginRequest: StaffLoginRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'staffLoginRequest' is not null or undefined
-            assertParamExists('staffLogin', 'staffLoginRequest', staffLoginRequest)
-            const localVarPath = `/api/auth/staff/login`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            localVarHeaderParameter['Accept'] = '*/*';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(staffLoginRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * AuthControllerApi - functional programming interface
- */
-export const AuthControllerApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = AuthControllerApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @param {StaffLoginRequest} staffLoginRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async staffLogin(staffLoginRequest: StaffLoginRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffLoginResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.staffLogin(staffLoginRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['AuthControllerApi.staffLogin']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * AuthControllerApi - factory interface
- */
-export const AuthControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = AuthControllerApiFp(configuration)
-    return {
-        /**
-         * 
-         * @param {StaffLoginRequest} staffLoginRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        staffLogin(staffLoginRequest: StaffLoginRequest, options?: RawAxiosRequestConfig): AxiosPromise<StaffLoginResponse> {
-            return localVarFp.staffLogin(staffLoginRequest, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * AuthControllerApi - object-oriented interface
- */
-export class AuthControllerApi extends BaseAPI {
-    /**
-     * 
-     * @param {StaffLoginRequest} staffLoginRequest 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    public staffLogin(staffLoginRequest: StaffLoginRequest, options?: RawAxiosRequestConfig) {
-        return AuthControllerApiFp(this.configuration).staffLogin(staffLoginRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
 
 /**
  * ClassAdminControllerApi - axios parameter creator
@@ -7311,14 +7240,30 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
     return {
         /**
          * 
-         * @param {ForgotPasswordRequest} forgotPasswordRequest 
+         * @param {string} firstNm 
+         * @param {string} lastNm 
+         * @param {string} emailId 
+         * @param {string} mobileNum 
+         * @param {Set<number>} roleIds 
+         * @param {string} [dob] 
+         * @param {CreateStaffGenderEnum} [gender] 
+         * @param {string} [dateOfJoining] 
+         * @param {File} [profileImg] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        forgotPassword1: async (forgotPasswordRequest: ForgotPasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'forgotPasswordRequest' is not null or undefined
-            assertParamExists('forgotPassword1', 'forgotPasswordRequest', forgotPasswordRequest)
-            const localVarPath = `/api/staff/forgot-password`;
+        createStaff: async (firstNm: string, lastNm: string, emailId: string, mobileNum: string, roleIds: Set<number>, dob?: string, gender?: CreateStaffGenderEnum, dateOfJoining?: string, profileImg?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'firstNm' is not null or undefined
+            assertParamExists('createStaff', 'firstNm', firstNm)
+            // verify required parameter 'lastNm' is not null or undefined
+            assertParamExists('createStaff', 'lastNm', lastNm)
+            // verify required parameter 'emailId' is not null or undefined
+            assertParamExists('createStaff', 'emailId', emailId)
+            // verify required parameter 'mobileNum' is not null or undefined
+            assertParamExists('createStaff', 'mobileNum', mobileNum)
+            // verify required parameter 'roleIds' is not null or undefined
+            assertParamExists('createStaff', 'roleIds', roleIds)
+            const localVarPath = `/api/staff/register`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -7329,18 +7274,98 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
             // authentication BearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            if (firstNm !== undefined) { 
+                localVarFormParams.append('firstNm', firstNm as any);
+            }
+
+            if (lastNm !== undefined) { 
+                localVarFormParams.append('lastNm', lastNm as any);
+            }
+
+            if (emailId !== undefined) { 
+                localVarFormParams.append('emailId', emailId as any);
+            }
+
+            if (mobileNum !== undefined) { 
+                localVarFormParams.append('mobileNum', mobileNum as any);
+            }
+
+            if (dob !== undefined) { 
+                localVarFormParams.append('dob', dob as any);
+            }
+
+            if (gender !== undefined) { 
+                localVarFormParams.append('gender', gender as any);
+            }
+
+            if (dateOfJoining !== undefined) { 
+                localVarFormParams.append('dateOfJoining', dateOfJoining as any);
+            }
+
+            if (profileImg !== undefined) { 
+                localVarFormParams.append('profileImg', profileImg as any);
+            }
+            if (roleIds) {
+                localVarFormParams.append('roleIds', roleIds.join(COLLECTION_FORMATS.csv));
+            }
+
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
             localVarHeaderParameter['Accept'] = '*/*';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(forgotPasswordRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getActiveStaff: async (page?: number, size?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/staff/active`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -7368,6 +7393,49 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
             // authentication BearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllStaff1: async (page?: number, size?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/staff/pagination`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
 
             localVarHeaderParameter['Accept'] = '*/*';
 
@@ -7457,49 +7525,6 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
         },
         /**
          * 
-         * @param {StaffRegistrationRequest} staffRegistrationRequest 
-         * @param {string} [loggedInStaffId] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        registerStaff: async (staffRegistrationRequest: StaffRegistrationRequest, loggedInStaffId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'staffRegistrationRequest' is not null or undefined
-            assertParamExists('registerStaff', 'staffRegistrationRequest', staffRegistrationRequest)
-            const localVarPath = `/api/staff/register`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            if (loggedInStaffId !== undefined) {
-                localVarQueryParameter['loggedInStaffId'] = loggedInStaffId;
-            }
-
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            localVarHeaderParameter['Accept'] = '*/*';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(staffRegistrationRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @param {StaffResetPasswordRequest} staffResetPasswordRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7538,14 +7563,90 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
         },
         /**
          * 
+         * @param {SetStaffPasswordRequest} setStaffPasswordRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        setPassword: async (setStaffPasswordRequest: SetStaffPasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'setStaffPasswordRequest' is not null or undefined
+            assertParamExists('setPassword', 'setStaffPasswordRequest', setStaffPasswordRequest)
+            const localVarPath = `/api/staff/set-password`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(setStaffPasswordRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {StaffLoginRequest} staffLoginRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        staffLogin: async (staffLoginRequest: StaffLoginRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'staffLoginRequest' is not null or undefined
+            assertParamExists('staffLogin', 'staffLoginRequest', staffLoginRequest)
+            const localVarPath = `/api/staff/login`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(staffLoginRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {StaffOtpVerifyRequest} staffOtpVerifyRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        verifyOtp1: async (staffOtpVerifyRequest: StaffOtpVerifyRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        verifyStaffOtp: async (staffOtpVerifyRequest: StaffOtpVerifyRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'staffOtpVerifyRequest' is not null or undefined
-            assertParamExists('verifyOtp1', 'staffOtpVerifyRequest', staffOtpVerifyRequest)
-            const localVarPath = `/api/staff/verify-otp`;
+            assertParamExists('verifyStaffOtp', 'staffOtpVerifyRequest', staffOtpVerifyRequest)
+            const localVarPath = `/api/staff/login-verification-otp`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -7585,14 +7686,35 @@ export const StaffControllerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {ForgotPasswordRequest} forgotPasswordRequest 
+         * @param {string} firstNm 
+         * @param {string} lastNm 
+         * @param {string} emailId 
+         * @param {string} mobileNum 
+         * @param {Set<number>} roleIds 
+         * @param {string} [dob] 
+         * @param {CreateStaffGenderEnum} [gender] 
+         * @param {string} [dateOfJoining] 
+         * @param {File} [profileImg] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async forgotPassword1(forgotPasswordRequest: ForgotPasswordRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffPasswordResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.forgotPassword1(forgotPasswordRequest, options);
+        async createStaff(firstNm: string, lastNm: string, emailId: string, mobileNum: string, roleIds: Set<number>, dob?: string, gender?: CreateStaffGenderEnum, dateOfJoining?: string, profileImg?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createStaff(firstNm, lastNm, emailId, mobileNum, roleIds, dob, gender, dateOfJoining, profileImg, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.forgotPassword1']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.createStaff']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getActiveStaff(page?: number, size?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PageStaffResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getActiveStaff(page, size, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.getActiveStaff']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -7604,6 +7726,19 @@ export const StaffControllerApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAllStaff(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.getAllStaff']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllStaff1(page?: number, size?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PageStaffResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllStaff1(page, size, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.getAllStaff1']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -7632,19 +7767,6 @@ export const StaffControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {StaffRegistrationRequest} staffRegistrationRequest 
-         * @param {string} [loggedInStaffId] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async registerStaff(staffRegistrationRequest: StaffRegistrationRequest, loggedInStaffId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.registerStaff(staffRegistrationRequest, loggedInStaffId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.registerStaff']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @param {StaffResetPasswordRequest} staffResetPasswordRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7657,14 +7779,38 @@ export const StaffControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {SetStaffPasswordRequest} setStaffPasswordRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async setPassword(setStaffPasswordRequest: SetStaffPasswordRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.setPassword(setStaffPasswordRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.setPassword']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {StaffLoginRequest} staffLoginRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async staffLogin(staffLoginRequest: StaffLoginRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffLoginResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.staffLogin(staffLoginRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.staffLogin']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {StaffOtpVerifyRequest} staffOtpVerifyRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async verifyOtp1(staffOtpVerifyRequest: StaffOtpVerifyRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffLoginResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.verifyOtp1(staffOtpVerifyRequest, options);
+        async verifyStaffOtp(staffOtpVerifyRequest: StaffOtpVerifyRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffLoginResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.verifyStaffOtp(staffOtpVerifyRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.verifyOtp1']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.verifyStaffOtp']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -7678,12 +7824,30 @@ export const StaffControllerApiFactory = function (configuration?: Configuration
     return {
         /**
          * 
-         * @param {ForgotPasswordRequest} forgotPasswordRequest 
+         * @param {string} firstNm 
+         * @param {string} lastNm 
+         * @param {string} emailId 
+         * @param {string} mobileNum 
+         * @param {Set<number>} roleIds 
+         * @param {string} [dob] 
+         * @param {CreateStaffGenderEnum} [gender] 
+         * @param {string} [dateOfJoining] 
+         * @param {File} [profileImg] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        forgotPassword1(forgotPasswordRequest: ForgotPasswordRequest, options?: RawAxiosRequestConfig): AxiosPromise<StaffPasswordResponse> {
-            return localVarFp.forgotPassword1(forgotPasswordRequest, options).then((request) => request(axios, basePath));
+        createStaff(firstNm: string, lastNm: string, emailId: string, mobileNum: string, roleIds: Set<number>, dob?: string, gender?: CreateStaffGenderEnum, dateOfJoining?: string, profileImg?: File, options?: RawAxiosRequestConfig): AxiosPromise<StaffResponse> {
+            return localVarFp.createStaff(firstNm, lastNm, emailId, mobileNum, roleIds, dob, gender, dateOfJoining, profileImg, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getActiveStaff(page?: number, size?: number, options?: RawAxiosRequestConfig): AxiosPromise<PageStaffResponse> {
+            return localVarFp.getActiveStaff(page, size, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7692,6 +7856,16 @@ export const StaffControllerApiFactory = function (configuration?: Configuration
          */
         getAllStaff(options?: RawAxiosRequestConfig): AxiosPromise<Array<StaffResponse>> {
             return localVarFp.getAllStaff(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllStaff1(page?: number, size?: number, options?: RawAxiosRequestConfig): AxiosPromise<PageStaffResponse> {
+            return localVarFp.getAllStaff1(page, size, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7713,16 +7887,6 @@ export const StaffControllerApiFactory = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {StaffRegistrationRequest} staffRegistrationRequest 
-         * @param {string} [loggedInStaffId] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        registerStaff(staffRegistrationRequest: StaffRegistrationRequest, loggedInStaffId?: string, options?: RawAxiosRequestConfig): AxiosPromise<StaffResponse> {
-            return localVarFp.registerStaff(staffRegistrationRequest, loggedInStaffId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {StaffResetPasswordRequest} staffResetPasswordRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7732,12 +7896,30 @@ export const StaffControllerApiFactory = function (configuration?: Configuration
         },
         /**
          * 
+         * @param {SetStaffPasswordRequest} setStaffPasswordRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        setPassword(setStaffPasswordRequest: SetStaffPasswordRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.setPassword(setStaffPasswordRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {StaffLoginRequest} staffLoginRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        staffLogin(staffLoginRequest: StaffLoginRequest, options?: RawAxiosRequestConfig): AxiosPromise<StaffLoginResponse> {
+            return localVarFp.staffLogin(staffLoginRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {StaffOtpVerifyRequest} staffOtpVerifyRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        verifyOtp1(staffOtpVerifyRequest: StaffOtpVerifyRequest, options?: RawAxiosRequestConfig): AxiosPromise<StaffLoginResponse> {
-            return localVarFp.verifyOtp1(staffOtpVerifyRequest, options).then((request) => request(axios, basePath));
+        verifyStaffOtp(staffOtpVerifyRequest: StaffOtpVerifyRequest, options?: RawAxiosRequestConfig): AxiosPromise<StaffLoginResponse> {
+            return localVarFp.verifyStaffOtp(staffOtpVerifyRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -7748,12 +7930,31 @@ export const StaffControllerApiFactory = function (configuration?: Configuration
 export class StaffControllerApi extends BaseAPI {
     /**
      * 
-     * @param {ForgotPasswordRequest} forgotPasswordRequest 
+     * @param {string} firstNm 
+     * @param {string} lastNm 
+     * @param {string} emailId 
+     * @param {string} mobileNum 
+     * @param {Set<number>} roleIds 
+     * @param {string} [dob] 
+     * @param {CreateStaffGenderEnum} [gender] 
+     * @param {string} [dateOfJoining] 
+     * @param {File} [profileImg] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public forgotPassword1(forgotPasswordRequest: ForgotPasswordRequest, options?: RawAxiosRequestConfig) {
-        return StaffControllerApiFp(this.configuration).forgotPassword1(forgotPasswordRequest, options).then((request) => request(this.axios, this.basePath));
+    public createStaff(firstNm: string, lastNm: string, emailId: string, mobileNum: string, roleIds: Set<number>, dob?: string, gender?: CreateStaffGenderEnum, dateOfJoining?: string, profileImg?: File, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).createStaff(firstNm, lastNm, emailId, mobileNum, roleIds, dob, gender, dateOfJoining, profileImg, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} [page] 
+     * @param {number} [size] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getActiveStaff(page?: number, size?: number, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).getActiveStaff(page, size, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -7763,6 +7964,17 @@ export class StaffControllerApi extends BaseAPI {
      */
     public getAllStaff(options?: RawAxiosRequestConfig) {
         return StaffControllerApiFp(this.configuration).getAllStaff(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} [page] 
+     * @param {number} [size] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getAllStaff1(page?: number, size?: number, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).getAllStaff1(page, size, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -7787,17 +7999,6 @@ export class StaffControllerApi extends BaseAPI {
 
     /**
      * 
-     * @param {StaffRegistrationRequest} staffRegistrationRequest 
-     * @param {string} [loggedInStaffId] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    public registerStaff(staffRegistrationRequest: StaffRegistrationRequest, loggedInStaffId?: string, options?: RawAxiosRequestConfig) {
-        return StaffControllerApiFp(this.configuration).registerStaff(staffRegistrationRequest, loggedInStaffId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
      * @param {StaffResetPasswordRequest} staffResetPasswordRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7808,15 +8009,41 @@ export class StaffControllerApi extends BaseAPI {
 
     /**
      * 
+     * @param {SetStaffPasswordRequest} setStaffPasswordRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public setPassword(setStaffPasswordRequest: SetStaffPasswordRequest, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).setPassword(setStaffPasswordRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {StaffLoginRequest} staffLoginRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public staffLogin(staffLoginRequest: StaffLoginRequest, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).staffLogin(staffLoginRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {StaffOtpVerifyRequest} staffOtpVerifyRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public verifyOtp1(staffOtpVerifyRequest: StaffOtpVerifyRequest, options?: RawAxiosRequestConfig) {
-        return StaffControllerApiFp(this.configuration).verifyOtp1(staffOtpVerifyRequest, options).then((request) => request(this.axios, this.basePath));
+    public verifyStaffOtp(staffOtpVerifyRequest: StaffOtpVerifyRequest, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).verifyStaffOtp(staffOtpVerifyRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
+export const CreateStaffGenderEnum = {
+    Male: 'MALE',
+    Female: 'FEMALE',
+    Other: 'OTHER',
+} as const;
+export type CreateStaffGenderEnum = typeof CreateStaffGenderEnum[keyof typeof CreateStaffGenderEnum];
 
 
 /**

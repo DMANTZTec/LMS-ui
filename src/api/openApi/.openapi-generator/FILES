@@ -1,5 +1,6 @@
 .gitignore
 .npmignore
+.openapi-generator-ignore
 api.ts
 base.ts
 common.ts
@@ -11,7 +12,6 @@ docs/AssignInstructorRequest.md
 docs/AssignInstructorToCourseRequest.md
 docs/AssignProgramRequest.md
 docs/AssignProgramResponse.md
-docs/AuthControllerApi.md
 docs/BatchInstructorRequest.md
 docs/BatchInstructorResponse.md
 docs/ChangePasswordRequest.md
@@ -49,6 +49,8 @@ docs/MentorPointsResponse.md
 docs/MyCourseResponse.md
 docs/OtpVerifyRequest.md
 docs/OverallProgressResponse.md
+docs/PageStaffResponse.md
+docs/PageableObject.md
 docs/ProgramCourseRequest.md
 docs/ProgramCourseResponse.md
 docs/ProgramFeeControllerApi.md
@@ -65,6 +67,8 @@ docs/RemoveClassTopicRequest.md
 docs/RemoveStudentRequest.md
 docs/ResendOtpRequest.md
 docs/ResetPasswordRequest.md
+docs/SetStaffPasswordRequest.md
+docs/SortObject.md
 docs/StaffControllerApi.md
 docs/StaffCourseControllerApi.md
 docs/StaffCourseResponse.md
