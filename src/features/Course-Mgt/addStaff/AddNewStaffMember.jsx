@@ -1,703 +1,450 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from 'react-hot-toast';
-import { Upload, CheckCircle, Loader } from "lucide-react";
+import { Upload, CheckCircle, Loader, RefreshCw, Trash2 } from "lucide-react";
 
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { staffFormSchema } from "./AddNewStaffMemberSchema";
-
 import { staffApi } from '@/api/staff-controller.api';
 
-const AddNewStaffMember = ({ open, onOpenChange }) => {
+// --- Sub-components for better maintainability ---
 
-    // Flag state to control the dialog visibility explicitly
-    const [isOpen, setIsOpen] = useState(false);
-    const [photoPreview, setPhotoPreview] = useState(null);
+const FormField = ({ label, required, error, children }) => (
+    <div className="flex flex-col gap-1.5">
+        <label className="text-sm font-medium text-slate-700">
+            {label} {required && <span className="text-red-500">*</span>}
+        </label>
+        {children}
+        {error && <p className="text-xs font-medium text-red-500">{error.message}</p>}
+    </div>
+);
+
+const PhotoUpload = ({ fileInputRef, photoPreview, onPhotoChange, onRemovePhoto, error, register }) => (
+    <div className="flex flex-col items-center">
+        <label className="text-sm font-medium text-slate-700 self-start mb-2">
+            Photo
+        </label>
+
+        {/* <input */}
+          <input
+          ref={fileInputRef}
+            type="file"
+            className="hidden"
+            accept="image/png,image/jpeg"
+            onChange={onPhotoChange}
+            rgister
+        />
+
+        {/* Outer frame matching standard passport size dimensions */}
+        <div
+            onClick={() => !photoPreview && fileInputRef.current?.click()}
+            className="
+                w-[110px]
+                h-[150px]
+                border
+                border-dashed
+                border-slate-200
+                rounded-lg
+                flex
+                flex-col
+                justify-center
+                items-center
+                text-center
+                cursor-pointer
+                bg-slate-50
+                hover:bg-slate-100
+                transition-colors
+                relative
+                group
+                overflow-hidden
+            "
+        >
+            {photoPreview ? (
+                <>
+                    <img
+                        src={photoPreview}
+                        alt="Preview"
+                        className="w-full h-full object-cover rounded-lg"
+                    />
+                    
+                    {/* Hover Overlay containing explicit micro-actions that fit the 110px box perfectly */}
+                    <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-center items-center gap-2 p-1">
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                fileInputRef.current?.click();
+                                //onPhotoChange();                        i have added this line
+                                
+                            }}
+                            className="w-full py-1 px-1.5 bg-white/90 hover:bg-white text-slate-800 text-[10px] font-medium rounded shadow flex items-center justify-center gap-1 transition-colors"
+                        >
+                            <RefreshCw size={10} />
+                            Change
+                        </button>
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                onRemovePhoto();
+                            }}
+                            className="w-full py-1 px-1.5 bg-red-600 hover:bg-red-700 text-white text-[10px] font-medium rounded shadow flex items-center justify-center gap-1 transition-colors"
+                        >
+                            <Trash2 size={10} />
+                            Remove
+                        </button>
+                    </div>
+                </>
+            ) : (
+                <div className="p-2 flex flex-col items-center">
+                    <Upload size={18} className="text-slate-400 mb-2" />
+                    <p className="text-[11px] text-slate-500 leading-4">
+                        Click to upload
+                        <br />
+                        passport photo
+                    </p>
+                </div>
+            )}
+        </div>
+
+        <p className="text-[10px] text-center text-slate-400 mt-2 leading-relaxed">
+            JPG or PNG
+            <br />
+            Passport size
+        </p>
+        
+        {error && <p className="text-xs font-medium text-red-500 mt-1">{error.message}</p>}
+    </div>
+);
+
+// --- Main Component ---
+
+const AddNewStaffMember = ({ open, onOpenChange }) => {
+    const [photoPreview, setPhotoPreview] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submittedMsg, setSubmittedMsg] = useState(null);
     const [globalError, setGlobalError] = useState(null);
 
+    const fileInputRef = useRef(null);
 
-    const fileInputRef = useRef(null);
+    const {
+        control,
+        register,
+        handleSubmit,
+        setValue,
+        watch,
+        reset,
+        formState: { errors },
+        getValues,
+    } = useForm({
+        resolver: zodResolver(staffFormSchema),
+        defaultValues: {
+            firstName: "",
+            lastName: "",
+            email: "",
+            mobileNumber: "",
+            dateOfBirth: "",
+            gender: "",
+            dateOfJoining: "",
+            role: "",
+            photo: null
+        },
+    });
 
-    // 2. Pure React Hook Form Configuration
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        watch,
-        reset,
-        formState: { errors, dirtyFields },
-    } = useForm({
-        resolver: zodResolver(staffFormSchema),
-        defaultValues: {
-            firstName: "",
-            lastName: "",
-            email: "",
-            mobileNumber: "",
-            dateOfBirth: "",
-            gender: "",
-            dateOfJoining: "",
-            role: "",
-            photo: []
-        },
-    });
+    const watchedValues = watch([
+        "firstName", "lastName", "email", "mobileNumber",
+        "dateOfBirth", "gender", "dateOfJoining", "role"
+    ]);
+    const watchedPhoto = watch("photo");
 
-const watchedValues = watch(["firstName", 
-  "lastName", 
-  "email", 
-  "mobileNumber", 
-  "dateOfBirth", 
-  "gender", 
-  "dateOfJoining", 
-  "role",
-  ]);
+    // Reset status flags when any input values change
+    useEffect(() => {
+        setSubmittedMsg(null);
+        setGlobalError(null);
+    }, [JSON.stringify(watchedValues), watchedPhoto?.name, watchedPhoto?.size]);
 
-  const watchedPhoto = watch("photo");
+    const onSubmit = async (data) => {
+        setIsSubmitting(true);
+        setGlobalError(null);
+        setSubmittedMsg(null);
 
+        try {
+            const formattedDOB = data.dateOfBirth instanceof Date
+                ? data.dateOfBirth.toISOString().split('T')[0]
+                : data.dateOfBirth;
+            
+            const formattedDateOfJoining = data.dateOfJoining instanceof Date
+                ? data.dateOfJoining.toISOString().split('T')[0]
+                : data.dateOfJoining;
 
-useEffect(() => {
-    console.log("entered into useEffect of AddNewStaffMember");
-    setSubmittedMsg(null);
-setGlobalError(null);
+            const result = await staffApi.createStaff(
+                data.firstName,
+                data.lastName,
+                data.email,
+                data.mobileNumber,
+                [data.role],
+                formattedDOB,
+                [data.gender],
+                formattedDateOfJoining,
+                data.photo
+            );
 
-},[JSON.stringify(watchedValues),watchedPhoto?.name,watchedPhoto?.size]);
+            setSubmittedMsg("Submitted successfully. Link has been sent to your mail");
+            toast.success("Link has been sent to your mail", { 
+                duration: 5000, 
+                className: '!bg-green-800 !text-white' 
+            });
+        } catch (error) {
+            console.error("Submission failed: ", error);
+            setSubmittedMsg(null);
+            let fallbackMessage = error.response?.data?.message || "Internal system upgrade failure.";
+            setGlobalError(fallbackMessage);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
-    // Watch values for custom controlled components like shadcn Select
-    const currentGender = watch("gender");
-    const currentRole = watch("role");
+    const handleClose = () => {
+        reset();
+        if (photoPreview) URL.revokeObjectURL(photoPreview);
+        setPhotoPreview(null);
+        onOpenChange(false);
+        setSubmittedMsg(null);
+        setGlobalError(null);
+    };
 
-    // const onSubmit = async (data: StaffFormValues) => {
-    const onSubmit = async (data) => {
-    setIsSubmitting(true);
-setGlobalError(null);
-setSubmittedMsg(null);    
-    try {
-            const formData = new FormData();
-            Object.entries(data).forEach(([key, value]) => {
-                if (value) formData.append(key, value);
-            });
+    const handleOpenChange = (isOpen) => {
+        if (photoPreview) URL.revokeObjectURL(photoPreview);
+        setPhotoPreview(null);
+        reset();
+        setSubmittedMsg(null);
+        setGlobalError(null);
+        onOpenChange(isOpen);
+    };
 
-// 1. Safely extract and format the date back into a string YYYY-MM-DD
-      const formattedDOB = data.dateOfBirth instanceof Date
-        ? data.dateOfBirth.toISOString().split('T')[0]
-        : data.dateOfBirth;
-           // 1. Safely extract and format the date back into a string YYYY-MM-DD
-      const formattedDateOfJoining = data.dateOfJoining instanceof Date
-        ? data.dateOfJoining.toISOString().split('T')[0]
-        : data.dateOfJoining;
-            
-            console.log("Submitting directly to Spring Boot API...", data);
-            const result = await staffApi.createStaff(
-            data.firstName, 
-            data.lastName, 
-            data.email, 
-            data.mobileNumber, 
-            [data.role],                         //data.role, 
-            formattedDOB,                         //data.dateOfBirth, 
-            [data.gender],                             //data.gender, 
-            formattedDateOfJoining,           //data.dateOfJoining, 
-            data.photo 
-            );
+    const handlePhotoChange = (e) => {
+        console.log("value of e is: ",e);
+        console.log("value of e.target is: ", e.target);
+        console.log("value of e.target.files?.[0]", e.target.files?.[0]);
 
-            console.log("result is: ",result);
-            // options: RawAxiosRequestConfig = {});
-            // Reset state on success
-            //reset();
-            //setPhotoPreview(null);
-            //setIsOpen(false);
-setSubmittedMsg("submitted successfully. Link has been sent to your mail");
-toast.success("Link has been sent to your mail", { duration:5000,className: '!bg-green-800 !text-white' });
-        } catch (error) {
-            console.error("error is: ",error);
-setSubmittedMsg(null);
-let fallbackMessage = error.response?.data?.message || "Internal system upgrade failure.";
-setGlobalError(fallbackMessage);
-        } finally {
-    setIsSubmitting(false);
-}
-    };
+        const file = e.target.files?.[0];
+        console.log("in hadlePhotoChange function and file.type is: ",file.type);
+       console.log("line1 in handlePhotoChange and getValues('photo') is: ",getValues("photo"));
+        if (file) {
+            if (photoPreview) URL.revokeObjectURL(photoPreview);
+                setValue("photo", file, {
+                shouldValidate: true,
+                shouldDirty: true,
+                shouldTouch: true,
+            });
+            console.log("line2 in handlePhotoChange and getValues('photo') is: ",getValues("photo"));
+            setPhotoPreview(URL.createObjectURL(file));
+        }
+    };
 
-    const handleClose = () => {
-        reset();
-        setPhotoPreview(null);
-        onOpenChange(false);
+    const removePhoto = () => {
+        if (photoPreview) URL.revokeObjectURL(photoPreview);
+        setPhotoPreview(null);
+        setValue("photo", null, {
+            shouldValidate: true,
+            shouldDirty: true,
+            shouldTouch: true,
+        });
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
 
-setSubmittedMsg(null);
-setGlobalError(null);
+    const inputClassName = "h-10 bg-slate-50 border-slate-200 focus-visible:ring-1 focus-visible:ring-blue-500 rounded-lg";
 
-    };
+    return (
+        <Dialog open={open} onOpenChange={handleOpenChange}>
+            <DialogContent className="w-[95vw] sm:max-w-[720px] p-0 overflow-hidden rounded-xl bg-white border-none shadow-xl">
+                
+                <DialogHeader className="px-6 pt-6 pb-4 border-b">
+                    <DialogTitle className="text-lg font-semibold text-slate-900">
+                        Add New Staff Member
+                    </DialogTitle>
+                    <p className="text-sm text-slate-500 mt-1">
+                        Fill in the details to create a new staff account.
+                    </p>
+                </DialogHeader>
 
-    const openChange = (isOpen) => {
-        console.log("entered into openChange and isOpen value is: ", isOpen);
-        setPhotoPreview(null);
-        reset();
-
-    setSubmittedMsg(null);
-setGlobalError(null);
-
-
-        onOpenChange(isOpen);
-    }
-
-    const removePhoto = () => {
-
-        if (photoPreview) {
-            URL.revokeObjectURL(photoPreview);
-        }
-
-        setPhotoPreview(null);
-        setValue("photo", null);
-        fileInputRef.current.value = "";
-    };
-
-    return (
-        <>
-            <Dialog open={open} onOpenChange={openChange}>
-                {/* Responsive widths, scrollable area fallback for short mobile devices, and subtle margins */}
-
-                <DialogContent className="w-[calc(100%-2rem)] max-w-md sm:max-w-xl md:max-w-3xl p-4 sm:p-6 bg-white rounded-xl max-h-[90vh] overflow-y-auto my-4">
-{globalError && (
-                            <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-sm text-red-600">
-                                {globalError}
-                            </div>
-                        )}
-
-
-{submittedMsg && (
-                        <div className="flex items-center gap-2 p-4 rounded-xl bg-green-50 border border-red-200 text-sm text-green-600">
-                            <CheckCircle className="text-green-600" size={24} />{submittedMsg}
+                <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-5 space-y-5">
+                    {/* Status Banners */}
+                    {globalError && (
+                        <div className="p-3.5 rounded-lg bg-red-50 border border-red-200 text-sm text-red-600">
+                            {globalError}
                         </div>
-
                     )}
 
-                    <DialogHeader className="border-b pb-4">
-                        <DialogTitle className="text-lg sm:text-xl font-semibold text-slate-900">
-                            Add New Staff Member
-                        </DialogTitle>
-                        <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                    {submittedMsg && (
+                        <div className="flex items-center gap-2 p-3.5 rounded-lg bg-green-50 border border-green-200 text-sm text-green-600">
+                            <CheckCircle className="text-green-600" size={20} />
+                            {submittedMsg}
+                        </div>
+                    )}
 
-                            Fill in the details to create a new staff account.
-                        </p>
-                    </DialogHeader>
+                    {/* Top Shared Layout Wrapper */}
+                    <div className="grid grid-cols-1 md:grid-cols-[1fr_120px] gap-5 items-start">
+                        
+                        {/* 6 Grid Inputs Left Block */}
+                        <div className="space-y-4">
+                            {/* Name Row */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <FormField label="First Name" required error={errors.firstName}>
+                                    <Input 
+                                        placeholder="e.g. Anika" 
+                                        className={inputClassName} 
+                                        {...register("firstName")} 
+                                    />
+                                </FormField>
+                                <FormField label="Last Name" required error={errors.lastName}>
+                                    <Input 
+                                        placeholder="e.g. Sharma" 
+                                        className={inputClassName} 
+                                        {...register("lastName")} 
+                                    />
+                                </FormField>
+                            </div>
 
-                    {/* Standard HTML Form powered directly by react-hook-form */}
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 sm:space-y-6 mt-4">
-                        {/* Shifts from 1 column on mobile to 3 columns on medium screens and up */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+                            {/* Contact Details Row */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <FormField label="Email Address" required error={errors.email}>
+                                    <Input 
+                                        placeholder="name@mcpadmin.io" 
+                                        type="email" 
+                                        className={inputClassName} 
+                                        {...register("email")} 
+                                    />
+                                </FormField>
+                                <FormField label="Mobile Number" error={errors.mobileNumber}>
+                                    <Input 
+                                        placeholder="+1 (555) 000-0000" 
+                                        className={inputClassName} 
+                                        {...register("mobileNumber")} 
+                                    />
+                                </FormField>
+                            </div>
 
-                            {/* Main Inputs (Left side columns on desktop, top on mobile) */}
-                            <div className="md:col-span-2 space-y-4">
+                            {/* Personal Details Row */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <FormField label="Date of Birth" error={errors.dateOfBirth}>
+                                    <Input 
+                                        type="date" 
+                                        className={`${inputClassName} text-slate-500`} 
+                                        {...register("dateOfBirth")} 
+                                    />
+                                </FormField>
+                                <FormField label="Gender" error={errors.gender}>
+                                    <Controller
+                                        name="gender"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select onValueChange={field.onChange} value={field.value || ""} >
+                                                <SelectTrigger className="h-10 bg-slate-50 border-slate-200 text-slate-500 rounded-lg w-full">
+                                                    <SelectValue placeholder="Select gender" />
+                                                </SelectTrigger>
+                                                <SelectContent className="rounded-lg">
+                                                    <SelectItem value="MALE">Male</SelectItem>
+                                                    <SelectItem value="FEMALE">Female</SelectItem>
+                                                    <SelectItem value="OTHER">Other</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </FormField>
+                            </div>
+                        </div>
 
-                                {/* Name Row */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div className="space-y-1.5">
-                                        <label className="text-sm font-medium text-slate-700">First Name <span className="text-red-500">*</span></label>
-                                        <Input placeholder="e.g. Anika" className="bg-slate-50/50 w-full" {...register("firstName")} />
-                                        {errors.firstName && <p className="text-xs font-medium text-red-500">{errors.firstName.message}</p>}
-                                    </div>
-                                    <div className="space-y-1.5">
-                                        <label className="text-sm font-medium text-slate-700">Last Name <span className="text-red-500">*</span></label>
-                                        <Input placeholder="e.g. Sharma" className="bg-slate-50/50 w-full" {...register("lastName")} />
-                                        {errors.lastName && <p className="text-xs font-medium text-red-500">{errors.lastName.message}</p>}
-                                    </div>
-                                </div>
+                        {/* Standalone Photo Component Uploader (Right Block) */}
+                        <PhotoUpload
+                            fileInputRef={fileInputRef}
+                            photoPreview={photoPreview}
+                            onPhotoChange={handlePhotoChange}
+                            onRemovePhoto={removePhoto}
+                            error={errors.photo}
+                            register={{...register("photo")}}
+                        />
+                    </div>
 
-                                {/* Contact Row */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div className="space-y-1.5">
-                                        <label className="text-sm font-medium text-slate-700">Email Address <span className="text-red-500">*</span></label>
-                                        <Input placeholder="name@mcpadmin.io" type="email" className="bg-slate-50/50 w-full" {...register("email")} />
-                                        {errors.email && <p className="text-xs font-medium text-red-500">{errors.email.message}</p>}
-                                    </div>
-                                    <div className="space-y-1.5">
-                                        <label className="text-sm font-medium text-slate-700">Mobile Number</label>
-                                        <Input placeholder="+1 (555) 000-0000" className="bg-slate-50/50 w-full" {...register("mobileNumber")} />
-                                    {errors.mobileNumber && <p className="text-xs font-medium text-red-500">{errors.mobileNumber.message}</p>}
-</div>
-                                </div>
+                    {/* Bottom Full-Width Section */}
+                    <div className="space-y-4 pt-1">
+                        <FormField label="Date of Joining" required error={errors.dateOfJoining}>
+                            <Input 
+                                type="date" 
+                                className={`${inputClassName} text-slate-500`} 
+                                {...register("dateOfJoining")} 
+                            />
+                        </FormField>
 
-                                {/* Info Row */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div className="space-y-1.5">
-                                        <label className="text-sm font-medium text-slate-700">Date of Birth</label>
-                                        <Input type="date" className="bg-slate-50/50 w-full" {...register("dateOfBirth")} />
-{errors.dateOfBirth && <p className="text-xs font-medium text-red-500">{errors.dateOfBirth.message}</p>}
-                                    </div>
-                                    <div className="space-y-1.5">
-                                        <label className="text-sm font-medium text-slate-700">Gender</label>
-                                        <Select onValueChange={(val) => setValue("gender", val)} value={currentGender}>
-                                            <SelectTrigger className="bg-slate-50/50 w-full">
-                                                <SelectValue placeholder="Select gender" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="MALE">Male</SelectItem>
-                                                <SelectItem value="FEMALE">Female</SelectItem>
-                                                <SelectItem value="OTHER">Other</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-{errors.gender && <p className="text-xs font-medium text-red-500">{errors.gender.message}</p>}
-                                    </div>
-                                </div>
-                            </div>
+                        <FormField label="Assign Roles" required error={errors.role}>
+                            <Controller
+                                name="role"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select onValueChange={field.onChange} value={field.value || ""} >
+                                        <SelectTrigger className="h-10 bg-slate-50 border-slate-200 text-slate-500 rounded-lg w-full">
+                                            <SelectValue placeholder="Select roles..." />
+                                        </SelectTrigger>
+                                        <SelectContent className="rounded-lg">
+                                            <SelectItem value="1">Administrator</SelectItem>
+                                            <SelectItem value="3">Staff Member</SelectItem>
+                                            <SelectItem value="2">Instructor</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
+                        </FormField>
+                    </div>
 
-                            {/* Photo Upload Box (Right column on desktop, reordered/adapted gracefully for mobile layouts) */}
-                            <div className="flex flex-col items-center justify-start pt-1 w-full max-w-[200px] mx-auto md:w-full md:max-w-none">
-                                <span className="block text-sm font-medium text-slate-700 self-start mb-2">Photo</span>
-                                <label className="w-full aspect-[4/5] sm:aspect-square md:aspect-[4/5] border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-slate-50 transition p-4 text-center relative group">
-                                    
-                                    <Input
-                                        {...register("photo")}
-                                        ref={fileInputRef}
-                                        type="file"
-                                        accept="image/jpeg,image/png"
-                                        className="hidden"
-                                        //onChange={handlePhotoChange}
-                                        onChange={(e) => {
-                                            const file = e.target.files?.[0];
-                                            if (file) {
-    // Clear the old object URL to prevent memory leaks
-                if (photoPreview) {
-                    URL.revokeObjectURL(photoPreview);
-                }
-                                                setValue("photo", file, {
-    shouldValidate: true,
-    shouldDirty: true
-});
-                                                setPhotoPreview(URL.createObjectURL(file));
-
-
-console.log("Newly selected file linked to form state:", file  );
-                                            }
-                                        }}
-                                    />
-
-                                    {photoPreview ? (
-                                        <>                                            <img src={photoPreview} alt="Preview" className="w-full h-full object-cover rounded-lg" />
-                                            <div className="flex gap-2 mt-3">
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    onClick={() =>fileInputRef.current.click()}
-                                                >
-                                                    Change Photo
-                                                </Button>
-
-                                                <Button
-                                                    type="button"
-                                                    variant="destructive"
-                                                    onClick={removePhoto}
-                                                >
-                                                    Remove
-                                                </Button>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <>
-
-                                            <div className="p-2 bg-slate-50 rounded-full text-slate-400 group-hover:scale-105 transition-transform">
-                                                <Upload size={20} />
-                                            </div>
-                                            <span className="text-xs font-medium text-slate-600">Click to upload passport photo</span>
-                                        </>
-                                    )
-                                    }
-                                </label>
-                                <span className="text-[11px] text-slate-400 mt-2 text-center">JPG or PNG Passport size</span>
-                            </div>
-                        </div>
-
-                        {/* Bottom Form Elements */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="space-y-1.5">
-                                <label className="text-sm font-medium text-slate-700">Date of Joining <span className="text-red-500">*</span></label>
-                                <Input type="date" className="bg-slate-50/50 w-full" {...register("dateOfJoining")} />
-                                {errors.dateOfJoining && <p className="text-xs font-medium text-red-500">{errors.dateOfJoining.message}</p>}
-                            </div>
-
-                            <div className="space-y-1.5">
-                                <label className="text-sm font-medium text-slate-700">Assign Roles <span className="text-red-500">*</span></label>
-                                <Select onValueChange={(val) => setValue("role", val)} value={currentRole}>
-                                    <SelectTrigger className="bg-slate-50/50 w-full">
-                                        <SelectValue placeholder="Select roles..." />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="1">Administrator</SelectItem>
-                                        <SelectItem value="3">Staff Member</SelectItem>
-                                        <SelectItem value="2">Instructor</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                {errors.role && <p className="text-xs font-medium text-red-500">{errors.role.message}</p>}
-                            </div>
-                        </div>
-
-                        {/* Action Buttons: Stacked on mobile, side-by-side on larger screens */}
-                        <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-slate-100">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={handleClose}
-                                className="w-full sm:w-auto border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg px-5"
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                disabled = {isSubmitting}
-                                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5"
-                            >
-{isSubmitting ? (
-                                        <>
-                                            <Loader className="animate-spin" />
-                                            Submitting
-                                        </>
-                                    ) : (
-                                        "Create Staff Member"
-                                    )}   
-                            </Button>
-                        </div>
-                    </form>
-                </DialogContent>
-            </Dialog>
-        </>
-    );
+                    {/* Bottom Action Footer Control Block */}
+                    <div className="border-t pt-5 flex justify-end gap-3">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleClose}
+                            className="w-[95px] h-10 border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="bg-blue-600 hover:bg-blue-700 text-white w-[160px] h-10 rounded-lg font-medium transition-colors"
+                        >
+                            {isSubmitting ? (
+                                <div className="flex items-center justify-center gap-2">
+                                    <Loader size={16} className="animate-spin" />
+                                    <span>Submitting</span>
+                                </div>
+                            ) : (
+                                "Create Staff Member"
+                            )}
+                        </Button>
+                    </div>
+                </form>
+            </DialogContent>
+        </Dialog>
+    );
 };
+
 export default AddNewStaffMember;
 
-// ----------------------------------------------------------
-
-// import React, { useState, useRef, useEffect } from "react";
-// import { useForm } from "react-hook-form";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import { Upload } from "lucide-react";
-
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogHeader,
-//   DialogTitle,
-// } from "@/components/ui/dialog";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
-// import { staffFormSchema } from "./AddNewStaffMemberSchema";
-
-// import { staffApi } from '@/api/staff-controller.api';
-
-// const AddNewStaffMember = ({ open, onOpenChange }) => {
-//   // Flag state to control the dialog visibility implicitly
-//   const [photoPreview, setPhotoPreview] = useState(null);
-//   // Separate state to hold the newly selected photo
-//   const [newPhoto, setNewPhoto] = useState(null);
-
-//   const fileInputRef = useRef(null);
-
-//   // 2. Pure React Hook Form Configuration
-//   const {
-//     register,
-//     handleSubmit,
-//     setValue,
-//     watch,
-//     reset,
-//     formState: { errors },
-//   } = useForm({
-//     resolver: zodResolver(staffFormSchema),
-//     defaultValues: {
-//       firstName: "",
-//       lastName: "",
-//       email: "",
-//       mobileNumber: "",
-//       dateOfBirth: "",
-//       gender: "",
-//       dateOfJoining: "",
-//       role: "",
-//     },
-//   });
-
-//   // Watch values for custom controlled components like shadcn Select
-//   const currentGender = watch("gender");
-//   const currentRole = watch("role");
-
-//   // useEffect to handle memory leaks from revoked URLs
-//   useEffect(() => {
-//     return () => {
-//       if (photoPreview) {
-//         URL.revokeObjectURL(photoPreview);
-//       }
-//     };
-//   }, [photoPreview]);
-
-//   // Function to handle photo selection
-//   const handlePhotoChange = (e) => {
-//     const file = e.target.files?.[0];
-//     if (file) {
-//       if (photoPreview) {
-//         URL.revokeObjectURL(photoPreview);
-//       }
-//       setPhotoPreview(URL.createObjectURL(file));
-//       // Store the new photo file in its own state
-//       setNewPhoto(file);
-//     }
-//   };
-
-//   // Modified onSubmit function to be fully asynchronous
-//   const onSubmit = async (data, e) => {
-//     e.preventDefault(); // Prevent default form submission
-
-//     try {
-//       const formData = new FormData();
-//       Object.entries(data).forEach(([key, value]) => {
-//         if (value) formData.append(key, value);
-//       });
-
-//       console.log("Submitting with controlled photo handling...", data);
-//      console.log("data.photo is : ",data.photo);
-
-//       // Use the newly selected photo from its state, or the default if it exists
-//       const photoToSend = newPhoto || data.photo;
-//       formData.append("photo", photoToSend);
-
-//       console.log("File currently prepared to send:", formData.get("photo"));
-
-//       const result = await staffApi.createStaff(
-//         data.firstName, 
-//         data.lastName, 
-//         data.email, 
-//         data.mobileNumber, 
-//         [data.role], 
-//         data.dateOfBirth, 
-//         [data.gender], 
-//         data.dateOfJoining, 
-//         photoToSend // Pass the correct photo to the API call
-//       );
-
-//       console.log("result is: ", result);
-
-//       // Reset state and close modal on success
-//       //handleClose();
-//     } catch (error) {
-//       console.error("error is: ", error);
-//     }
-//   };
-
-//   const handleClose = () => {
-//     reset();
-//     setPhotoPreview(null);
-//     setNewPhoto(null);
-//     onOpenChange(false);
-//   };
-
-//   const openChange = (isOpen) => {
-//     setPhotoPreview(null);
-//     setNewPhoto(null);
-//     reset();
-//     onOpenChange(isOpen);
-//   }
-
-//   const removePhoto = () => {
-//     if (photoPreview) {
-//       URL.revokeObjectURL(photoPreview);
-//     }
-//     setPhotoPreview(null);
-//     setNewPhoto(null);
-//     setValue("photo", null);
-//     fileInputRef.current.value = "";
-//   };
-
-//   return (
-//     <>
-//       <Dialog open={open} onOpenChange={openChange}>
-//         <DialogContent className="w-[calc(100%-2rem)] max-w-md sm:max-w-xl md:max-w-3xl p-4 sm:p-6 bg-white rounded-xl max-h-[90vh] overflow-y-auto my-4">
-//           <DialogHeader className="border-b pb-4">
-//             <DialogTitle className="text-lg sm:text-xl font-semibold text-slate-900">
-//               Add New Staff Member
-//             </DialogTitle>
-//             <p className="text-xs sm:text-sm text-slate-500 mt-1">
-//               Fill in the details to create a new staff account.
-//             </p>
-//           </DialogHeader>
-
-//           {/* Form component wrapping the handleSubmit function */}
-//           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 sm:space-y-6 mt-4">
-//             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
-//               <div className="md:col-span-2 space-y-4">
-//                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-//                   <div className="space-y-1.5">
-//                     <label className="text-sm font-medium text-slate-700">First Name <span className="text-red-500">*</span></label>
-//                     <Input placeholder="e.g. Anika" className="bg-slate-50/50 w-full" {...register("firstName")} />
-//                     {errors.firstName && <p className="text-xs font-medium text-red-500">{errors.firstName.message}</p>}
-//                   </div>
-//                   <div className="space-y-1.5">
-//                     <label className="text-sm font-medium text-slate-700">Last Name <span className="text-red-500">*</span></label>
-//                     <Input placeholder="e.g. Sharma" className="bg-slate-50/50 w-full" {...register("lastName")} />
-//                     {errors.lastName && <p className="text-xs font-medium text-red-500">{errors.lastName.message}</p>}
-//                   </div>
-//                 </div>
-
-//                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-//                   <div className="space-y-1.5">
-//                     <label className="text-sm font-medium text-slate-700">Email Address <span className="text-red-500">*</span></label>
-//                     <Input placeholder="name@mcpadmin.io" type="email" className="bg-slate-50/50 w-full" {...register("email")} />
-//                     {errors.email && <p className="text-xs font-medium text-red-500">{errors.email.message}</p>}
-//                   </div>
-//                   <div className="space-y-1.5">
-//                     <label className="text-sm font-medium text-slate-700">Mobile Number</label>
-//                     <Input placeholder="+1 (555) 000-0000" className="bg-slate-50/50 w-full" {...register("mobileNumber")} />
-//                   </div>
-//                 </div>
-
-//                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-//                   <div className="space-y-1.5">
-//                     <label className="text-sm font-medium text-slate-700">Date of Birth</label>
-//                     <Input type="date" className="bg-slate-50/50 w-full" {...register("dateOfBirth")} />
-//                   </div>
-//                   <div className="space-y-1.5">
-//                     <label className="text-sm font-medium text-slate-700">Gender</label>
-//                     <Select onValueChange={(val) => setValue("gender", val)} value={currentGender}>
-//                       <SelectTrigger className="bg-slate-50/50 w-full">
-//                         <SelectValue placeholder="Select gender" />
-//                       </SelectTrigger>
-//                       <SelectContent>
-//                         <SelectItem value="MALE">Male</SelectItem>
-//                         <SelectItem value="FEMALE">Female</SelectItem>
-//                         <SelectItem value="OTHER">Other</SelectItem>
-//                       </SelectContent>
-//                     </Select>
-//                   </div>
-//                 </div>
-//               </div>
-
-//               {/* Corrected Photo Upload Box with event handling */}
-//               <div className="flex flex-col items-center justify-start pt-1 w-full max-w-[200px] mx-auto md:w-full md:max-w-none">
-//                 <span className="block text-sm font-medium text-slate-700 self-start mb-2">Photo</span>
-                
-//                 {/* File Input Ref used to isolate the file input */}
-//                 <input
-//                   ref={fileInputRef}
-//                   type="file"
-//                   accept="image/jpeg,image/png"
-//                   className="hidden"
-//                   onChange={handlePhotoChange} // Attach the new handler
-//                 />
-
-//                 {/* Clickable Frame Area now purely opens the dialog */}
-//                 <div 
-//                   onClick={() => !photoPreview && fileInputRef.current?.click()} 
-//                   className={`w-full aspect-[4/5] sm:aspect-square md:aspect-[4/5] border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center gap-2 p-4 text-center relative group ${!photoPreview ? 'cursor-pointer hover:bg-slate-50 transition' : ''}`}
-//                 >
-//                   {photoPreview ? (
-//                     <img src={photoPreview} alt="Preview" className="w-full h-full object-cover rounded-lg" />
-//                   ) : (
-//                     <>
-//                       <div className="p-2 bg-slate-50 rounded-full text-slate-400 group-hover:scale-105 transition-transform">
-//                         <Upload size={20} />
-//                       </div>
-//                       <span className="text-xs font-medium text-slate-600">Click to upload passport photo</span>
-//                     </>
-//                   )}
-//                 </div>
-
-//                 {/* Operational buttons with stop propagation and prevent default */}
-//                 {photoPreview && (
-//                   <div className="flex gap-2 mt-3 w-full justify-center">
-//                     <Button
-//                       type="button"
-//                       variant="outline"
-//                       size="sm"
-//                       onClick={(e) => {
-//                         e.preventDefault(); // Stop form submission
-//                         e.stopPropagation(); // Stop parent label click
-//                         fileInputRef.current?.click();
-//                       }}
-//                     >
-//                       Change Photo
-//                     </Button>
-
-//                     <Button
-//                       type="button"
-//                       variant="destructive"
-//                       size="sm"
-//                       onClick={(e) => {
-//                         e.preventDefault(); // Stop form submission
-//                         e.stopPropagation(); // Stop parent label click
-//                         removePhoto();
-//                       }}
-//                     >
-//                       Remove
-//                     </Button>
-//                   </div>
-//                 )}
-                
-//                 <span className="text-[11px] text-slate-400 mt-2 text-center">JPG or PNG Passport size</span>
-//               </div>
-//             </div>
-
-//             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-//               <div className="space-y-1.5">
-//                 <label className="text-sm font-medium text-slate-700">Date of Joining <span className="text-red-500">*</span></label>
-//                 <Input type="date" className="bg-slate-50/50 w-full" {...register("dateOfJoining")} />
-//                 {errors.dateOfJoining && <p className="text-xs font-medium text-red-500">{errors.dateOfJoining.message}</p>}
-//               </div>
-
-//               <div className="space-y-1.5">
-//                 <label className="text-sm font-medium text-slate-700">Assign Roles <span className="text-red-500">*</span></label>
-//                 <Select onValueChange={(val) => setValue("role", val)} value={currentRole}>
-//                   <SelectTrigger className="bg-slate-50/50 w-full">
-//                     <SelectValue placeholder="Select roles..." />
-//                   </SelectTrigger>
-//                   <SelectContent>
-//                     <SelectItem value="1">Administrator</SelectItem>
-//                     <SelectItem value="3">Staff Member</SelectItem>
-//                     <SelectItem value="2">Instructor</SelectItem>
-//                   </SelectContent>
-//                 </Select>
-//                 {errors.role && <p className="text-xs font-medium text-red-500">{errors.role.message}</p>}
-//               </div>
-//             </div>
-
-//             <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-slate-100">
-//               <Button
-//                 type="button"
-//                 variant="outline"
-//                 onClick={handleClose}
-//                 className="w-full sm:w-auto border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg px-5"
-//               >
-//                 Cancel
-//               </Button>
-//               {/* Type="submit" to trigger the onSubmit function on the form component */}
-//               <Button
-//                 type="submit"
-//                 className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5"
-//               >
-//                 Create Staff Member
-//               </Button>
-//             </div>
-//           </form>
-//         </DialogContent>
-//       </Dialog>
-//     </>
-//   );
-// };
-
-// export default AddNewStaffMember;

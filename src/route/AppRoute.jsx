@@ -11,6 +11,7 @@ import StudentProfile from '@/features/Avatar/student/profile/StudentProfile';
 import StudentForgotPwd from '@/pages/Auth/student_forgot_password/StuForgotPwd';
 import StudentResetPwd from '@/pages/Auth/student_forgot_password/StuResetPwd';
 import ContactUs from '@/pages/public/contactUs/contactUsMain';
+import CreateStaffPwd from '@/features/Course-Mgt/addStaff/createStaffPwd';
 
 const StaffDashBoard = lazy(() => import('@/pages/staffPages/StaffDashBoard'));
 
@@ -43,7 +44,7 @@ const AppRoute = () => {
                     <Route path="/contactUs" element={<ContactUs />} />
 		    <Route path="/stuFPwd" element={<StudentForgotPwd />} />
                     <Route path="/stuResetPwd" element={<StudentResetPwd />} />
-
+                    
                     {/* STAFF Routes */}
                     <Route element={<AuthGuard allowedRole="STAFF" />}>
                         <Route path="/Staff-dashboard" element={<StaffDashBoard />} />
@@ -51,6 +52,7 @@ const AppRoute = () => {
                         <Route path="/addCourse" element={<AddCourse />} />
                         <Route  path='/course-builder/:courseId' element={<CourseStructureBuilder />} />
                         <Route path="/courseDetails/:courseId" element={<CourseDetails />} />
+                        <Route path="/staff/set-password" element={<CreateStaffPwd />} />
                     </Route>
 
                     {/* STUDENT Routes */}

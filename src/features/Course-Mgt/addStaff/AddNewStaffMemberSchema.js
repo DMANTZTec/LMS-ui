@@ -1,5 +1,8 @@
 import z from 'zod';
 
+
+const ACCEPTED_IMAGES_TYPES = ["image/jpeg","image/png"]; 
+
 // 1. Zod Validation Schema
 export const staffFormSchema = z.object({
   firstName: z.string()
@@ -56,6 +59,7 @@ export const staffFormSchema = z.object({
 
             const today = new Date();
 
+
             today.setHours(0,0,0,0);
 
             return selected >= today;
@@ -65,5 +69,17 @@ export const staffFormSchema = z.object({
         }
     ),
   role: z.string().min(1, "Please select a role"),
-  photo: z.any().optional(),
+
+  photo: z
+  .custom((value) =>{console.log("in first refine validation and the file type is: ",value);
+    return value instanceof File;}, {
+    message: "Image is Required."
+  })
+  .refine(
+    (file) => {console.log("in second refine validation and the type is: ",file.type);
+        return ACCEPTED_IMAGES_TYPES.includes(file.type);},
+    {
+      message: "Only JPEG and PNG formats are supported."
+    }
+  )
 });
