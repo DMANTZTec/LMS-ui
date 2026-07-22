@@ -5,14 +5,19 @@ All URIs are relative to *http://localhost:9090*
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
 |[**createStaff**](#createstaff) | **POST** /api/staff/register | |
+|[**forgotPassword1**](#forgotpassword1) | **POST** /api/staff/forgot-password | |
 |[**getActiveStaff**](#getactivestaff) | **GET** /api/staff/active | |
 |[**getAllStaff**](#getallstaff) | **GET** /api/staff/view-staff | |
 |[**getAllStaff1**](#getallstaff1) | **GET** /api/staff/pagination | |
 |[**getStaffById**](#getstaffbyid) | **GET** /api/staff/{staffId} | |
 |[**registerInitialAdmin**](#registerinitialadmin) | **POST** /api/staff/admin-register | |
+|[**resendLoginOtp**](#resendloginotp) | **POST** /api/staff/resend-login-otp | |
 |[**resetPassword1**](#resetpassword1) | **POST** /api/staff/reset-password | |
-|[**setPassword**](#setpassword) | **POST** /api/staff/set-password | |
+|[**setPassword**](#setpassword) | **POST** /api/staff/set-Newpassword | |
 |[**staffLogin**](#stafflogin) | **POST** /api/staff/login | |
+|[**updateProfileImage**](#updateprofileimage) | **PUT** /api/staff/{staffId}/profile-image | |
+|[**updateStaff**](#updatestaff) | **PUT** /api/staff/{staffId} | |
+|[**validateResetToken**](#validateresettoken) | **GET** /api/staff/reset-password/validate | |
 |[**verifyStaffOtp**](#verifystaffotp) | **POST** /api/staff/login-verification-otp | |
 
 # **createStaff**
@@ -63,7 +68,7 @@ const { status, data } = await apiInstance.createStaff(
 | **mobileNum** | [**string**] |  | defaults to undefined|
 | **roleIds** | **Set&lt;number&gt;** |  | defaults to undefined|
 | **dob** | [**string**] |  | (optional) defaults to undefined|
-| **gender** | [**string**]**Array<&#39;MALE&#39; &#124; &#39;FEMALE&#39; &#124; &#39;OTHER&#39;>** |  | (optional) defaults to undefined|
+| **gender** | [**string**]**Array<&#39;MALE&#39; &#124; &#39;FEMALE&#39; &#124; &#39;PREFER_NOT_TO_SAY&#39; &#124; &#39;NON_BINARY&#39; &#124; &#39;OTHER&#39;>** |  | (optional) defaults to undefined|
 | **dateOfJoining** | [**string**] |  | (optional) defaults to undefined|
 | **profileImg** | [**File**] |  | (optional) defaults to undefined|
 
@@ -79,6 +84,57 @@ const { status, data } = await apiInstance.createStaff(
 ### HTTP request headers
 
  - **Content-Type**: multipart/form-data
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **forgotPassword1**
+> string forgotPassword1(forgotPasswordRequest)
+
+
+### Example
+
+```typescript
+import {
+    StaffControllerApi,
+    Configuration,
+    ForgotPasswordRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StaffControllerApi(configuration);
+
+let forgotPasswordRequest: ForgotPasswordRequest; //
+
+const { status, data } = await apiInstance.forgotPassword1(
+    forgotPasswordRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **forgotPasswordRequest** | **ForgotPasswordRequest**|  | |
+
+
+### Return type
+
+**string**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
  - **Accept**: */*
 
 
@@ -339,8 +395,8 @@ const { status, data } = await apiInstance.registerInitialAdmin(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **resetPassword1**
-> StaffPasswordResponse resetPassword1(staffResetPasswordRequest)
+# **resendLoginOtp**
+> ResendOtpResponse resendLoginOtp(resendStaffOtpRequest)
 
 
 ### Example
@@ -349,16 +405,16 @@ const { status, data } = await apiInstance.registerInitialAdmin(
 import {
     StaffControllerApi,
     Configuration,
-    StaffResetPasswordRequest
+    ResendStaffOtpRequest
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new StaffControllerApi(configuration);
 
-let staffResetPasswordRequest: StaffResetPasswordRequest; //
+let resendStaffOtpRequest: ResendStaffOtpRequest; //
 
-const { status, data } = await apiInstance.resetPassword1(
-    staffResetPasswordRequest
+const { status, data } = await apiInstance.resendLoginOtp(
+    resendStaffOtpRequest
 );
 ```
 
@@ -366,12 +422,63 @@ const { status, data } = await apiInstance.resetPassword1(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **staffResetPasswordRequest** | **StaffResetPasswordRequest**|  | |
+| **resendStaffOtpRequest** | **ResendStaffOtpRequest**|  | |
 
 
 ### Return type
 
-**StaffPasswordResponse**
+**ResendOtpResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **resetPassword1**
+> string resetPassword1(setStaffPasswordRequest)
+
+
+### Example
+
+```typescript
+import {
+    StaffControllerApi,
+    Configuration,
+    SetStaffPasswordRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StaffControllerApi(configuration);
+
+let setStaffPasswordRequest: SetStaffPasswordRequest; //
+
+const { status, data } = await apiInstance.resetPassword1(
+    setStaffPasswordRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **setStaffPasswordRequest** | **SetStaffPasswordRequest**|  | |
+
+
+### Return type
+
+**string**
 
 ### Authorization
 
@@ -482,6 +589,163 @@ const { status, data } = await apiInstance.staffLogin(
 ### HTTP request headers
 
  - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **updateProfileImage**
+> StaffResponse updateProfileImage()
+
+
+### Example
+
+```typescript
+import {
+    StaffControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StaffControllerApi(configuration);
+
+let staffId: string; // (default to undefined)
+let file: File; // (default to undefined)
+
+const { status, data } = await apiInstance.updateProfileImage(
+    staffId,
+    file
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **staffId** | [**string**] |  | defaults to undefined|
+| **file** | [**File**] |  | defaults to undefined|
+
+
+### Return type
+
+**StaffResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **updateStaff**
+> StaffResponse updateStaff(staffUpdateRequest)
+
+
+### Example
+
+```typescript
+import {
+    StaffControllerApi,
+    Configuration,
+    StaffUpdateRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StaffControllerApi(configuration);
+
+let staffId: string; // (default to undefined)
+let staffUpdateRequest: StaffUpdateRequest; //
+
+const { status, data } = await apiInstance.updateStaff(
+    staffId,
+    staffUpdateRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **staffUpdateRequest** | **StaffUpdateRequest**|  | |
+| **staffId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**StaffResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **validateResetToken**
+> string validateResetToken()
+
+
+### Example
+
+```typescript
+import {
+    StaffControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StaffControllerApi(configuration);
+
+let token: string; // (default to undefined)
+
+const { status, data } = await apiInstance.validateResetToken(
+    token
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **token** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**string**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
  - **Accept**: */*
 
 

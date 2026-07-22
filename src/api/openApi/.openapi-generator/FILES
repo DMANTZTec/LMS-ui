@@ -1,6 +1,5 @@
 .gitignore
 .npmignore
-.openapi-generator-ignore
 api.ts
 base.ts
 common.ts
@@ -66,7 +65,12 @@ docs/RegistrationResponse.md
 docs/RemoveClassTopicRequest.md
 docs/RemoveStudentRequest.md
 docs/ResendOtpRequest.md
+docs/ResendOtpResponse.md
+docs/ResendStaffOtpRequest.md
 docs/ResetPasswordRequest.md
+docs/RoleControllerApi.md
+docs/RoleRequest.md
+docs/RoleResponse.md
 docs/SetStaffPasswordRequest.md
 docs/SortObject.md
 docs/StaffControllerApi.md
@@ -75,10 +79,12 @@ docs/StaffCourseResponse.md
 docs/StaffLoginRequest.md
 docs/StaffLoginResponse.md
 docs/StaffOtpVerifyRequest.md
-docs/StaffPasswordResponse.md
 docs/StaffRegistrationRequest.md
-docs/StaffResetPasswordRequest.md
 docs/StaffResponse.md
+docs/StaffRoleControllerApi.md
+docs/StaffRoleRequest.md
+docs/StaffRoleResponse.md
+docs/StaffUpdateRequest.md
 docs/StudentClassResponse.md
 docs/StudentControllerApi.md
 docs/StudentCourseControllerApi.md

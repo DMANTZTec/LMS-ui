@@ -13,6 +13,8 @@ Name | Type | Description | Notes
 **mobileNum** | **string** |  | [optional] [default to undefined]
 **dateOfJoining** | **string** |  | [optional] [default to undefined]
 **designation** | **string** |  | [optional] [default to undefined]
+**profileImg** | **string** |  | [optional] [default to undefined]
+**gender** | **string** |  | [optional] [default to undefined]
 **status** | **string** |  | [optional] [default to undefined]
 **enabled** | **string** |  | [optional] [default to undefined]
 **dob** | **string** |  | [optional] [default to undefined]
@@ -33,6 +35,8 @@ const instance: StaffResponse = {
     mobileNum,
     dateOfJoining,
     designation,
+    profileImg,
+    gender,
     status,
     enabled,
     dob,

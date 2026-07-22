@@ -399,8 +399,8 @@ export interface OverallProgressResponse {
     'completed'?: boolean;
 }
 export interface PageStaffResponse {
-    'totalPages'?: number;
     'totalElements'?: number;
+    'totalPages'?: number;
     'first'?: boolean;
     'last'?: boolean;
     'size'?: number;
@@ -416,8 +416,8 @@ export interface PageableObject {
     'sort'?: SortObject;
     'pageSize'?: number;
     'pageNumber'?: number;
-    'unpaged'?: boolean;
     'paged'?: boolean;
+    'unpaged'?: boolean;
 }
 export interface ProgramCourseRequest {
     'programId': string;
@@ -569,10 +569,31 @@ export const ResendOtpRequestOtpChannelEnum = {
 
 export type ResendOtpRequestOtpChannelEnum = typeof ResendOtpRequestOtpChannelEnum[keyof typeof ResendOtpRequestOtpChannelEnum];
 
+export interface ResendOtpResponse {
+    'staffId'?: string;
+    'email'?: string;
+    'message'?: string;
+}
+export interface ResendStaffOtpRequest {
+    'emailId': string;
+}
 export interface ResetPasswordRequest {
     'emailIdOrMobileNo': string;
     'otp': string;
     'newPassword': string;
+}
+export interface RoleRequest {
+    'roleNm': string;
+    'roleDesc'?: string;
+}
+export interface RoleResponse {
+    'id'?: number;
+    'roleNm'?: string;
+    'roleDesc'?: string;
+    'createdBy'?: number;
+    'createdDt'?: string;
+    'updatedBy'?: number;
+    'updatedDt'?: string;
 }
 export interface SetStaffPasswordRequest {
     'token': string;
@@ -580,8 +601,8 @@ export interface SetStaffPasswordRequest {
     'confirmPassword': string;
 }
 export interface SortObject {
-    'empty'?: boolean;
     'sorted'?: boolean;
+    'empty'?: boolean;
     'unsorted'?: boolean;
 }
 export interface StaffCourseResponse {
@@ -607,10 +628,6 @@ export interface StaffOtpVerifyRequest {
     'emailId'?: string;
     'otp'?: string;
 }
-export interface StaffPasswordResponse {
-    'staffId'?: string;
-    'message'?: string;
-}
 export interface StaffRegistrationRequest {
     'firstNm': string;
     'lastNm'?: string;
@@ -630,11 +647,6 @@ export interface StaffRegistrationRequest {
     'profileImgBase64'?: string;
     'roles'?: Set<string>;
 }
-export interface StaffResetPasswordRequest {
-    'staffId'?: string;
-    'otp'?: string;
-    'newPassword'?: string;
-}
 export interface StaffResponse {
     'id'?: number;
     'staffId'?: string;
@@ -644,12 +656,58 @@ export interface StaffResponse {
     'mobileNum'?: string;
     'dateOfJoining'?: string;
     'designation'?: string;
+    'profileImg'?: string;
+    'gender'?: StaffResponseGenderEnum;
     'status'?: string;
     'enabled'?: string;
     'dob'?: string;
     'createdDt'?: string;
     'roles'?: Set<string>;
 }
+
+export const StaffResponseGenderEnum = {
+    Male: 'MALE',
+    Female: 'FEMALE',
+    PreferNotToSay: 'PREFER_NOT_TO_SAY',
+    NonBinary: 'NON_BINARY',
+    Other: 'OTHER',
+} as const;
+
+export type StaffResponseGenderEnum = typeof StaffResponseGenderEnum[keyof typeof StaffResponseGenderEnum];
+
+export interface StaffRoleRequest {
+    'staffId': string;
+    'roleId': number;
+}
+export interface StaffRoleResponse {
+    'id'?: number;
+    'staffId'?: string;
+    'roleId'?: number;
+    'roleNm'?: string;
+    'createdBy'?: number;
+    'createdDt'?: string;
+    'updatedBy'?: number;
+    'updatedDt'?: string;
+}
+export interface StaffUpdateRequest {
+    'firstNm': string;
+    'lastNm': string;
+    'dob'?: string;
+    'gender'?: StaffUpdateRequestGenderEnum;
+    'dateOfJoining'?: string;
+    'roleIds'?: Set<number>;
+}
+
+export const StaffUpdateRequestGenderEnum = {
+    Male: 'MALE',
+    Female: 'FEMALE',
+    PreferNotToSay: 'PREFER_NOT_TO_SAY',
+    NonBinary: 'NON_BINARY',
+    Other: 'OTHER',
+} as const;
+
+export type StaffUpdateRequestGenderEnum = typeof StaffUpdateRequestGenderEnum[keyof typeof StaffUpdateRequestGenderEnum];
+
 export interface StudentClassResponse {
     'id'?: number;
     'courseId'?: number;
@@ -7234,6 +7292,398 @@ export class ProviderControllerApi extends BaseAPI {
 
 
 /**
+ * RoleControllerApi - axios parameter creator
+ */
+export const RoleControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {RoleRequest} roleRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createRole: async (staffId: string, roleRequest: RoleRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'staffId' is not null or undefined
+            assertParamExists('createRole', 'staffId', staffId)
+            // verify required parameter 'roleRequest' is not null or undefined
+            assertParamExists('createRole', 'roleRequest', roleRequest)
+            const localVarPath = `/api/roles`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            if (staffId != null) {
+                localVarHeaderParameter['StaffId'] = String(staffId);
+            }
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(roleRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteRole: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteRole', 'id', id)
+            const localVarPath = `/api/roles/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllRoles: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/roles`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRoleById: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getRoleById', 'id', id)
+            const localVarPath = `/api/roles/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {string} staffId 
+         * @param {RoleRequest} roleRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateRole: async (id: number, staffId: string, roleRequest: RoleRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('updateRole', 'id', id)
+            // verify required parameter 'staffId' is not null or undefined
+            assertParamExists('updateRole', 'staffId', staffId)
+            // verify required parameter 'roleRequest' is not null or undefined
+            assertParamExists('updateRole', 'roleRequest', roleRequest)
+            const localVarPath = `/api/roles/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            if (staffId != null) {
+                localVarHeaderParameter['StaffId'] = String(staffId);
+            }
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(roleRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * RoleControllerApi - functional programming interface
+ */
+export const RoleControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = RoleControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {RoleRequest} roleRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createRole(staffId: string, roleRequest: RoleRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RoleResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createRole(staffId, roleRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['RoleControllerApi.createRole']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteRole(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteRole(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['RoleControllerApi.deleteRole']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllRoles(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<RoleResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllRoles(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['RoleControllerApi.getAllRoles']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRoleById(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RoleResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRoleById(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['RoleControllerApi.getRoleById']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {string} staffId 
+         * @param {RoleRequest} roleRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateRole(id: number, staffId: string, roleRequest: RoleRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RoleResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateRole(id, staffId, roleRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['RoleControllerApi.updateRole']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * RoleControllerApi - factory interface
+ */
+export const RoleControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = RoleControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {RoleRequest} roleRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createRole(staffId: string, roleRequest: RoleRequest, options?: RawAxiosRequestConfig): AxiosPromise<RoleResponse> {
+            return localVarFp.createRole(staffId, roleRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteRole(id: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deleteRole(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllRoles(options?: RawAxiosRequestConfig): AxiosPromise<Array<RoleResponse>> {
+            return localVarFp.getAllRoles(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRoleById(id: number, options?: RawAxiosRequestConfig): AxiosPromise<RoleResponse> {
+            return localVarFp.getRoleById(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {string} staffId 
+         * @param {RoleRequest} roleRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateRole(id: number, staffId: string, roleRequest: RoleRequest, options?: RawAxiosRequestConfig): AxiosPromise<RoleResponse> {
+            return localVarFp.updateRole(id, staffId, roleRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * RoleControllerApi - object-oriented interface
+ */
+export class RoleControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {string} staffId 
+     * @param {RoleRequest} roleRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public createRole(staffId: string, roleRequest: RoleRequest, options?: RawAxiosRequestConfig) {
+        return RoleControllerApiFp(this.configuration).createRole(staffId, roleRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public deleteRole(id: number, options?: RawAxiosRequestConfig) {
+        return RoleControllerApiFp(this.configuration).deleteRole(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getAllRoles(options?: RawAxiosRequestConfig) {
+        return RoleControllerApiFp(this.configuration).getAllRoles(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getRoleById(id: number, options?: RawAxiosRequestConfig) {
+        return RoleControllerApiFp(this.configuration).getRoleById(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {string} staffId 
+     * @param {RoleRequest} roleRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public updateRole(id: number, staffId: string, roleRequest: RoleRequest, options?: RawAxiosRequestConfig) {
+        return RoleControllerApiFp(this.configuration).updateRole(id, staffId, roleRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * StaffControllerApi - axios parameter creator
  */
 export const StaffControllerApiAxiosParamCreator = function (configuration?: Configuration) {
@@ -7323,6 +7773,44 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {ForgotPasswordRequest} forgotPasswordRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        forgotPassword1: async (forgotPasswordRequest: ForgotPasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'forgotPasswordRequest' is not null or undefined
+            assertParamExists('forgotPassword1', 'forgotPasswordRequest', forgotPasswordRequest)
+            const localVarPath = `/api/staff/forgot-password`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(forgotPasswordRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -7525,13 +8013,51 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
         },
         /**
          * 
-         * @param {StaffResetPasswordRequest} staffResetPasswordRequest 
+         * @param {ResendStaffOtpRequest} resendStaffOtpRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        resetPassword1: async (staffResetPasswordRequest: StaffResetPasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'staffResetPasswordRequest' is not null or undefined
-            assertParamExists('resetPassword1', 'staffResetPasswordRequest', staffResetPasswordRequest)
+        resendLoginOtp: async (resendStaffOtpRequest: ResendStaffOtpRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resendStaffOtpRequest' is not null or undefined
+            assertParamExists('resendLoginOtp', 'resendStaffOtpRequest', resendStaffOtpRequest)
+            const localVarPath = `/api/staff/resend-login-otp`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(resendStaffOtpRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {SetStaffPasswordRequest} setStaffPasswordRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        resetPassword1: async (setStaffPasswordRequest: SetStaffPasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'setStaffPasswordRequest' is not null or undefined
+            assertParamExists('resetPassword1', 'setStaffPasswordRequest', setStaffPasswordRequest)
             const localVarPath = `/api/staff/reset-password`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7554,7 +8080,7 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(staffResetPasswordRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(setStaffPasswordRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -7570,7 +8096,7 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
         setPassword: async (setStaffPasswordRequest: SetStaffPasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'setStaffPasswordRequest' is not null or undefined
             assertParamExists('setPassword', 'setStaffPasswordRequest', setStaffPasswordRequest)
-            const localVarPath = `/api/staff/set-password`;
+            const localVarPath = `/api/staff/set-Newpassword`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -7631,6 +8157,135 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(staffLoginRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {File} file 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateProfileImage: async (staffId: string, file: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'staffId' is not null or undefined
+            assertParamExists('updateProfileImage', 'staffId', staffId)
+            // verify required parameter 'file' is not null or undefined
+            assertParamExists('updateProfileImage', 'file', file)
+            const localVarPath = `/api/staff/{staffId}/profile-image`
+                .replace(`{${"staffId"}}`, encodeURIComponent(String(staffId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (file !== undefined) { 
+                localVarFormParams.append('file', file as any);
+            }
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {StaffUpdateRequest} staffUpdateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateStaff: async (staffId: string, staffUpdateRequest: StaffUpdateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'staffId' is not null or undefined
+            assertParamExists('updateStaff', 'staffId', staffId)
+            // verify required parameter 'staffUpdateRequest' is not null or undefined
+            assertParamExists('updateStaff', 'staffUpdateRequest', staffUpdateRequest)
+            const localVarPath = `/api/staff/{staffId}`
+                .replace(`{${"staffId"}}`, encodeURIComponent(String(staffId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(staffUpdateRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} token 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        validateResetToken: async (token: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'token' is not null or undefined
+            assertParamExists('validateResetToken', 'token', token)
+            const localVarPath = `/api/staff/reset-password/validate`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
+            }
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -7706,6 +8361,18 @@ export const StaffControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {ForgotPasswordRequest} forgotPasswordRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async forgotPassword1(forgotPasswordRequest: ForgotPasswordRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.forgotPassword1(forgotPasswordRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.forgotPassword1']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} [page] 
          * @param {number} [size] 
          * @param {*} [options] Override http request option.
@@ -7767,12 +8434,24 @@ export const StaffControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {StaffResetPasswordRequest} staffResetPasswordRequest 
+         * @param {ResendStaffOtpRequest} resendStaffOtpRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async resetPassword1(staffResetPasswordRequest: StaffResetPasswordRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffPasswordResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.resetPassword1(staffResetPasswordRequest, options);
+        async resendLoginOtp(resendStaffOtpRequest: ResendStaffOtpRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResendOtpResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.resendLoginOtp(resendStaffOtpRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.resendLoginOtp']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {SetStaffPasswordRequest} setStaffPasswordRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async resetPassword1(setStaffPasswordRequest: SetStaffPasswordRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.resetPassword1(setStaffPasswordRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.resetPassword1']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -7799,6 +8478,44 @@ export const StaffControllerApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.staffLogin(staffLoginRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.staffLogin']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {File} file 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateProfileImage(staffId: string, file: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateProfileImage(staffId, file, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.updateProfileImage']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {StaffUpdateRequest} staffUpdateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateStaff(staffId: string, staffUpdateRequest: StaffUpdateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateStaff(staffId, staffUpdateRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.updateStaff']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} token 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async validateResetToken(token: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.validateResetToken(token, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.validateResetToken']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -7838,6 +8555,15 @@ export const StaffControllerApiFactory = function (configuration?: Configuration
          */
         createStaff(firstNm: string, lastNm: string, emailId: string, mobileNum: string, roleIds: Set<number>, dob?: string, gender?: CreateStaffGenderEnum, dateOfJoining?: string, profileImg?: File, options?: RawAxiosRequestConfig): AxiosPromise<StaffResponse> {
             return localVarFp.createStaff(firstNm, lastNm, emailId, mobileNum, roleIds, dob, gender, dateOfJoining, profileImg, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ForgotPasswordRequest} forgotPasswordRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        forgotPassword1(forgotPasswordRequest: ForgotPasswordRequest, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.forgotPassword1(forgotPasswordRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7887,12 +8613,21 @@ export const StaffControllerApiFactory = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {StaffResetPasswordRequest} staffResetPasswordRequest 
+         * @param {ResendStaffOtpRequest} resendStaffOtpRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        resetPassword1(staffResetPasswordRequest: StaffResetPasswordRequest, options?: RawAxiosRequestConfig): AxiosPromise<StaffPasswordResponse> {
-            return localVarFp.resetPassword1(staffResetPasswordRequest, options).then((request) => request(axios, basePath));
+        resendLoginOtp(resendStaffOtpRequest: ResendStaffOtpRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResendOtpResponse> {
+            return localVarFp.resendLoginOtp(resendStaffOtpRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {SetStaffPasswordRequest} setStaffPasswordRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        resetPassword1(setStaffPasswordRequest: SetStaffPasswordRequest, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.resetPassword1(setStaffPasswordRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7911,6 +8646,35 @@ export const StaffControllerApiFactory = function (configuration?: Configuration
          */
         staffLogin(staffLoginRequest: StaffLoginRequest, options?: RawAxiosRequestConfig): AxiosPromise<StaffLoginResponse> {
             return localVarFp.staffLogin(staffLoginRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {File} file 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateProfileImage(staffId: string, file: File, options?: RawAxiosRequestConfig): AxiosPromise<StaffResponse> {
+            return localVarFp.updateProfileImage(staffId, file, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {StaffUpdateRequest} staffUpdateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateStaff(staffId: string, staffUpdateRequest: StaffUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<StaffResponse> {
+            return localVarFp.updateStaff(staffId, staffUpdateRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} token 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        validateResetToken(token: string, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.validateResetToken(token, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7944,6 +8708,16 @@ export class StaffControllerApi extends BaseAPI {
      */
     public createStaff(firstNm: string, lastNm: string, emailId: string, mobileNum: string, roleIds: Set<number>, dob?: string, gender?: CreateStaffGenderEnum, dateOfJoining?: string, profileImg?: File, options?: RawAxiosRequestConfig) {
         return StaffControllerApiFp(this.configuration).createStaff(firstNm, lastNm, emailId, mobileNum, roleIds, dob, gender, dateOfJoining, profileImg, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ForgotPasswordRequest} forgotPasswordRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public forgotPassword1(forgotPasswordRequest: ForgotPasswordRequest, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).forgotPassword1(forgotPasswordRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -7999,12 +8773,22 @@ export class StaffControllerApi extends BaseAPI {
 
     /**
      * 
-     * @param {StaffResetPasswordRequest} staffResetPasswordRequest 
+     * @param {ResendStaffOtpRequest} resendStaffOtpRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public resetPassword1(staffResetPasswordRequest: StaffResetPasswordRequest, options?: RawAxiosRequestConfig) {
-        return StaffControllerApiFp(this.configuration).resetPassword1(staffResetPasswordRequest, options).then((request) => request(this.axios, this.basePath));
+    public resendLoginOtp(resendStaffOtpRequest: ResendStaffOtpRequest, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).resendLoginOtp(resendStaffOtpRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {SetStaffPasswordRequest} setStaffPasswordRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public resetPassword1(setStaffPasswordRequest: SetStaffPasswordRequest, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).resetPassword1(setStaffPasswordRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8029,6 +8813,38 @@ export class StaffControllerApi extends BaseAPI {
 
     /**
      * 
+     * @param {string} staffId 
+     * @param {File} file 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public updateProfileImage(staffId: string, file: File, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).updateProfileImage(staffId, file, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} staffId 
+     * @param {StaffUpdateRequest} staffUpdateRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public updateStaff(staffId: string, staffUpdateRequest: StaffUpdateRequest, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).updateStaff(staffId, staffUpdateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} token 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public validateResetToken(token: string, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).validateResetToken(token, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {StaffOtpVerifyRequest} staffOtpVerifyRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -8041,6 +8857,8 @@ export class StaffControllerApi extends BaseAPI {
 export const CreateStaffGenderEnum = {
     Male: 'MALE',
     Female: 'FEMALE',
+    PreferNotToSay: 'PREFER_NOT_TO_SAY',
+    NonBinary: 'NON_BINARY',
     Other: 'OTHER',
 } as const;
 export type CreateStaffGenderEnum = typeof CreateStaffGenderEnum[keyof typeof CreateStaffGenderEnum];
@@ -8431,6 +9249,516 @@ export class StaffCourseControllerApi extends BaseAPI {
      */
     public removeInstructorFromCourse(courseId: string, staffId: string, options?: RawAxiosRequestConfig) {
         return StaffCourseControllerApiFp(this.configuration).removeInstructorFromCourse(courseId, staffId, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * StaffRoleControllerApi - axios parameter creator
+ */
+export const StaffRoleControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {StaffRoleRequest} staffRoleRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        assignRole: async (staffRoleRequest: StaffRoleRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'staffRoleRequest' is not null or undefined
+            assertParamExists('assignRole', 'staffRoleRequest', staffRoleRequest)
+            const localVarPath = `/api/staff-roles`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(staffRoleRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/staff-roles`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getById: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getById', 'id', id)
+            const localVarPath = `/api/staff-roles/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRolesByStaffId: async (staffId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'staffId' is not null or undefined
+            assertParamExists('getRolesByStaffId', 'staffId', staffId)
+            const localVarPath = `/api/staff-roles/staff/{staffId}`
+                .replace(`{${"staffId"}}`, encodeURIComponent(String(staffId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} roleId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStaffByRoleId: async (roleId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'roleId' is not null or undefined
+            assertParamExists('getStaffByRoleId', 'roleId', roleId)
+            const localVarPath = `/api/staff-roles/role/{roleId}`
+                .replace(`{${"roleId"}}`, encodeURIComponent(String(roleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeRole: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('removeRole', 'id', id)
+            const localVarPath = `/api/staff-roles/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {StaffRoleRequest} staffRoleRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateStaffRole: async (id: number, staffRoleRequest: StaffRoleRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('updateStaffRole', 'id', id)
+            // verify required parameter 'staffRoleRequest' is not null or undefined
+            assertParamExists('updateStaffRole', 'staffRoleRequest', staffRoleRequest)
+            const localVarPath = `/api/staff-roles/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(staffRoleRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * StaffRoleControllerApi - functional programming interface
+ */
+export const StaffRoleControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = StaffRoleControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {StaffRoleRequest} staffRoleRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async assignRole(staffRoleRequest: StaffRoleRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffRoleResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.assignRole(staffRoleRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffRoleControllerApi.assignRole']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAll(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<StaffRoleResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAll(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffRoleControllerApi.getAll']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getById(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffRoleResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getById(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffRoleControllerApi.getById']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRolesByStaffId(staffId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<StaffRoleResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRolesByStaffId(staffId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffRoleControllerApi.getRolesByStaffId']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} roleId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStaffByRoleId(roleId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<StaffRoleResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStaffByRoleId(roleId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffRoleControllerApi.getStaffByRoleId']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async removeRole(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.removeRole(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffRoleControllerApi.removeRole']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {StaffRoleRequest} staffRoleRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateStaffRole(id: number, staffRoleRequest: StaffRoleRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffRoleResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateStaffRole(id, staffRoleRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffRoleControllerApi.updateStaffRole']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * StaffRoleControllerApi - factory interface
+ */
+export const StaffRoleControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = StaffRoleControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {StaffRoleRequest} staffRoleRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        assignRole(staffRoleRequest: StaffRoleRequest, options?: RawAxiosRequestConfig): AxiosPromise<StaffRoleResponse> {
+            return localVarFp.assignRole(staffRoleRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll(options?: RawAxiosRequestConfig): AxiosPromise<Array<StaffRoleResponse>> {
+            return localVarFp.getAll(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getById(id: number, options?: RawAxiosRequestConfig): AxiosPromise<StaffRoleResponse> {
+            return localVarFp.getById(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRolesByStaffId(staffId: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<StaffRoleResponse>> {
+            return localVarFp.getRolesByStaffId(staffId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} roleId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStaffByRoleId(roleId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<StaffRoleResponse>> {
+            return localVarFp.getStaffByRoleId(roleId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeRole(id: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.removeRole(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {StaffRoleRequest} staffRoleRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateStaffRole(id: number, staffRoleRequest: StaffRoleRequest, options?: RawAxiosRequestConfig): AxiosPromise<StaffRoleResponse> {
+            return localVarFp.updateStaffRole(id, staffRoleRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * StaffRoleControllerApi - object-oriented interface
+ */
+export class StaffRoleControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {StaffRoleRequest} staffRoleRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public assignRole(staffRoleRequest: StaffRoleRequest, options?: RawAxiosRequestConfig) {
+        return StaffRoleControllerApiFp(this.configuration).assignRole(staffRoleRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getAll(options?: RawAxiosRequestConfig) {
+        return StaffRoleControllerApiFp(this.configuration).getAll(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getById(id: number, options?: RawAxiosRequestConfig) {
+        return StaffRoleControllerApiFp(this.configuration).getById(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} staffId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getRolesByStaffId(staffId: string, options?: RawAxiosRequestConfig) {
+        return StaffRoleControllerApiFp(this.configuration).getRolesByStaffId(staffId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} roleId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getStaffByRoleId(roleId: number, options?: RawAxiosRequestConfig) {
+        return StaffRoleControllerApiFp(this.configuration).getStaffByRoleId(roleId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public removeRole(id: number, options?: RawAxiosRequestConfig) {
+        return StaffRoleControllerApiFp(this.configuration).removeRole(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {StaffRoleRequest} staffRoleRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public updateStaffRole(id: number, staffRoleRequest: StaffRoleRequest, options?: RawAxiosRequestConfig) {
+        return StaffRoleControllerApiFp(this.configuration).updateStaffRole(id, staffRoleRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
