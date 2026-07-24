@@ -1,30 +1,69 @@
 import React, { useState, useEffect } from "react";
 import { RefreshCwIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field,FieldLabel } from "@/components/ui/field";
+import { Field, FieldLabel } from "@/components/ui/field";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { staffApi } from "@/api/staff-controller.api";
-
-
 
 export default function StaffOtp() {
   const [value, setValue] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [timer, setTimer] = useState(120);
   const navigate = useNavigate();
 
-  const savedUser = JSON.parse(sessionStorage.getItem('otpStaff') || "{}");
-
+  const savedUser = JSON.parse(sessionStorage.getItem("otpStaff") || "{}");
 
   const staffId = savedUser?.staffId;
-  const   email= savedUser?.email;
+  const email = savedUser?.email;
 
+  // Countdown timer logic
+  useEffect(() => {
+    if (timer === 0) return;
 
+    const intervalId = setInterval(() => {
+      setTimer((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [timer]);
+
+  // Format seconds to MM:SS string
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      setResending(true);
+
+      const payload = {
+        emailId: email,
+      };
+
+      await staffApi.resendLoginOtp(payload); // Ensure this matches your staff API endpoint
+
+      toast.success("OTP resent successfully! 🎉");
+      setTimer(120);
+    } catch (error) {
+      const errorMsg =
+        error.response?.data?.message ||
+        error.response?.data ||
+        "Failed to resend OTP";
+      toast.error(errorMsg);
+    } finally {
+      setResending(false);
+    }
+  };
 
   const handleVerify = async () => {
     if (value.length !== 6) {
-      alert("Enter 6-digit OTP");
+      toast.error("Please enter a valid 6-digit OTP");
       return;
     }
 
@@ -32,32 +71,33 @@ export default function StaffOtp() {
 
     try {
       const payload = {
-      //staffId: staffId,
-      emailId: JSON.parse(sessionStorage.getItem('otpStaff') || "{}").email,                         // modified 
-      otp: value,
-    };
+        emailId: email,
+        otp: value,
+      };
 
-      //const res = await staffApi.verifyOtp1(payload);
-        const res = await staffApi.verifyStaffOtp(payload);   
-      alert(res.data.message || "Verified ✅");
-       const { token } = res.data;
-       if (token) {
-          localStorage.setItem("LmsJwTtoken", token);
-       }
+      const res = await staffApi.verifyStaffOtp(payload);
+      toast.success(res.data.message || "Verified successfully! ✅");
 
-      navigate("/Staff-dashboard");
+      const { token } = res.data;
+      if (token) {
+        localStorage.setItem("LmsJwTtoken", token);
+      }
 
+      setTimeout(() => {
+        navigate("/Staff-dashboard");
+      }, 1000);
     } catch (error) {
-      alert(typeof error.response?.data === 'string' ? error.response.data : "Invalid OTP ❌");
+      const errorMsg =
+        typeof error.response?.data === "string"
+          ? error.response.data
+          : "Invalid OTP ❌";
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
   };
 
-
   if (!staffId) return null;
-
-
 
   return (
     <Card className="mx-auto max-w-md shadow-lg mt-10">
@@ -66,7 +106,7 @@ export default function StaffOtp() {
         <CardDescription>
           Enter the code sent to your mail:{" "}
           <span className="font-medium text-black">
-            { email || " "}
+            {email || "your email"}
           </span>
         </CardDescription>
       </CardHeader>
@@ -75,10 +115,22 @@ export default function StaffOtp() {
         <Field className="space-y-4">
           <div className="flex items-center justify-between">
             <FieldLabel>Verification code</FieldLabel>
-             <Button variant="outline" size="sm" className="h-8 gap-1">
-              <RefreshCwIcon className="h-3 w-3" />
-              Resend
-            </Button> 
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1 text-xs"
+              onClick={handleResendOtp}
+              disabled={resending || timer > 0}
+            >
+              <RefreshCwIcon
+                className={`h-3 w-3 ${resending ? "animate-spin" : ""}`}
+              />
+              {resending
+                ? "Sending..."
+                : timer > 0
+                ? `Resend in ${formatTime(timer)}`
+                : "Resend"}
+            </Button>
           </div>
 
           <div className="flex justify-center">

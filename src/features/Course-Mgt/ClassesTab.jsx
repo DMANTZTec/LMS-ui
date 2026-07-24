@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, ChevronDown, Clock, Ban } from 'lucide-react';
+import { ChevronRight, ChevronDown, Clock, Ban, Plus } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 import Swal from 'sweetalert2';
 
@@ -314,7 +314,7 @@ const ClassesTab = () => {
                 <h2 className='text-[18px] md:text-3xl font-semibold'>Class Schedules</h2>
                 
                 <Button onClick={() => setOpen(true)}>
-                    + Create Class Schedule
+                    <Plus size={16} /> Create Class Schedule
                 </Button>
 
                 <Dialog open={open} onOpenChange={setOpen} >
