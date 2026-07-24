@@ -9,6 +9,7 @@
   import { staffApi } from "@/api/staff-controller.api";
   import AddNewStaffMember from '@/features/Course-Mgt/addStaff/AddNewStaffMember';
   import EditStaffMember from './addStaff/EditStaffMember';
+import ResetStaffPwdModal from "./addStaff/ResetStaffPwdModal";
 
   function getInitials(firstNm, lastNm) {
     return `${firstNm?.[0] ?? ""}${lastNm?.[0] ?? ""}`.toUpperCase();
@@ -82,6 +83,8 @@
     const [query, setQuery] = useState("");
     const [isAddNewStaffMemberModal, setIsAddNewStaffMemberModal] = useState(false);
     const [selectedEditStaff, setSelectedEditStaff] = useState(null);
+    const [isResetStaffPwdModal, setIsResetStaffPwdModal] = useState(false);
+    const [selectedStaffResetData, setSelectedStaffResetData] = useState(null); 
 
     // Pagination States
     const [currentPage, setCurrentPage] = useState(1);
@@ -119,6 +122,17 @@
       setCurrentPage(1);
     };
 
+const resetPwdModal = (data) => {
+console.log("entered into resetData function and data is: ",data);
+
+setSelectedStaffResetData(data);
+console.log("selectedStaffResetData value is: ",selectedStaffResetData);
+
+setIsResetStaffPwdModal(true);
+console.log("isResetStaffPwdModal value is: ",isResetStaffPwdModal);
+
+}
+
     // Compute total pages and slice records for current page
     const totalPages = Math.ceil(filtered.length / pageSize) || 1;
     const paginatedStaff = useMemo(() => {
@@ -146,6 +160,13 @@
             onSuccess={refetch}
           />
 
+{selectedStaffResetData &&
+          <ResetStaffPwdModal
+            open={isResetStaffPwdModal}
+            onOpenChange={setIsResetStaffPwdModal}
+            staffData={selectedStaffResetData}
+            onSuccess={refetch}
+          /> }
           {/* Stat cards */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <StatCard 
@@ -277,6 +298,7 @@
                               
                               <ActionIconButton
                                 title="Reset password"
+                                onClick={() => resetPwdModal(member)}
                                 className="border-amber-100 bg-amber-50 text-amber-600 hover:bg-amber-100"
                               >
                                 <KeyRound className="h-4 w-4" />

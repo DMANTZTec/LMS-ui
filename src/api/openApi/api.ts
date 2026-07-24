@@ -401,12 +401,12 @@ export interface OverallProgressResponse {
 export interface PageStaffResponse {
     'totalElements'?: number;
     'totalPages'?: number;
-    'first'?: boolean;
-    'last'?: boolean;
     'size'?: number;
     'content'?: Array<StaffResponse>;
     'number'?: number;
     'sort'?: SortObject;
+    'first'?: boolean;
+    'last'?: boolean;
     'numberOfElements'?: number;
     'pageable'?: PageableObject;
     'empty'?: boolean;
@@ -414,8 +414,8 @@ export interface PageStaffResponse {
 export interface PageableObject {
     'offset'?: number;
     'sort'?: SortObject;
-    'pageSize'?: number;
     'pageNumber'?: number;
+    'pageSize'?: number;
     'paged'?: boolean;
     'unpaged'?: boolean;
 }
@@ -601,8 +601,8 @@ export interface SetStaffPasswordRequest {
     'confirmPassword': string;
 }
 export interface SortObject {
-    'sorted'?: boolean;
     'empty'?: boolean;
+    'sorted'?: boolean;
     'unsorted'?: boolean;
 }
 export interface StaffCourseResponse {
