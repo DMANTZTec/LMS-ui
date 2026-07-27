@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CheckCircle, Loader2 } from 'lucide-react';
+import { CheckCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
 import Field from '@/components/common/Field';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -38,6 +38,9 @@ const [isSubmitting, setIsSubmitting] = useState(false);
 const [submittedMsg, setSubmittedMsg] = useState(null);
 const [globalError, setGlobalError] = useState(null);
 
+const [showPassword, setShowPassword] = useState(false);
+const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     const [ searchParams ] = useSearchParams();
 // Extract the specific query parameter
   const tokenValue = searchParams.get('token');
@@ -53,7 +56,6 @@ const [globalError, setGlobalError] = useState(null);
     const watchedValues = watch(["newPwd","confirmPwd"]);
     
        useEffect(() => {
-        console.log("entered into useEffect");
         setSubmittedMsg(null);
         setGlobalError(null);
        },[JSON.stringify(watchedValues)]);
@@ -110,11 +112,30 @@ setIsSubmitting(false);
                         
 
                         <Field label="New Password" error={errors.newPwd?.message}>
-                            <Input {...register("newPwd")} type="password" />
+                            <div className="relative flex items-center max-w-sm">
+                            <Input {...register("newPwd")} type={showPassword ? "text": "password"} 
+                            className="pr-10 bg-gray-100" />
+                            <Button type="button"
+                                    onClick={() => setShowPassword(prev => !prev)}
+                                    className="absolute right-0 top-0 h-full px-3 py-2 text-gray-500 bg-gray-100 hover:bg-gray-100" 
+                                    aria-label={showPassword ? "Hide password" : "Show password"}>
+                            {showPassword ? <Eye size={18} /> : <EyeOff size="18"/>}
+                            
+                            </Button>
+                            </div>
                         </Field>
 
                         <Field label="Confirm Password" error={errors.confirmPwd?.message}>
-                            <Input {...register("confirmPwd")} type="password" />
+                            <div className="relative flex items-center max-w-sm">
+                            <Input {...register("confirmPwd")} type={ showConfirmPassword? "text": "password"} 
+                            className="pr-10 bg-gray-100" />
+                            <Button type="button"
+                                    onClick={() => setShowConfirmPassword(prev => !prev)}
+                                    className="absolute right-0 top-0 h-full px-3 py-2 text-gray-500 bg-gray-100 hover:bg-gray-100"
+                                    aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"} >
+                            {showConfirmPassword ? <Eye size={18} /> : <EyeOff size="18"/>}
+                            </Button>
+                            </div>
                         </Field>
 
                         <Button type="submit" disabled = {isSubmitting}>

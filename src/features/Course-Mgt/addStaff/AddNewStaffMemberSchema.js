@@ -68,16 +68,19 @@ export const staffFormSchema = z.object({
             message:"Date of joining cannot be in the past"
         }
     ),
-  role: z.string().min(1, "Please select a role"),
+  
+  roles: z                                                          
+    .array(z.number())
+    .min(1, "Please select at least one role"),              
 
   photo: z
-  .custom((value) =>{console.log("in first refine validation and the file type is: ",value);
+  .custom((value) =>{
     return value instanceof File;}, {
     message: "Image is Required."
   })
   .refine(
-    (file) => {console.log("in second refine validation and the type is: ",file.type);
-        return ACCEPTED_IMAGES_TYPES.includes(file.type);},
+    (file) => {
+              return ACCEPTED_IMAGES_TYPES.includes(file.type);},
     {
       message: "Only JPEG and PNG formats are supported."
     }

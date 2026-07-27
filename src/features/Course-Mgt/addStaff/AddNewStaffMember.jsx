@@ -2,7 +2,22 @@ import React, { useState, useEffect, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from 'react-hot-toast';
-import { Upload, CheckCircle, Loader, RefreshCw, Trash2 } from "lucide-react";
+import { Upload, CheckCircle, Loader, RefreshCw, Trash2, Check, ChevronsUpDown, X } from "lucide-react";
+
+import {                                                                
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Badge } from "@/components/ui/badge";
 
 import {
     Dialog,
@@ -21,7 +36,7 @@ import {
 } from "@/components/ui/select";
 import { staffFormSchema } from "./AddNewStaffMemberSchema";
 import { staffApi } from '@/api/staff-controller.api';
-
+import { roleApi } from '@/api/role-controller'; 
 // --- Sub-components for better maintainability ---
 
 const FormField = ({ label, required, error, children }) => (
@@ -47,7 +62,7 @@ const PhotoUpload = ({ fileInputRef, photoPreview, onPhotoChange, onRemovePhoto,
             className="hidden"
             accept="image/png,image/jpeg"
             onChange={onPhotoChange}
-            rgister
+            register
         />
 
         {/* Outer frame matching standard passport size dimensions */}
@@ -136,14 +151,33 @@ const PhotoUpload = ({ fileInputRef, photoPreview, onPhotoChange, onRemovePhoto,
 
 // --- Main Component ---
 
-const AddNewStaffMember = ({ open, onOpenChange }) => {
+const AddNewStaffMember = ({ open, onOpenChange, onSuccess }) => {
+    const [roleOptions, setRoleOptions] = useState([]);
     const [photoPreview, setPhotoPreview] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submittedMsg, setSubmittedMsg] = useState(null);
     const [globalError, setGlobalError] = useState(null);
 
+const [openPopOver, setOpenPopOver] = useState(false);                    
+
     const fileInputRef = useRef(null);
 
+
+
+const fetchRoles = async () => {
+   return (await roleApi.getAllRoles());
+};
+
+useEffect(() => {
+    const getRoles = async () => {
+        const response = await fetchRoles();
+        console.log("response is: ", response);
+        setRoleOptions(response.data);
+        console.log("response.data is: ",response.data);
+        
+    }
+getRoles();
+},[]);
     const {
         control,
         register,
@@ -163,8 +197,10 @@ const AddNewStaffMember = ({ open, onOpenChange }) => {
             dateOfBirth: "",
             gender: "",
             dateOfJoining: "",
-            role: "",
-            photo: null
+            roles: [],
+            photo: null,
+
+            roles: [],
         },
     });
 
@@ -181,6 +217,10 @@ const AddNewStaffMember = ({ open, onOpenChange }) => {
     }, [JSON.stringify(watchedValues), watchedPhoto?.name, watchedPhoto?.size]);
 
     const onSubmit = async (data) => {
+        //console.log("entered into onSubmit function and data is: ",data);
+        //const stringRolesArray = data.roles;
+        //const formattedRolesArray =stringRolesArray.map(Number);
+        
         setIsSubmitting(true);
         setGlobalError(null);
         setSubmittedMsg(null);
@@ -199,7 +239,7 @@ const AddNewStaffMember = ({ open, onOpenChange }) => {
                 data.lastName,
                 data.email,
                 data.mobileNumber,
-                [data.role],
+                [data.roles],
                 formattedDOB,
                 [data.gender],
                 formattedDateOfJoining,
@@ -211,6 +251,7 @@ const AddNewStaffMember = ({ open, onOpenChange }) => {
                 duration: 5000, 
                 className: '!bg-green-800 !text-white' 
             });
+            onSuccess();
         } catch (error) {
             console.error("Submission failed: ", error);
             setSubmittedMsg(null);
@@ -287,7 +328,9 @@ const AddNewStaffMember = ({ open, onOpenChange }) => {
                     </p>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-5 space-y-5">
+                <form onSubmit={handleSubmit(onSubmit,(errors) => {console.log("validation failed");
+                console.log("errors is: ",errors);})} className="px-6 py-5 space-y-5">
+                    
                     {/* Status Banners */}
                     {globalError && (
                         <div className="p-3.5 rounded-lg bg-red-50 border border-red-200 text-sm text-red-600">
@@ -395,24 +438,111 @@ const AddNewStaffMember = ({ open, onOpenChange }) => {
                             />
                         </FormField>
 
-                        <FormField label="Assign Roles" required error={errors.role}>
-                            <Controller
-                                name="role"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select onValueChange={field.onChange} value={field.value || ""} >
-                                        <SelectTrigger className="h-10 bg-slate-50 border-slate-200 text-slate-500 rounded-lg w-full">
-                                            <SelectValue placeholder="Select roles..." />
-                                        </SelectTrigger>
-                                        <SelectContent className="rounded-lg">
-                                            <SelectItem value="1">Administrator</SelectItem>
-                                            <SelectItem value="3">Staff Member</SelectItem>
-                                            <SelectItem value="2">Instructor</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                )}
+                        
+
+<div className="flex flex-col gap-1.5">                                   
+        <label className="text-sm font-medium text-slate-700">
+          Assign Roles <span className="text-red-500">*</span>
+        </label>
+
+        <Controller
+          name="roles"
+          control={control}
+          render={({ field }) => {
+            const selectedValues = field.value || [];
+
+            const toggleOption = (val) => {
+              const updated = selectedValues.includes(val)
+                ? selectedValues.filter((item) => item !== val)
+                : [...selectedValues, val];
+              field.onChange(updated);
+            };
+
+            return (
+              <Popover open={openPopOver} onOpenChange={setOpenPopOver}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-full min-h-10 h-auto py-2 px-3 justify-between bg-slate-50 border-slate-200 hover:bg-slate-100 rounded-lg text-left font-normal"
+                  >
+                    <div className="flex flex-wrap gap-1 items-center max-w-[85%]">
+                      {selectedValues.length === 0 && (
+                        <span className="text-slate-400 text-sm">Select roles...</span>
+                      )}
+
+                      {selectedValues.map((val) => {
+                        const label = roleOptions.find((opt) => opt.id === val)?.roleNm;                                      
+                         return (
+                          <Badge
+                            key={val}
+                            variant="secondary"
+                            className="bg-slate-200 text-slate-800 hover:bg-slate-300 gap-1 rounded-md text-xs py-0.5 px-2"
+                          >
+                            {label}
+                            <X
+                              className="h-3 w-3 text-slate-500 hover:text-slate-900 cursor-pointer"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleOption(val);
+                              }}
                             />
-                        </FormField>
+                          </Badge>
+                        );
+                      })}
+                    </div>
+                    <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50 ml-2" />
+                  </Button>
+                </PopoverTrigger>
+
+                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 rounded-lg bg-white border border-slate-200 shadow-md">
+                  <Command>
+                    <CommandInput placeholder="Search roles..." className="h-9" />
+                    <CommandList>
+                      <CommandEmpty>No roles found.</CommandEmpty>
+                      <CommandGroup>
+                        {roleOptions.map((option) => {                                                     
+                          const isSelected = selectedValues.includes(option.id);
+                          return (
+                            <CommandItem
+                              key={option.id}
+                              onSelect={() => toggleOption(option.id)}
+                              className="cursor-pointer flex items-center justify-between py-2 px-3 hover:bg-slate-100 rounded-md"
+                            >
+                              {/* Custom Checkbox Box UI */}
+                              <div className="flex items-center gap-2">
+                                <div
+                                  className=
+                                    {`flex h-4 w-4 items-center justify-center rounded border border-slate-300 transition-colors ${
+                                    isSelected
+                                      ? "bg-blue-600 border-blue-600 text-white"
+                                      : "bg-white opacity-70"}
+                                    `}
+                                >
+                                  {isSelected && <Check className="h-3 w-3 stroke-[3]" />}
+                                </div>
+                                <span className="text-sm text-slate-700 font-medium">
+                                  {option.roleNm}
+                                </span>
+                              </div>
+                            </CommandItem>
+                          );
+                        })}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            );
+          }}
+        />
+
+        {errors.roles && (
+          <p className="text-xs font-medium text-red-500">{errors.roles.message}</p>
+        )}
+      </div>
+
                     </div>
 
                     {/* Bottom Action Footer Control Block */}

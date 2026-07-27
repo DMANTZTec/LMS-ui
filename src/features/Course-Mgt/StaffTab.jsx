@@ -150,7 +150,8 @@ console.log("isResetStaffPwdModal value is: ",isResetStaffPwdModal);
           
           <AddNewStaffMember 
             open={isAddNewStaffMemberModal}
-            onOpenChange={setIsAddNewStaffMemberModal} 
+            onOpenChange={setIsAddNewStaffMemberModal}
+            onSuccess={refetch} 
           />
 
           <EditStaffMember 
