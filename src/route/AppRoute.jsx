@@ -25,6 +25,7 @@ const CourseDetails = lazy(() => import('../features/Course-Mgt/CourseDetail/Cou
 import AuthGuard from '../components/protectedRoutes/AuthGuard';
 
 import { StudentDashBoard } from '@/pages/studentPages/studentDashBoard/StudentDashBoard';
+import ForgotPassword from '@/pages/Auth/StaffForgotPassword';
 
 const AppRoute = () => {
 
@@ -43,8 +44,11 @@ const AppRoute = () => {
                     <Route path="/student-register" element={<StudentRegistration />} />
                     <Route path="/verify-student-reg-otp" element={<StudentRegistrationOTP />}/>
                     <Route path="/contactUs" element={<ContactUs />} />
-		    <Route path="/stuFPwd" element={<StudentForgotPwd />} />
+		            <Route path="/stuFPwd" element={<StudentForgotPwd />} />
                     <Route path="/stuResetPwd" element={<StudentResetPwd />} />
+                    <Route path="/staff/set-password" element={<CreateStaffPwd />} />
+                    <Route path="/reset-password" element={<ResetStaffPwd />} /> 
+                    <Route path="/forgot-password" element={<ForgotPassword />} />   
                     
                     {/* STAFF Routes */}
                     <Route element={<AuthGuard allowedRole="STAFF" />}>
@@ -53,8 +57,6 @@ const AppRoute = () => {
                         <Route path="/addCourse" element={<AddCourse />} />
                         <Route  path='/course-builder/:courseId' element={<CourseStructureBuilder />} />
                         <Route path="/courseDetails/:courseId" element={<CourseDetails />} />
-                        <Route path="/staff/set-password" element={<CreateStaffPwd />} />
-<Route path="/reset-password" element={<ResetStaffPwd />} />
                     </Route>
 
                     {/* STUDENT Routes */}
