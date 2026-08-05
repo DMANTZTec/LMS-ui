@@ -47,7 +47,7 @@ export default function NavbarAvatar() {
     //localStorage.removeItem('LmsJwTtoken');
     localStorage.clear();
     sessionStorage.clear();
-    window.location.href = "/studentLogin"; 
+    window.location.href = "/"; 
   };
 
   return (

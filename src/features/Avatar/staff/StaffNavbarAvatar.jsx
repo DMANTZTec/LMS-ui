@@ -31,7 +31,7 @@ export default function StaffNavbarAvatar() {
     sessionStorage.removeItem('otpStaff');
     
     // Redirect back to staff login screen
-    window.location.href = "/staffLogin"; 
+    window.location.href = "/"; 
   };
 
   return (

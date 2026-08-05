@@ -1,8 +1,10 @@
 import React, {useState} from 'react';
 import { Button } from '../../../components/ui/button';
 import ContactUsMain from '@/pages/public/contactUs/contactUsMain';
+import { useNavigate } from "react-router-dom";
 
 const CtaSection = () => {
+    const navigate = useNavigate();
 
 const [isContactUsModalOpen, setIsContactUsModalOpen] = useState(false);
 
@@ -16,7 +18,7 @@ const [isContactUsModalOpen, setIsContactUsModalOpen] = useState(false);
                     Join hundreds of students who have transformed their careers with us
                 </p>
                 <div className="flex flex-col sm:flex-row items-center gap-4 mt-6">
-                    <Button className="h-12 px-6 bg-white hover:bg-white/90 text-[#0F766E] text-base font-semibold rounded-lg">
+                    <Button onClick={() => navigate("/student-register")} className="h-12 px-6 bg-white hover:bg-white/90 text-[#0F766E] text-base font-semibold rounded-lg">
                         Enroll Now
                     </Button>
                     <Button className="h-12 px-6 bg-transparent hover:bg-white/10 border-2 border-white text-white text-base font-semibold rounded-lg"
