@@ -26,6 +26,7 @@ import AuthGuard from '../components/protectedRoutes/AuthGuard';
 
 import { StudentDashBoard } from '@/pages/studentPages/studentDashBoard/StudentDashBoard';
 import ForgotPassword from '@/pages/Auth/StaffForgotPassword';
+import ViewCourses from '@/pages/public/ViewCourses';
 
 const AppRoute = () => {
 
@@ -49,6 +50,7 @@ const AppRoute = () => {
                     <Route path="/staff/set-password" element={<CreateStaffPwd />} />
                     <Route path="/reset-password" element={<ResetStaffPwd />} /> 
                     <Route path="/forgot-password" element={<ForgotPassword />} />   
+                    <Route path="/view-courses" element={<ViewCourses/>} />
                     
                     {/* STAFF Routes */}
                     <Route element={<AuthGuard allowedRole="STAFF" />}>
