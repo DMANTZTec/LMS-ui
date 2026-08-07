@@ -8,6 +8,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { studentApi } from '@/api/student-controller.api';
 import { useAtom } from 'jotai';
 import {studentDataAtom} from '@/store/atoms/authAtoms';
+import { toast } from "react-hot-toast";
 
 export default function StudentRegistrationOTP() {
    const [value, setValue] = useState("");
@@ -32,35 +33,57 @@ useEffect(() => {
 
 
   const handleVerify = async () => {
-    if (value.length !== 6) {
-      alert("Enter 6-digit OTP");
-      return;
+  if (value.length !== 6) {
+    toast.error("Please enter the 6-digit OTP");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const payload = {
+      emailIdOrMobileNo,
+      otp: value,
+      channel: "EMAIL",
+    };
+
+    const res = await studentApi.verifyOtp(payload);
+
+    const { token } = res.data;
+
+    if (token) {
+      localStorage.setItem("LmsJwTtoken", token);
     }
 
-    setLoading(true);
+    sessionStorage.setItem("stuRegData", JSON.stringify(res.data));
 
-    try {
-      const payload = { emailIdOrMobileNo, otp: value, channel: "EMAIL" };
-      const res = await studentApi.verifyOtp(payload);
-      alert(res.data.message || "Verified ✅");
-      const { token } = res.data;
-       if (token) {
-          localStorage.setItem("LmsJwTtoken", token);
-       }
-       sessionStorage.setItem("stuRegData",JSON.stringify(res.data));
- 
-      
-      
-       navigate("/student-register");
-      
+    // Success Toast
+    toast.success(
+  <div>
+    <p className="font-semibold">Verification Successful!</p>
+    <p className="text-sm">
+      Your account has been verified. Redirecting to Login...
+    </p>
+  </div>,
+  {
+    duration: 3000,
+  }
+);
 
-    } catch (error) {
-      alert(typeof error.response?.data === 'string' ? error.response.data : "Invalid OTP ❌");
-    } finally {
-      setLoading(false);
-    }
-  };
+setTimeout(() => {
+  navigate("/studentLogin");
+}, 3000);
 
+  } catch (error) {
+    toast.error(
+      typeof error.response?.data === "string"
+        ? error.response.data
+        : "Invalid OTP. Please try again."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
   //if (!studentId) return null;
 
 
