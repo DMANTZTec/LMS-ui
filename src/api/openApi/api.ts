@@ -399,14 +399,14 @@ export interface OverallProgressResponse {
     'completed'?: boolean;
 }
 export interface PageStaffResponse {
-    'totalElements'?: number;
     'totalPages'?: number;
+    'totalElements'?: number;
+    'first'?: boolean;
+    'last'?: boolean;
     'size'?: number;
     'content'?: Array<StaffResponse>;
     'number'?: number;
     'sort'?: SortObject;
-    'first'?: boolean;
-    'last'?: boolean;
     'numberOfElements'?: number;
     'pageable'?: PageableObject;
     'empty'?: boolean;
@@ -414,10 +414,10 @@ export interface PageStaffResponse {
 export interface PageableObject {
     'offset'?: number;
     'sort'?: SortObject;
-    'pageNumber'?: number;
     'pageSize'?: number;
-    'paged'?: boolean;
+    'pageNumber'?: number;
     'unpaged'?: boolean;
+    'paged'?: boolean;
 }
 export interface ProgramCourseRequest {
     'programId': string;
@@ -906,6 +906,21 @@ export interface StudentTopicReferenceProgressResponse {
     'referenceId'?: number;
     'completed'?: boolean;
     'completedAt'?: string;
+}
+export interface StudentUpdateRequest {
+    'firstNm'?: string;
+    'lastNm'?: string;
+    'gender'?: string;
+    'addr1'?: string;
+    'addr2'?: string;
+    'city'?: string;
+    'state'?: string;
+    'country'?: string;
+    'pin'?: string;
+    'mobileNum'?: string;
+    'emergencyContactNm'?: string;
+    'emergencyContactNum'?: string;
+    'dob': string;
 }
 export interface SubjectRequest {
     'subjectNm': string;
@@ -8170,11 +8185,11 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateProfileImage: async (staffId: string, file: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateProfileImage1: async (staffId: string, file: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'staffId' is not null or undefined
-            assertParamExists('updateProfileImage', 'staffId', staffId)
+            assertParamExists('updateProfileImage1', 'staffId', staffId)
             // verify required parameter 'file' is not null or undefined
-            assertParamExists('updateProfileImage', 'file', file)
+            assertParamExists('updateProfileImage1', 'file', file)
             const localVarPath = `/api/staff/{staffId}/profile-image`
                 .replace(`{${"staffId"}}`, encodeURIComponent(String(staffId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -8487,10 +8502,10 @@ export const StaffControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateProfileImage(staffId: string, file: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateProfileImage(staffId, file, options);
+        async updateProfileImage1(staffId: string, file: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateProfileImage1(staffId, file, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.updateProfileImage']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.updateProfileImage1']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -8654,8 +8669,8 @@ export const StaffControllerApiFactory = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateProfileImage(staffId: string, file: File, options?: RawAxiosRequestConfig): AxiosPromise<StaffResponse> {
-            return localVarFp.updateProfileImage(staffId, file, options).then((request) => request(axios, basePath));
+        updateProfileImage1(staffId: string, file: File, options?: RawAxiosRequestConfig): AxiosPromise<StaffResponse> {
+            return localVarFp.updateProfileImage1(staffId, file, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8818,8 +8833,8 @@ export class StaffControllerApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public updateProfileImage(staffId: string, file: File, options?: RawAxiosRequestConfig) {
-        return StaffControllerApiFp(this.configuration).updateProfileImage(staffId, file, options).then((request) => request(this.axios, this.basePath));
+    public updateProfileImage1(staffId: string, file: File, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).updateProfileImage1(staffId, file, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -10070,35 +10085,58 @@ export const StudentControllerApiAxiosParamCreator = function (configuration?: C
         /**
          * 
          * @param {string} studentId 
-         * @param {string} firstNm 
-         * @param {string} lastNm 
-         * @param {string} gender 
-         * @param {string} dob 
-         * @param {string} [addr1] 
-         * @param {string} [addr2] 
-         * @param {string} [city] 
-         * @param {string} [state] 
-         * @param {string} [country] 
-         * @param {string} [pin] 
-         * @param {string} [mobileNum] 
-         * @param {string} [emergencyContactNm] 
-         * @param {string} [emergencyContactNum] 
-         * @param {File} [profileImg] 
+         * @param {StudentUpdateRequest} studentUpdateRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateProfile: async (studentId: string, firstNm: string, lastNm: string, gender: string, dob: string, addr1?: string, addr2?: string, city?: string, state?: string, country?: string, pin?: string, mobileNum?: string, emergencyContactNm?: string, emergencyContactNum?: string, profileImg?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateProfile: async (studentId: string, studentUpdateRequest: StudentUpdateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'studentId' is not null or undefined
             assertParamExists('updateProfile', 'studentId', studentId)
-            // verify required parameter 'firstNm' is not null or undefined
-            assertParamExists('updateProfile', 'firstNm', firstNm)
-            // verify required parameter 'lastNm' is not null or undefined
-            assertParamExists('updateProfile', 'lastNm', lastNm)
-            // verify required parameter 'gender' is not null or undefined
-            assertParamExists('updateProfile', 'gender', gender)
-            // verify required parameter 'dob' is not null or undefined
-            assertParamExists('updateProfile', 'dob', dob)
-            const localVarPath = `/api/student/update/{studentId}`
+            // verify required parameter 'studentUpdateRequest' is not null or undefined
+            assertParamExists('updateProfile', 'studentUpdateRequest', studentUpdateRequest)
+            const localVarPath = `/api/student/{studentId}`
+                .replace(`{${"studentId"}}`, encodeURIComponent(String(studentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(studentUpdateRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {File} profileImg 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateProfileImage: async (studentId: string, profileImg: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'studentId' is not null or undefined
+            assertParamExists('updateProfileImage', 'studentId', studentId)
+            // verify required parameter 'profileImg' is not null or undefined
+            assertParamExists('updateProfileImage', 'profileImg', profileImg)
+            const localVarPath = `/api/student/{studentId}/profile-image`
                 .replace(`{${"studentId"}}`, encodeURIComponent(String(studentId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -10115,58 +10153,6 @@ export const StudentControllerApiAxiosParamCreator = function (configuration?: C
             // authentication BearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            if (firstNm !== undefined) {
-                localVarQueryParameter['firstNm'] = firstNm;
-            }
-
-            if (lastNm !== undefined) {
-                localVarQueryParameter['lastNm'] = lastNm;
-            }
-
-            if (gender !== undefined) {
-                localVarQueryParameter['gender'] = gender;
-            }
-
-            if (dob !== undefined) {
-                localVarQueryParameter['dob'] = dob;
-            }
-
-            if (addr1 !== undefined) {
-                localVarQueryParameter['addr1'] = addr1;
-            }
-
-            if (addr2 !== undefined) {
-                localVarQueryParameter['addr2'] = addr2;
-            }
-
-            if (city !== undefined) {
-                localVarQueryParameter['city'] = city;
-            }
-
-            if (state !== undefined) {
-                localVarQueryParameter['state'] = state;
-            }
-
-            if (country !== undefined) {
-                localVarQueryParameter['country'] = country;
-            }
-
-            if (pin !== undefined) {
-                localVarQueryParameter['pin'] = pin;
-            }
-
-            if (mobileNum !== undefined) {
-                localVarQueryParameter['mobileNum'] = mobileNum;
-            }
-
-            if (emergencyContactNm !== undefined) {
-                localVarQueryParameter['emergencyContactNm'] = emergencyContactNm;
-            }
-
-            if (emergencyContactNum !== undefined) {
-                localVarQueryParameter['emergencyContactNum'] = emergencyContactNum;
-            }
 
 
             if (profileImg !== undefined) { 
@@ -10368,27 +10354,27 @@ export const StudentControllerApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} studentId 
-         * @param {string} firstNm 
-         * @param {string} lastNm 
-         * @param {string} gender 
-         * @param {string} dob 
-         * @param {string} [addr1] 
-         * @param {string} [addr2] 
-         * @param {string} [city] 
-         * @param {string} [state] 
-         * @param {string} [country] 
-         * @param {string} [pin] 
-         * @param {string} [mobileNum] 
-         * @param {string} [emergencyContactNm] 
-         * @param {string} [emergencyContactNum] 
-         * @param {File} [profileImg] 
+         * @param {StudentUpdateRequest} studentUpdateRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateProfile(studentId: string, firstNm: string, lastNm: string, gender: string, dob: string, addr1?: string, addr2?: string, city?: string, state?: string, country?: string, pin?: string, mobileNum?: string, emergencyContactNm?: string, emergencyContactNum?: string, profileImg?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateProfile(studentId, firstNm, lastNm, gender, dob, addr1, addr2, city, state, country, pin, mobileNum, emergencyContactNm, emergencyContactNum, profileImg, options);
+        async updateProfile(studentId: string, studentUpdateRequest: StudentUpdateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateProfile(studentId, studentUpdateRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['StudentControllerApi.updateProfile']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {File} profileImg 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateProfileImage(studentId: string, profileImg: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateProfileImage(studentId, profileImg, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StudentControllerApi.updateProfileImage']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -10498,25 +10484,22 @@ export const StudentControllerApiFactory = function (configuration?: Configurati
         /**
          * 
          * @param {string} studentId 
-         * @param {string} firstNm 
-         * @param {string} lastNm 
-         * @param {string} gender 
-         * @param {string} dob 
-         * @param {string} [addr1] 
-         * @param {string} [addr2] 
-         * @param {string} [city] 
-         * @param {string} [state] 
-         * @param {string} [country] 
-         * @param {string} [pin] 
-         * @param {string} [mobileNum] 
-         * @param {string} [emergencyContactNm] 
-         * @param {string} [emergencyContactNum] 
-         * @param {File} [profileImg] 
+         * @param {StudentUpdateRequest} studentUpdateRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateProfile(studentId: string, firstNm: string, lastNm: string, gender: string, dob: string, addr1?: string, addr2?: string, city?: string, state?: string, country?: string, pin?: string, mobileNum?: string, emergencyContactNm?: string, emergencyContactNum?: string, profileImg?: File, options?: RawAxiosRequestConfig): AxiosPromise<StudentResponse> {
-            return localVarFp.updateProfile(studentId, firstNm, lastNm, gender, dob, addr1, addr2, city, state, country, pin, mobileNum, emergencyContactNm, emergencyContactNum, profileImg, options).then((request) => request(axios, basePath));
+        updateProfile(studentId: string, studentUpdateRequest: StudentUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<StudentResponse> {
+            return localVarFp.updateProfile(studentId, studentUpdateRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {File} profileImg 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateProfileImage(studentId: string, profileImg: File, options?: RawAxiosRequestConfig): AxiosPromise<StudentResponse> {
+            return localVarFp.updateProfileImage(studentId, profileImg, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -10625,25 +10608,23 @@ export class StudentControllerApi extends BaseAPI {
     /**
      * 
      * @param {string} studentId 
-     * @param {string} firstNm 
-     * @param {string} lastNm 
-     * @param {string} gender 
-     * @param {string} dob 
-     * @param {string} [addr1] 
-     * @param {string} [addr2] 
-     * @param {string} [city] 
-     * @param {string} [state] 
-     * @param {string} [country] 
-     * @param {string} [pin] 
-     * @param {string} [mobileNum] 
-     * @param {string} [emergencyContactNm] 
-     * @param {string} [emergencyContactNum] 
-     * @param {File} [profileImg] 
+     * @param {StudentUpdateRequest} studentUpdateRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public updateProfile(studentId: string, firstNm: string, lastNm: string, gender: string, dob: string, addr1?: string, addr2?: string, city?: string, state?: string, country?: string, pin?: string, mobileNum?: string, emergencyContactNm?: string, emergencyContactNum?: string, profileImg?: File, options?: RawAxiosRequestConfig) {
-        return StudentControllerApiFp(this.configuration).updateProfile(studentId, firstNm, lastNm, gender, dob, addr1, addr2, city, state, country, pin, mobileNum, emergencyContactNm, emergencyContactNum, profileImg, options).then((request) => request(this.axios, this.basePath));
+    public updateProfile(studentId: string, studentUpdateRequest: StudentUpdateRequest, options?: RawAxiosRequestConfig) {
+        return StudentControllerApiFp(this.configuration).updateProfile(studentId, studentUpdateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} studentId 
+     * @param {File} profileImg 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public updateProfileImage(studentId: string, profileImg: File, options?: RawAxiosRequestConfig) {
+        return StudentControllerApiFp(this.configuration).updateProfileImage(studentId, profileImg, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -83,7 +83,10 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
           location: data.location
         });
   console.log("response is: ",response);
-  toast.success("submitted successfully ! Our team will reach out to you shortly. 🎉",{className: '!bg-green-800 !text-white'});
+  toast.success("submitted successfully ! Our team will reach out to you shortly. 🎉",{
+    duration: 5000,
+    className: '!bg-green-800 !text-white'
+  });
   reset();
       } catch (error) {
         console.error("Contact request submission failure:", error);
@@ -98,7 +101,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
     const onOpenDialogChange = (isOpen) => {
       setGlobalError(null);
-      console.log("onOpenDialogChange() function is called. and value of isOpen is: ",isOpen);
+      //console.log("onOpenDialogChange() function is called. and value of isOpen is: ",isOpen);
       onOpenChange(isOpen);
       reset();
     };
@@ -107,7 +110,11 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
     <>
     
   <Dialog open={open} onOpenChange={onOpenDialogChange}>
-      <DialogContent className="!max-w-[600px] p-0">
+      <DialogContent className="!max-w-[600px]
+    w-[95vw]
+    p-0
+    max-h-[90vh]
+    overflow-y-auto">
 <VisuallyHidden>
 <DialogTitle />
 </VisuallyHidden>
@@ -143,9 +150,9 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 
           {/* Dynamic Form Content Body */}
-          <form onSubmit={handleSubmit(onSubmit)} noValidate className="p-6 space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} noValidate className="p-6 space-y-4 ">
             
-            <Field label="Full Name" error={errors.fullName?.message} labelClassName="text-sm font-semibold text-gray-700">
+            <Field label="Full Name * " error={errors.fullName?.message} labelClassName="text-sm font-semibold text-gray-700">
               <Input 
                 {...register("fullName")} 
                 className={inputCls(!!errors.fullName)} 
@@ -153,7 +160,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
               />
             </Field>
 
-            <Field label="Mobile Number" error={errors.mobileNum?.message} labelClassName="text-sm font-semibold text-gray-700">
+            <Field label="Mobile Number * " error={errors.mobileNum?.message} labelClassName="text-sm font-semibold text-gray-700">
               <Input 
                 {...register("mobileNum")} 
                 className={inputCls(!!errors.mobileNum)} 
@@ -161,7 +168,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
               />
             </Field>
 
-            <Field label="E-mail Address" error={errors.emailId?.message} labelClassName="text-sm font-semibold text-gray-700">
+            <Field label="E-mail Address * " error={errors.emailId?.message} labelClassName="text-sm font-semibold text-gray-700">
               <Input 
                 type="email"
                 {...register("emailId")} 
@@ -170,7 +177,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
               />
             </Field>
 
-            <Field label="Current Position" error={errors.currentPosition?.message} labelClassName="text-sm font-semibold text-gray-700">
+            <Field label="Current Position * " error={errors.currentPosition?.message} labelClassName="text-sm font-semibold text-gray-700">
               
  
     <Controller
@@ -188,6 +195,11 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
                 </SelectTrigger>
 
                 <SelectContent>
+                    
+                    <SelectItem value="STUDENT">
+                      Student
+                      </SelectItem>
+
                     <SelectItem value="DEVELOPER">
                         Developer
                     </SelectItem>

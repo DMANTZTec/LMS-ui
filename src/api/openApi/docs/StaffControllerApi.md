@@ -15,7 +15,7 @@ All URIs are relative to *http://localhost:9090*
 |[**resetPassword1**](#resetpassword1) | **POST** /api/staff/reset-password | |
 |[**setPassword**](#setpassword) | **POST** /api/staff/set-Newpassword | |
 |[**staffLogin**](#stafflogin) | **POST** /api/staff/login | |
-|[**updateProfileImage**](#updateprofileimage) | **PUT** /api/staff/{staffId}/profile-image | |
+|[**updateProfileImage1**](#updateprofileimage1) | **PUT** /api/staff/{staffId}/profile-image | |
 |[**updateStaff**](#updatestaff) | **PUT** /api/staff/{staffId} | |
 |[**validateResetToken**](#validateresettoken) | **GET** /api/staff/reset-password/validate | |
 |[**verifyStaffOtp**](#verifystaffotp) | **POST** /api/staff/login-verification-otp | |
@@ -599,8 +599,8 @@ const { status, data } = await apiInstance.staffLogin(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **updateProfileImage**
-> StaffResponse updateProfileImage()
+# **updateProfileImage1**
+> StaffResponse updateProfileImage1()
 
 
 ### Example
@@ -617,7 +617,7 @@ const apiInstance = new StaffControllerApi(configuration);
 let staffId: string; // (default to undefined)
 let file: File; // (default to undefined)
 
-const { status, data } = await apiInstance.updateProfileImage(
+const { status, data } = await apiInstance.updateProfileImage1(
     staffId,
     file
 );

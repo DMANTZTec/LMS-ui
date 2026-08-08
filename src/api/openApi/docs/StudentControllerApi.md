@@ -12,7 +12,8 @@ All URIs are relative to *http://localhost:9090*
 |[**register**](#register) | **POST** /api/student/register | |
 |[**resendOtp**](#resendotp) | **POST** /api/student/resend-otp | |
 |[**resetPassword**](#resetpassword) | **POST** /api/student/reset-password | |
-|[**updateProfile**](#updateprofile) | **PUT** /api/student/update/{studentId} | |
+|[**updateProfile**](#updateprofile) | **PUT** /api/student/{studentId} | |
+|[**updateProfileImage**](#updateprofileimage) | **PUT** /api/student/{studentId}/profile-image | |
 |[**verifyLoginOtp**](#verifyloginotp) | **POST** /api/student/verify-login-otp | |
 |[**verifyOtp**](#verifyotp) | **POST** /api/student/registration/verify-otp | |
 
@@ -416,7 +417,61 @@ const { status, data } = await apiInstance.resetPassword(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **updateProfile**
-> StudentResponse updateProfile()
+> StudentResponse updateProfile(studentUpdateRequest)
+
+
+### Example
+
+```typescript
+import {
+    StudentControllerApi,
+    Configuration,
+    StudentUpdateRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StudentControllerApi(configuration);
+
+let studentId: string; // (default to undefined)
+let studentUpdateRequest: StudentUpdateRequest; //
+
+const { status, data } = await apiInstance.updateProfile(
+    studentId,
+    studentUpdateRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **studentUpdateRequest** | **StudentUpdateRequest**|  | |
+| **studentId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**StudentResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **updateProfileImage**
+> StudentResponse updateProfileImage()
 
 
 ### Example
@@ -431,36 +486,10 @@ const configuration = new Configuration();
 const apiInstance = new StudentControllerApi(configuration);
 
 let studentId: string; // (default to undefined)
-let firstNm: string; // (default to undefined)
-let lastNm: string; // (default to undefined)
-let gender: string; // (default to undefined)
-let dob: string; // (default to undefined)
-let addr1: string; // (optional) (default to undefined)
-let addr2: string; // (optional) (default to undefined)
-let city: string; // (optional) (default to undefined)
-let state: string; // (optional) (default to undefined)
-let country: string; // (optional) (default to undefined)
-let pin: string; // (optional) (default to undefined)
-let mobileNum: string; // (optional) (default to undefined)
-let emergencyContactNm: string; // (optional) (default to undefined)
-let emergencyContactNum: string; // (optional) (default to undefined)
-let profileImg: File; // (optional) (default to undefined)
+let profileImg: File; // (default to undefined)
 
-const { status, data } = await apiInstance.updateProfile(
+const { status, data } = await apiInstance.updateProfileImage(
     studentId,
-    firstNm,
-    lastNm,
-    gender,
-    dob,
-    addr1,
-    addr2,
-    city,
-    state,
-    country,
-    pin,
-    mobileNum,
-    emergencyContactNm,
-    emergencyContactNum,
     profileImg
 );
 ```
@@ -470,20 +499,7 @@ const { status, data } = await apiInstance.updateProfile(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **studentId** | [**string**] |  | defaults to undefined|
-| **firstNm** | [**string**] |  | defaults to undefined|
-| **lastNm** | [**string**] |  | defaults to undefined|
-| **gender** | [**string**] |  | defaults to undefined|
-| **dob** | [**string**] |  | defaults to undefined|
-| **addr1** | [**string**] |  | (optional) defaults to undefined|
-| **addr2** | [**string**] |  | (optional) defaults to undefined|
-| **city** | [**string**] |  | (optional) defaults to undefined|
-| **state** | [**string**] |  | (optional) defaults to undefined|
-| **country** | [**string**] |  | (optional) defaults to undefined|
-| **pin** | [**string**] |  | (optional) defaults to undefined|
-| **mobileNum** | [**string**] |  | (optional) defaults to undefined|
-| **emergencyContactNm** | [**string**] |  | (optional) defaults to undefined|
-| **emergencyContactNum** | [**string**] |  | (optional) defaults to undefined|
-| **profileImg** | [**File**] |  | (optional) defaults to undefined|
+| **profileImg** | [**File**] |  | defaults to undefined|
 
 
 ### Return type

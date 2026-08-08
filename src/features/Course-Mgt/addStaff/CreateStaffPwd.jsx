@@ -57,7 +57,7 @@ const [isSubmitting, setIsSubmitting] = useState(false);
    const watchedValues = watch(["pwd","confirmPwd"]);
 
    useEffect(() => {
-    console.log("entered into useEffect");
+
     setSubmittedMsg(null);
     setGlobalError(null);
    },[JSON.stringify(watchedValues)]);
@@ -128,7 +128,7 @@ setSubmittedMsg("Staff password created successfully.");
                                     onClick={() => setShowPassword(prev => !prev)}
                                     className="absolute right-0 top-0 h-full px-3 py-2 text-gray-500 bg-gray-100 hover:bg-gray-100"
                                     aria-label={showPassword ? "Hide password" : "Show password"} >
-                            {showPassword ? <Eye size={18} /> : <EyeOff size="18"/>}
+                            {showPassword ? <EyeOff size={18} /> : <Eye size="18"/>}
                             </Button>
                             </div>
                         </Field>
@@ -141,7 +141,7 @@ setSubmittedMsg("Staff password created successfully.");
                                                                 onClick={() => setShowConfirmPassword(prev => !prev)}
                                                                 className="absolute right-0 top-0 h-full px-3 py-2 text-gray-500 bg-gray-100 hover:bg-gray-100"
                                                                 aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"} >
-                                                        {showConfirmPassword ? <Eye size={18} /> : <EyeOff size="18"/>}
+                                                        {showConfirmPassword ? <EyeOff size={18} /> : <Eye size="18"/>}
                                                         </Button>
                                                         </div>
                         </Field>
@@ -149,7 +149,7 @@ setSubmittedMsg("Staff password created successfully.");
                         <Button type="submit" disabled = {isSubmitting}>
                             {isSubmitting ? (
                             <>
-                            <Loader className='animate-spin'/> Submitting
+                            <Loader2 className='animate-spin'/> Submitting
                             </>
                             ) : (
 "Create Password"

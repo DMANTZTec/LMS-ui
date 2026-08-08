@@ -28,7 +28,7 @@ const payload = {
     //                 duration: 5000, 
     //                 className: '!bg-green-800 !text-white' 
     //             });
-                setSubmittedMsg("Link has been sent to your mail");
+                setSubmittedMsg("Password Link has been sent to your mail");
       //onOpenChange(false);
     } catch (error) {
       if(error.response) {

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useState, useEffect, useRef } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAtom } from 'jotai';
 import { User, MapPin, ShieldAlert, Upload, Loader2, ArrowLeft, ChevronLeft } from 'lucide-react';
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
 import { StudentProfileSchema } from './StudentProfileSchema';
 import { studentApi } from '@/api/student-controller.api';
 import { studentDataAtom } from '@/store/atoms/authAtoms';
@@ -13,6 +13,10 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Field from '@/components/common/Field';
 import ChangePassword from './ChangePassword';
+
+//import { useAtomValue } from 'jotai';
+
+
 
 // Shared baseline styled wrapper class matching your system UI specs
 const inputCls = (hasError) =>
@@ -29,10 +33,28 @@ const StudentProfile = () => {
   const [studentData, setStudentData] = useAtom(studentDataAtom);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [globalError, setGlobalError] = useState(null);
-
+  const [previewProfilePicture, setPreviewProfilePicture] = useState(null);
+  const [imageRemoved, setImageRemoved] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  
+
   const cachedRegData = JSON.parse(sessionStorage.getItem("stuRegData") || "{}");
+  const profilePictureRef = useRef(null);
+
+  // async function imageUrlToFile(imageUrl) {
+
+  //   const response = await fetch(imageUrl);
+  //     const blob = await response.blob();
+  //     const fileName = imageUrl.split("/").pop();
+
+  //     return new File(
+  //         [blob],
+  //         fileName,
+  //         {
+  //             type: blob.type,
+  //             lastModified: Date.now(),
+  //         }
+  //     );
+  // }
 
   const getData = () => {
 
@@ -43,7 +65,7 @@ const StudentProfile = () => {
       gender: studentData?.gender || cachedRegData?.gender || "",
       dob: studentData?.dob || cachedRegData?.dob || "",
       currentStatus: studentData?.currentStatus || cachedRegData?.currentStatus || "",
-      profilePicture: studentData?.profilePicture || cachedRegData?.profilePicture || "",
+      profilePicture: studentData?.profilePicture || cachedRegData?.profileImg || "",
       emailId: studentData?.emailId || cachedRegData?.emailId || "",
       mobileNum: studentData?.mobileNum || cachedRegData?.mobileNum || "",
       addr1: studentData?.addr1 || cachedRegData?.addr1 || "",
@@ -56,66 +78,94 @@ const StudentProfile = () => {
       emergencyContactNum: studentData?.emergencyContactNum || cachedRegData?.emergencyContactNum || "",
     }
   }
+  const initialValues = getData();
 
   const {
+    control,
     register,
     handleSubmit,
     setError,
     formState: { errors, isSubmitSuccessful, isDirty },
     watch,
-    reset
+    reset,
+    setValue,
+    getValues
   } = useForm({
     resolver: zodResolver(StudentProfileSchema),
     defaultValues: getData()
   });
 
- // const formValues = watch();
+
+
+  // const formValues = watch();
+  const watchedValues = watch([
+    "firstNm", "lastNm", "gender", "dob", "currentStatus", "profilePicture",
+    "emailId", "mobileNum", "addr1", "addr2", "city", "state", "pin", "country",
+    "emergencyContactNm", "emergencyContactNum"
+  ]);
 
   useEffect(() => {
-if (isDirty)
-setGlobalError(null);
-  },[isDirty]);
+    console.log("entered into useEffect.");
+
+    console.log("profilePictureRef is: ", profilePictureRef);
+    console.log("profilePictureRef.current.value is: ", profilePictureRef?.current?.value);
+    setGlobalError(null);
+  }, [JSON.stringify(watchedValues)]);
 
   const onSubmit = async (data) => {
-    
+    console.log("entered into onSubmit function.");
     setIsSubmitting(true);
     setGlobalError(null);
     try {
 
-
+      console.log("value of data.profilePicture is: ", data.profilePicture);
       // because Zod converted it into a full JS Date Object.
       // 1. Safely extract and format the date back into a string YYYY-MM-DD
       const formattedDob = data.dob instanceof Date
         ? data.dob.toISOString().split('T')[0]
         : data.dob;
 
-      const response = await studentApi.updateProfile(
-        cachedRegData.studentId,
-        data.firstNm,
-        data.lastNm,
-        data.gender,
-        formattedDob,         // instead of data.dateOfBirth
-        data.addr1,
-        data.addr2,
-        data.city,
-        data.state,
-        data.country,
-        data.pin,
-        data.mobileNum,
-        data.emergencyContactNm,
-        data.emergencyContactNum,
-        data.profilePicture?.[0]);
+      const studentId = studentData?.studentId || cachedRegData?.studentId;
 
-      const freshProfileData = response.data;
+      const payload_body = {
+        'firstNm': data.firstNm,
+        'lastNm': data.lastNm,
+        'gender': data.gender,
+        'addr1': data.addr1,
+        'addr2': data.addr2,
+        'city': data.city,
+        'state': data.state,
+        'country': data.country,
+        'pin': data.pin,
+        'mobileNum': data.mobileNum,
+        'emergencyContactNm': data.emergencyContactNm,
+        'emergencyContactNum': data.emergencyContactNum,
+        'dob': formattedDob,                                  //instead of data.dateOfBirth
+
+      }
+      console.log("before api line1");
+      const res1 = await studentApi.updateProfile(
+        studentId,
+        payload_body
+      );
+
+      const res2 = await studentApi.updateProfileImage(studentId, data.profilePicture);
+
+      console.log("after api line2");
+      console.log("res1, res2 are: ", res1.data, res2.data);
+
+      const correctResponseData = { ...res1.data, ...res2.data };
+      const freshProfileData = correctResponseData;
+      console.log("conbinedResponse.data is: ", freshProfileData);
       setStudentData(freshProfileData);
       sessionStorage.setItem("stuRegData", JSON.stringify(freshProfileData));
-      console.log("studentData and stuRegData are: ", studentData, cachedRegData);
 
-alert("Profile saved successfully! 🎉");
+
+      alert("Profile saved successfully! 🎉");
       reset(freshProfileData);
 
     } catch (error) {
-
+      console.log("entered into catch block and error is: ", error);
       const backendErrors = error.response?.data?.fieldErrors;
       if (backendErrors) {
         Object.keys(backendErrors).forEach((field) => {
@@ -133,17 +183,47 @@ alert("Profile saved successfully! 🎉");
     }
   };
 
+  const handlePicture = (e) => {
+    console.log("entered into handlePicture function.");
+
+    const file = e.target?.files[0];
+    if (file) {
+      if (previewProfilePicture)
+        URL.revokeObjectURL(previewProfilePicture);
+      const url = URL.createObjectURL(file);
+      setPreviewProfilePicture(url);
+      setImageRemoved(false);
+      setValue("profilePicture", file, {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true
+      });
+
+    }
+  }
+  const removePhoto = () => {
+    console.log("entered into remoePhoto function.");
+    if (previewProfilePicture)
+      URL.revokeObjectURL(previewProfilePicture);
+    setPreviewProfilePicture(null);
+    setImageRemoved(true);
+    setValue("profilePicture", null, { shouldValidate: true });
+    if (profilePictureRef.current)
+      profilePictureRef.current.value = "";
+  }
+
   return (
     <div className="min-h-screen bg-[#f4f7fa] py-12 px-4 sm:px-6 lg:px-8">
 
-      <Link to="/student-dashboard">
-        <ChevronLeft className='text-blue-500' />
-      </Link>
-
       <div className="max-w-4xl mx-auto space-y-6">
 
-
-        <h1 className="text-2xl font-bold text-center text-slate-800 tracking-tight">Student Profile</h1>
+        <div className="relative flex items-center justify-center">
+          <Link to="/student-dashboard" className="absolute left-0 flex items-center text-blue-500 hover:text-blue-700" >
+            <ChevronLeft className="h-5 w-5" />
+            <span className="text-sm font-medium">Back</span>
+          </Link>
+          <h1 className="text-2xl font-bold text-center text-slate-800 tracking-tight">Student Profile</h1>
+        </div>
 
         {globalError && (
           <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-sm text-red-600">
@@ -151,7 +231,10 @@ alert("Profile saved successfully! 🎉");
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit, (errors) => {
+          console.log("validation failed");
+          console.log("errors is: ", errors);
+        })} noValidate className="space-y-6">
 
           {/* ────────────────────────────────────────────────────────────── */}
           {/* SECTION 1: Personal Information                               */}
@@ -193,14 +276,37 @@ alert("Profile saved successfully! 🎉");
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Profile Picture (Optional)</label>
                 <div className="flex items-center gap-4">
+
                   <label className="flex h-11 items-center justify-center gap-2 px-4 border border-gray-200 rounded-xl bg-gray-50 hover:bg-gray-100 cursor-pointer transition text-sm font-medium text-slate-700">
                     <Upload className="h-4 w-4 text-slate-500" />
                     Upload
-                    <input type="file" accept="image/*" className="hidden" {...register("profilePicture")} />
+                    <input type="file" className="hidden" {...register("profilePicture")} ref={profilePictureRef}
+                      accept="image/png,image/jpeg"
+                      onChange={(e) => handlePicture(e)} />
                   </label>
+
+
                   <div className="h-16 w-16 rounded-xl border border-dashed border-gray-300 bg-gray-50 flex items-center justify-center">
-                    <User className="h-6 w-6 text-gray-300" />
+                    {previewProfilePicture ? (
+                      <img
+                        src={previewProfilePicture}
+                        className="w-full h-full rounded-xl object-cover"
+                      />
+                    ) : !imageRemoved && initialValues?.profilePicture ? (
+                      <img
+                        src={initialValues.profilePicture}
+                        className="w-full h-full rounded-xl object-cover"
+                      />
+                    ) : (
+                      <User className="h-6 w-6 text-gray-300" />
+                    )}
                   </div>
+                  {errors.profilePicture?.message && <p className="text-xs font-medium text-red-500">{errors.profilePicture?.message}</p>}
+
+
+                  {(previewProfilePicture || (!imageRemoved && initialValues?.profilePicture)) &&
+                    <p className="text-sm curser-pointer text-blue-600 underline"
+                      onClick={() => removePhoto()}>Remove Photo</p>}
                 </div>
               </div>
             </div>
@@ -241,7 +347,30 @@ alert("Profile saved successfully! 🎉");
                 </Field>
 
                 <Field label="State *" error={errors.state?.message}>
-                  <Input {...register("state")} className={inputCls(!!errors.state)} placeholder="State" />
+
+                  <Controller
+                    name="state"
+                    control={control}
+                    render={({ field }) => (
+                      <>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger className={inputCls(!!errors.state)}>
+                            <SelectValue placeholder="Select State" />
+                          </SelectTrigger>
+
+                          <SelectContent>
+                            <SelectItem value="ANDRA PRADESH">Andra Pradesh</SelectItem>
+                            <SelectItem value="TELANGANA">Telangana</SelectItem>
+                          </SelectContent>
+                        </Select>
+
+                      </>
+                    )}
+                  />
+
                 </Field>
 
                 <Field label="Pin / Zip Code *" error={errors.pin?.message}>
@@ -250,7 +379,29 @@ alert("Profile saved successfully! 🎉");
               </div>
 
               <Field label="Country *" error={errors.country?.message}>
-                <Input {...register("country")} className={inputCls(!!errors.country)} placeholder="Country" />
+
+                <Controller
+                  name="country"
+                  control={control}
+                  render={({ field }) => (
+                    <>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger className={inputCls(!!errors.country)}>
+                          <SelectValue placeholder="Select Country" />
+                        </SelectTrigger>
+
+                        <SelectContent>
+                          <SelectItem value="INDIA">India</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                    </>
+                  )}
+                />
+
               </Field>
             </div>
           </div>
@@ -287,7 +438,8 @@ alert("Profile saved successfully! 🎉");
           <Button
             type="submit"
 
-            disabled={!isDirty || isSubmitting}
+            // disabled={!isDirty || isSubmitting}
+            disabled={isSubmitting}
             className="h-12 w-full rounded-xl bg-[#1d4ed8] text-sm font-semibold text-white transition hover:bg-blue-800 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isSubmitting ? (
@@ -302,9 +454,9 @@ alert("Profile saved successfully! 🎉");
           </Button>
         </form>
 
-        <ChangePassword 
-          open={isPasswordModalOpen} 
-          onOpenChange={setIsPasswordModalOpen} 
+        <ChangePassword
+          open={isPasswordModalOpen}
+          onOpenChange={setIsPasswordModalOpen}
         />
 
       </div>

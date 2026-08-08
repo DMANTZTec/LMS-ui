@@ -119,7 +119,7 @@ setIsSubmitting(false);
                                     onClick={() => setShowPassword(prev => !prev)}
                                     className="absolute right-0 top-0 h-full px-3 py-2 text-gray-500 bg-gray-100 hover:bg-gray-100" 
                                     aria-label={showPassword ? "Hide password" : "Show password"}>
-                            {showPassword ? <Eye size={18} /> : <EyeOff size="18"/>}
+                            {showPassword ? <EyeOff size={18} /> : <Eye size="18"/>}
                             
                             </Button>
                             </div>
@@ -133,7 +133,7 @@ setIsSubmitting(false);
                                     onClick={() => setShowConfirmPassword(prev => !prev)}
                                     className="absolute right-0 top-0 h-full px-3 py-2 text-gray-500 bg-gray-100 hover:bg-gray-100"
                                     aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"} >
-                            {showConfirmPassword ? <Eye size={18} /> : <EyeOff size="18"/>}
+                            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size="18"/>}
                             </Button>
                             </div>
                         </Field>

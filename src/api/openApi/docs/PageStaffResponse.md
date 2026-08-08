@@ -5,14 +5,14 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**totalElements** | **number** |  | [optional] [default to undefined]
 **totalPages** | **number** |  | [optional] [default to undefined]
+**totalElements** | **number** |  | [optional] [default to undefined]
+**first** | **boolean** |  | [optional] [default to undefined]
+**last** | **boolean** |  | [optional] [default to undefined]
 **size** | **number** |  | [optional] [default to undefined]
 **content** | [**Array&lt;StaffResponse&gt;**](StaffResponse.md) |  | [optional] [default to undefined]
 **number** | **number** |  | [optional] [default to undefined]
 **sort** | [**SortObject**](SortObject.md) |  | [optional] [default to undefined]
-**first** | **boolean** |  | [optional] [default to undefined]
-**last** | **boolean** |  | [optional] [default to undefined]
 **numberOfElements** | **number** |  | [optional] [default to undefined]
 **pageable** | [**PageableObject**](PageableObject.md) |  | [optional] [default to undefined]
 **empty** | **boolean** |  | [optional] [default to undefined]
@@ -23,14 +23,14 @@ Name | Type | Description | Notes
 import { PageStaffResponse } from './api';
 
 const instance: PageStaffResponse = {
-    totalElements,
     totalPages,
+    totalElements,
+    first,
+    last,
     size,
     content,
     number,
     sort,
-    first,
-    last,
     numberOfElements,
     pageable,
     empty,

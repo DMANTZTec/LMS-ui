@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogT
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 import Field from '@/components/common/Field';
 import { studentApi } from '@/api/student-controller.api';
@@ -40,8 +40,15 @@ const changePWDScheema = z.object({
 const ChangePassword = ({ open, onOpenChange }) => {
 
     const [submitted, setSubmitted] = useState(false);
-    const [backendError, setBackendError] = useState(null);
+    const [globalError, setGlobalError] = useState(null);
     const [studentData_jotai, setStudentData_jotai] = useAtom(studentDataAtom);
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    
+    const [showCurrentPassword, setShowCurrentPassword ] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 
     const { register, handleSubmit, reset, setError, formState: { errors }, watch } = useForm({
         resolver: zodResolver(changePWDScheema),
@@ -57,7 +64,7 @@ const ChangePassword = ({ open, onOpenChange }) => {
     useEffect(() => {
     console.log("entered into useEffect hook. ");
     setSubmitted(false);
-    setBackendError(null);
+    setGlobalError(null);
     },[currentPWD,newPWD,confirmPWD]); 
 
 
@@ -67,15 +74,16 @@ const ChangePassword = ({ open, onOpenChange }) => {
         // When the modal closes (either via 'X', clicking outside, or cancel), reset state
         if (!isOpen) {
             setSubmitted(false);
-            setBackendError(null);
+            setGlobalError(null);
             reset(); // Clears react-hook-form inputs and errors
         }
         onOpenChange(isOpen);
     };
 
     const save = async (data) => {
-        
-        setBackendError(null);
+        setIsSubmitting(true);
+
+        setGlobalError(null);
         setSubmitted(false);
         console.log("entered into save() function and the data is: ", data);
         console.log("new password is: ", data.newPWD);
@@ -101,27 +109,21 @@ const ChangePassword = ({ open, onOpenChange }) => {
         } catch (error) {
             
             setSubmitted(false);
-            console.log("error is: ", error);
-            console.log("(error.response?.data).trim().toLowerCase() is: ", (error.response?.data).trim().toLowerCase())
             let backend_error_one = "Current password is incorrect";
             let backend_error_two = "New password must be different from Current password";
-            if ((error.response?.data).trim().toLowerCase() === "old password is incorrect") {
-                setBackendError(backend_error_one);
-
-            setError("currentPWD", {
-            type: "server",
-            message: backend_error_one,
-          })
-         }
+            if(error.response) {
+            if ((error.response?.data).trim().toLowerCase() === "old password is incorrect")
+                setGlobalError(backend_error_one);
             if ((error.response?.data).trim().toLowerCase() === "new password must be different from old password")
-                setBackendError(backend_error_two);
-    setError("newPWD", {
-            type: "server",
-            message: backend_error_two,
-          })
-
-          
+                setGlobalError(backend_error_two);
         }
+        else {
+            if(error.request)
+            setGlobalError("Network Error: No internet connection or server down.");
+    }
+        } finally {
+    setIsSubmitting(false);
+}
 
     }
 
@@ -144,20 +146,44 @@ const ChangePassword = ({ open, onOpenChange }) => {
                         </div>
 
                     )}
-                    {backendError && (
+                    {globalError && (
                         <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-sm text-red-600">
-                            {backendError}
+                            {globalError}
                         </div>
                     )}
                     <form onSubmit={handleSubmit(save)} noValidate className='space-y-4'>
                         <Field label="Current password" error={errors.currentPWD?.message}>
-                            <Input {...register("currentPWD")} type="password" placeholder="current password" className='' />
+                                <div className="relative flex items-center max-w-sm">                      
+                            <Input {...register("currentPWD")} type={showCurrentPassword ? "text": "password"} placeholder="current password" className='' />
+                                <Button type="button"
+                                    onClick={() => setShowCurrentPassword(prev => !prev)}
+                                    className="absolute right-0 top-0 h-full px-3 py-2 text-gray-500 bg-gray-100 hover:bg-gray-100"
+                                    aria-label={showCurrentPassword ? "Hide password" : "Show password"} >
+                            {showCurrentPassword ? <EyeOff size={18} /> : <Eye size="18"/>}
+                            </Button>   
+                            </div>
                         </Field>
                         <Field label="New password" error={errors.newPWD?.message}>
-                            <Input {...register("newPWD")} type="password" placeholder="new password" />
+                            <div className="relative flex items-center max-w-sm">
+                            <Input {...register("newPWD")} type={showNewPassword ? "text": "password"} placeholder="new password" />
+                            <Button type="button"
+                                    onClick={() => setShowNewPassword(prev => !prev)}
+                                    className="absolute right-0 top-0 h-full px-3 py-2 text-gray-500 bg-gray-100 hover:bg-gray-100"
+                                    aria-label={showNewPassword ? "Hide password" : "Show password"} >
+                            {showNewPassword ? <EyeOff size={18} /> : <Eye size="18"/>}
+                            </Button>
+                            </div>
                         </Field>
                         <Field label="Confirm password" error={errors.confirmPWD?.message}>
-                            <Input {...register("confirmPWD")} type="password" placeholder="re enter password" />
+                            <div className="relative flex items-center max-w-sm">
+                            <Input {...register("confirmPWD")} type={showConfirmPassword ? "text": "password"} placeholder="re enter password" />
+                        <Button type="button"
+                                                                                        onClick={() => setShowConfirmPassword(prev => !prev)}
+                                                                                        className="absolute right-0 top-0 h-full px-3 py-2 text-gray-500 bg-gray-100 hover:bg-gray-100"
+                                                                                        aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"} >
+                                                                                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size="18"/>}
+                                                                                </Button>
+                        </div>
                         </Field>
 
 
@@ -165,7 +191,17 @@ const ChangePassword = ({ open, onOpenChange }) => {
                             <DialogClose asChild>
                                 <Button>Cancel</Button>
                             </DialogClose>
-                            <Button type="submit">save</Button>
+                        
+                            <Button type="submit" disabled = {isSubmitting}>
+                            {isSubmitting ? (
+                            <>
+                            <Loader2 className='animate-spin'/> Submitting
+                            </>
+                            ) : (
+"Create Password"
+                            )
+                            }</Button>
+
                         </DialogFooter>
                     </form>
                 </DialogContent>

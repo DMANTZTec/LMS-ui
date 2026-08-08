@@ -317,8 +317,9 @@ getRoles();
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="w-[95vw] sm:max-w-[720px] p-0 overflow-hidden rounded-xl bg-white border-none shadow-xl">
-                
+            {/* <DialogContent className="w-[95vw] sm:max-w-[720px] p-0 overflow-hidden rounded-xl bg-white border-none shadow-xl"> */}
+             <DialogContent className="w-[95vw] sm:max-w-[720px] p-0 max-h-[95vh] overflow-y-auto rounded-xl bg-white border-none shadow-xl">
+   
                 <DialogHeader className="px-6 pt-6 pb-4 border-b">
                     <DialogTitle className="text-lg font-semibold text-slate-900">
                         Add New Staff Member
@@ -329,7 +330,7 @@ getRoles();
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit(onSubmit,(errors) => {console.log("validation failed");
-                console.log("errors is: ",errors);})} className="px-6 py-5 space-y-5">
+                console.log("errors is: ",errors);})} className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
                     
                     {/* Status Banners */}
                     {globalError && (

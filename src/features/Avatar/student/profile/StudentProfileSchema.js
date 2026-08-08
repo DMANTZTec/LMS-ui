@@ -1,4 +1,5 @@
 import { z } from 'zod';
+const ACCEPTED_IMAGES_TYPES = ["image/jpeg","image/png"];
 
 export const StudentProfileSchema = z.object({
     // section 1 : personal information.
@@ -30,7 +31,26 @@ export const StudentProfileSchema = z.object({
     .trim()
     .max(200).optional(),
 
-    profilePicture: z.any().optional(),
+    profilePicture:  z
+      .custom((value) =>{
+        console.log("value === undefined,typeof value === 'string',value instanceof File is : ",value === undefined,typeof value === 'string',value instanceof File );
+        console.log("value === undefined || typeof value === 'string' || value instanceof File is : ",value === undefined || typeof value === "string" || value instanceof File);
+        return value === undefined || typeof value === "string" || value instanceof File;}, {
+        message: "Image is Required."
+      })
+      .refine(
+        (file) => {
+          console.log("entered into refine method of profilePicture and file instance File  and file are : ", file instanceof File,file);
+          if(file instanceof File)
+          return ACCEPTED_IMAGES_TYPES.includes(file.type); 
+          return typeof file === 'string' || file === null ;
+      },
+        
+          {
+          message: "Only JPEG and PNG formats are supported."
+        }
+      )
+    .optional(),
 
     // section 2 : Contact and Address.
     emailId:  z
