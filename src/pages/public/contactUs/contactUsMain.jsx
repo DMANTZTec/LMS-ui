@@ -2,7 +2,7 @@
   import React, { useState, useEffect } from 'react';
   import { useForm } from 'react-hook-form'; 
   import { zodResolver } from '@hookform/resolvers/zod';
-  import { Send, Loader2, X } from 'lucide-react';
+  import { Send, Loader2, X, CheckCircle2 } from 'lucide-react';
   import { toast } from 'react-hot-toast';
   import { Controller } from 'react-hook-form';
   import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger, DialogDescription, DialogClose } from '@/components/ui/dialog';
@@ -14,6 +14,7 @@
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
   import { ContactUsSchema } from './contactUsSchema';
+  import './contactUs.css';
 
   // Assuming a generic api mapping file structured like your student-controller config
   import { contactUsApi } from '@/api/contactUsController'; 
@@ -32,7 +33,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
     
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [globalError, setGlobalError] = useState(null);
-
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
   
 
@@ -65,6 +66,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
   ]);
 
   useEffect(() => {
+    //setIsSubmitted(false);
     setGlobalError(null);
   }, [fname, mobileNum, email, currentPosition, location]);
     
@@ -72,6 +74,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
     const onSubmit = async (data) => {
       console.log("entered into onSubmit function and form data is ", data);
       setIsSubmitting(true);
+      setIsSubmitted(false);
       setGlobalError(null);
       try {
         // Map properties cleanly over to your Spring Boot Controller endpoints
@@ -83,11 +86,15 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
           location: data.location
         });
   console.log("response is: ",response);
-  toast.success("submitted successfully ! Our team will reach out to you shortly. 🎉",{
-    duration: 5000,
-    className: '!bg-green-800 !text-white'
-  });
+  //setIsSubmitted(true);
+  
+  // toast.success("submitted successfully ! Our team will reach out to you shortly. 🎉",{
+  //   duration: 5000,
+  //   className: '!bg-green-800 !text-white'
+  // });
   reset();
+  setIsSubmitted(true);
+  console.log("isSubmitted value is: ", isSubmitted);
       } catch (error) {
         console.error("Contact request submission failure:", error);
         
@@ -100,6 +107,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
     };
 
     const onOpenDialogChange = (isOpen) => {
+      setIsSubmitted(false);
       setGlobalError(null);
       //console.log("onOpenDialogChange() function is called. and value of isOpen is: ",isOpen);
       onOpenChange(isOpen);
@@ -110,21 +118,45 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
     <>
     
   <Dialog open={open} onOpenChange={onOpenDialogChange}>
-      <DialogContent className="!max-w-[600px]
-    w-[95vw]
-    p-0
-    max-h-[90vh]
-    overflow-y-auto">
+      <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto hide-scrollbar 
+      [&>button.absolute]:bg-white
+      [&>button.absolute]:top-6
+      [&>button.absolute]:right-6
+      [&>button.absolute_svg]:w-4
+      [&>button.absolute_svg]:h-4
+      ">
 <VisuallyHidden>
 <DialogTitle />
 </VisuallyHidden>
 
 <VisuallyHidden>
 <DialogDescription />
-</VisuallyHidden> 
+</VisuallyHidden>
+
+{/* ================================================= SUCCESS SCREEN ================================================= */} 
+{isSubmitted ? ( 
+  <div className="flex min-h-[400px] flex-col items-center justify-center px-6 py-10 text-center"> 
+  {/* Green check icon */} 
+  <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-green-100"> 
+  <CheckCircle2 className="h-10 w-10 text-green-600" /> 
+</div> 
+{/* Heading */} 
+<h2 className="text-2xl font-bold text-gray-800">
+Message Submitted! 
+</h2> 
+{/* Message */} 
+<p className="mt-4 max-w-md text-sm leading-6 text-gray-600">
+Your message has been submitted successfully. Our team will get back to you soon. </p> 
+{/* Close button */} 
+<Button type="button" onClick={() => onOpenDialogChange()} className=" mt-8 w-full rounded-xl bg-[#008080] hover:bg-[#006666] " > 
+  Close 
+</Button> 
+</div>
+ ) 
+: (
 
       <div className='flex justify-center'>
-        <div className="w-full p-0 overflow-hidden border-none rounded-2xl bg-white shadow-2xl  justify-center">
+        <div className="w-full p-0 border-none rounded-2xl bg-white shadow-2xl  justify-center">
           
           {/* Teal Header Layout Frame */}
           <div className=" pl-{150px} bg-[#008080] text-white p-6 text-center space-y-2 relative">
@@ -272,10 +304,12 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
         </div>
         </div>
 
+)}
+
   </DialogContent>
         </Dialog>
         
-  </>
+        </>
     );
   };
 

@@ -49,7 +49,7 @@ const studentSchema = z.object({
     .string()
     .trim()
     .min(1, "Mobile number is required")
-    .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number"),
+    .regex(/^(?:\+91 ?[6-9]\d{9}|[6-9]\d{9})$/,{ message: 'Enter a valid mobile number'}),
 
   emailId: z
     .string()

@@ -258,3 +258,18 @@ code {
     @apply bg-background text-foreground;}
   html {
     @apply font-sans;}}
+
+    /* ---------------------------------------------------------- */
+
+/* Scrollable element, but scrollbar is invisible */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and old Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;              /* Chrome, Edge, Safari */
+}
+
+
+
