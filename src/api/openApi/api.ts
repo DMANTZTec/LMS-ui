@@ -403,21 +403,21 @@ export interface PageStaffResponse {
     'totalElements'?: number;
     'first'?: boolean;
     'last'?: boolean;
+    'pageable'?: PageableObject;
     'size'?: number;
     'content'?: Array<StaffResponse>;
     'number'?: number;
     'sort'?: SortObject;
     'numberOfElements'?: number;
-    'pageable'?: PageableObject;
     'empty'?: boolean;
 }
 export interface PageableObject {
-    'offset'?: number;
-    'sort'?: SortObject;
+    'paged'?: boolean;
+    'unpaged'?: boolean;
     'pageSize'?: number;
     'pageNumber'?: number;
-    'unpaged'?: boolean;
-    'paged'?: boolean;
+    'offset'?: number;
+    'sort'?: SortObject;
 }
 export interface ProgramCourseRequest {
     'programId': string;
@@ -600,6 +600,35 @@ export interface SetStaffPasswordRequest {
     'password': string;
     'confirmPassword': string;
 }
+export interface SocialMediaRequest {
+    'platform': SocialMediaRequestPlatformEnum;
+    'url': string;
+    'isActive'?: boolean;
+}
+
+export const SocialMediaRequestPlatformEnum = {
+    Whatsapp: 'WHATSAPP',
+    Facebook: 'FACEBOOK',
+    Youtube: 'YOUTUBE',
+} as const;
+
+export type SocialMediaRequestPlatformEnum = typeof SocialMediaRequestPlatformEnum[keyof typeof SocialMediaRequestPlatformEnum];
+
+export interface SocialMediaResponse {
+    'id'?: number;
+    'platform'?: SocialMediaResponsePlatformEnum;
+    'url'?: string;
+    'isActive'?: boolean;
+}
+
+export const SocialMediaResponsePlatformEnum = {
+    Whatsapp: 'WHATSAPP',
+    Facebook: 'FACEBOOK',
+    Youtube: 'YOUTUBE',
+} as const;
+
+export type SocialMediaResponsePlatformEnum = typeof SocialMediaResponsePlatformEnum[keyof typeof SocialMediaResponsePlatformEnum];
+
 export interface SortObject {
     'empty'?: boolean;
     'sorted'?: boolean;
@@ -806,8 +835,8 @@ export interface StudentResponse {
     'addr1'?: string;
     'addr2'?: string;
     'city'?: string;
-    'state'?: string;
-    'country'?: string;
+    'state'?: StudentResponseStateEnum;
+    'country'?: StudentResponseCountryEnum;
     'pin'?: string;
     'emailId'?: string;
     'mobileNum'?: string;
@@ -821,6 +850,23 @@ export interface StudentResponse {
     'updatedBy'?: number;
     'updatedDt'?: string;
 }
+
+export const StudentResponseStateEnum = {
+    Telangana: 'Telangana',
+    AndhraPradesh: 'AndhraPradesh',
+    Karnataka: 'Karnataka',
+    TamilNadu: 'TamilNadu',
+    Kerala: 'Kerala',
+    Maharashtra: 'Maharashtra',
+} as const;
+
+export type StudentResponseStateEnum = typeof StudentResponseStateEnum[keyof typeof StudentResponseStateEnum];
+export const StudentResponseCountryEnum = {
+    India: 'India',
+} as const;
+
+export type StudentResponseCountryEnum = typeof StudentResponseCountryEnum[keyof typeof StudentResponseCountryEnum];
+
 export interface StudentTaskListResponse {
     'count'?: number;
     'tasks'?: Array<StudentTaskResponse>;
@@ -938,6 +984,22 @@ export interface SubjectResponse {
     'createdDt'?: string;
     'updatedBy'?: number;
     'updatedDt'?: string;
+}
+export interface SuccessStoryRequest {
+    'studentId': number;
+    'placedCompany': string;
+    'placedDesignation': string;
+    'reviewMsg': string;
+    'displayOrder'?: number;
+}
+export interface SuccessStoryResponse {
+    'id'?: number;
+    'studentId'?: number;
+    'studentName'?: string;
+    'profileImg'?: string;
+    'placedCompany'?: string;
+    'placedDesignation'?: string;
+    'reviewMsg'?: string;
 }
 export interface TopicDetailResponse {
     'topicId'?: number;
@@ -7699,6 +7761,374 @@ export class RoleControllerApi extends BaseAPI {
 
 
 /**
+ * SocialMediaControllerApi - axios parameter creator
+ */
+export const SocialMediaControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {SocialMediaRequest} socialMediaRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createLink: async (socialMediaRequest: SocialMediaRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'socialMediaRequest' is not null or undefined
+            assertParamExists('createLink', 'socialMediaRequest', socialMediaRequest)
+            const localVarPath = `/api/social-media`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(socialMediaRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteLink: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteLink', 'id', id)
+            const localVarPath = `/api/social-media/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getActiveLinks: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/social-media/active`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllLinks: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/social-media`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {SocialMediaRequest} socialMediaRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateLink: async (id: number, socialMediaRequest: SocialMediaRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('updateLink', 'id', id)
+            // verify required parameter 'socialMediaRequest' is not null or undefined
+            assertParamExists('updateLink', 'socialMediaRequest', socialMediaRequest)
+            const localVarPath = `/api/social-media/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(socialMediaRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * SocialMediaControllerApi - functional programming interface
+ */
+export const SocialMediaControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = SocialMediaControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {SocialMediaRequest} socialMediaRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createLink(socialMediaRequest: SocialMediaRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SocialMediaResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createLink(socialMediaRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SocialMediaControllerApi.createLink']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteLink(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteLink(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SocialMediaControllerApi.deleteLink']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getActiveLinks(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<SocialMediaResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getActiveLinks(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SocialMediaControllerApi.getActiveLinks']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllLinks(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<SocialMediaResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllLinks(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SocialMediaControllerApi.getAllLinks']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {SocialMediaRequest} socialMediaRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateLink(id: number, socialMediaRequest: SocialMediaRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SocialMediaResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateLink(id, socialMediaRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SocialMediaControllerApi.updateLink']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * SocialMediaControllerApi - factory interface
+ */
+export const SocialMediaControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = SocialMediaControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {SocialMediaRequest} socialMediaRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createLink(socialMediaRequest: SocialMediaRequest, options?: RawAxiosRequestConfig): AxiosPromise<SocialMediaResponse> {
+            return localVarFp.createLink(socialMediaRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteLink(id: number, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.deleteLink(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getActiveLinks(options?: RawAxiosRequestConfig): AxiosPromise<Array<SocialMediaResponse>> {
+            return localVarFp.getActiveLinks(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllLinks(options?: RawAxiosRequestConfig): AxiosPromise<Array<SocialMediaResponse>> {
+            return localVarFp.getAllLinks(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {SocialMediaRequest} socialMediaRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateLink(id: number, socialMediaRequest: SocialMediaRequest, options?: RawAxiosRequestConfig): AxiosPromise<SocialMediaResponse> {
+            return localVarFp.updateLink(id, socialMediaRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * SocialMediaControllerApi - object-oriented interface
+ */
+export class SocialMediaControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {SocialMediaRequest} socialMediaRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public createLink(socialMediaRequest: SocialMediaRequest, options?: RawAxiosRequestConfig) {
+        return SocialMediaControllerApiFp(this.configuration).createLink(socialMediaRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public deleteLink(id: number, options?: RawAxiosRequestConfig) {
+        return SocialMediaControllerApiFp(this.configuration).deleteLink(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getActiveLinks(options?: RawAxiosRequestConfig) {
+        return SocialMediaControllerApiFp(this.configuration).getActiveLinks(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getAllLinks(options?: RawAxiosRequestConfig) {
+        return SocialMediaControllerApiFp(this.configuration).getAllLinks(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {SocialMediaRequest} socialMediaRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public updateLink(id: number, socialMediaRequest: SocialMediaRequest, options?: RawAxiosRequestConfig) {
+        return SocialMediaControllerApiFp(this.configuration).updateLink(id, socialMediaRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * StaffControllerApi - axios parameter creator
  */
 export const StaffControllerApiAxiosParamCreator = function (configuration?: Configuration) {
@@ -12448,6 +12878,379 @@ export class StudentTopicReferenceProgressControllerApi extends BaseAPI {
      */
     public markReferenceCompleted(studentTopicReferenceProgressRequest: StudentTopicReferenceProgressRequest, options?: RawAxiosRequestConfig) {
         return StudentTopicReferenceProgressControllerApiFp(this.configuration).markReferenceCompleted(studentTopicReferenceProgressRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * SuccessStoryControllerApi - axios parameter creator
+ */
+export const SuccessStoryControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        _delete: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('_delete', 'id', id)
+            const localVarPath = `/api/success-stories/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {SuccessStoryRequest} successStoryRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        create: async (successStoryRequest: SuccessStoryRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'successStoryRequest' is not null or undefined
+            assertParamExists('create', 'successStoryRequest', successStoryRequest)
+            const localVarPath = `/api/success-stories`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(successStoryRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllStories: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/success-stories`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        toggleActive: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('toggleActive', 'id', id)
+            const localVarPath = `/api/success-stories/{id}/toggle-active`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {SuccessStoryRequest} successStoryRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update: async (id: number, successStoryRequest: SuccessStoryRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('update', 'id', id)
+            // verify required parameter 'successStoryRequest' is not null or undefined
+            assertParamExists('update', 'successStoryRequest', successStoryRequest)
+            const localVarPath = `/api/success-stories/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(successStoryRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * SuccessStoryControllerApi - functional programming interface
+ */
+export const SuccessStoryControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = SuccessStoryControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async _delete(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator._delete(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SuccessStoryControllerApi._delete']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {SuccessStoryRequest} successStoryRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async create(successStoryRequest: SuccessStoryRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessStoryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.create(successStoryRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SuccessStoryControllerApi.create']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllStories(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<SuccessStoryResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllStories(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SuccessStoryControllerApi.getAllStories']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async toggleActive(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.toggleActive(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SuccessStoryControllerApi.toggleActive']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {SuccessStoryRequest} successStoryRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async update(id: number, successStoryRequest: SuccessStoryRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessStoryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.update(id, successStoryRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SuccessStoryControllerApi.update']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * SuccessStoryControllerApi - factory interface
+ */
+export const SuccessStoryControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = SuccessStoryControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        _delete(id: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp._delete(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {SuccessStoryRequest} successStoryRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        create(successStoryRequest: SuccessStoryRequest, options?: RawAxiosRequestConfig): AxiosPromise<SuccessStoryResponse> {
+            return localVarFp.create(successStoryRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllStories(options?: RawAxiosRequestConfig): AxiosPromise<Array<SuccessStoryResponse>> {
+            return localVarFp.getAllStories(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        toggleActive(id: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.toggleActive(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {SuccessStoryRequest} successStoryRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update(id: number, successStoryRequest: SuccessStoryRequest, options?: RawAxiosRequestConfig): AxiosPromise<SuccessStoryResponse> {
+            return localVarFp.update(id, successStoryRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * SuccessStoryControllerApi - object-oriented interface
+ */
+export class SuccessStoryControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public _delete(id: number, options?: RawAxiosRequestConfig) {
+        return SuccessStoryControllerApiFp(this.configuration)._delete(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {SuccessStoryRequest} successStoryRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public create(successStoryRequest: SuccessStoryRequest, options?: RawAxiosRequestConfig) {
+        return SuccessStoryControllerApiFp(this.configuration).create(successStoryRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getAllStories(options?: RawAxiosRequestConfig) {
+        return SuccessStoryControllerApiFp(this.configuration).getAllStories(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public toggleActive(id: number, options?: RawAxiosRequestConfig) {
+        return SuccessStoryControllerApiFp(this.configuration).toggleActive(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {SuccessStoryRequest} successStoryRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public update(id: number, successStoryRequest: SuccessStoryRequest, options?: RawAxiosRequestConfig) {
+        return SuccessStoryControllerApiFp(this.configuration).update(id, successStoryRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -1,6 +1,5 @@
 .gitignore
 .npmignore
-.openapi-generator-ignore
 api.ts
 base.ts
 common.ts
@@ -73,6 +72,9 @@ docs/RoleControllerApi.md
 docs/RoleRequest.md
 docs/RoleResponse.md
 docs/SetStaffPasswordRequest.md
+docs/SocialMediaControllerApi.md
+docs/SocialMediaRequest.md
+docs/SocialMediaResponse.md
 docs/SortObject.md
 docs/StaffControllerApi.md
 docs/StaffCourseControllerApi.md
@@ -114,6 +116,9 @@ docs/StudentTopicReferenceProgressResponse.md
 docs/StudentUpdateRequest.md
 docs/SubjectRequest.md
 docs/SubjectResponse.md
+docs/SuccessStoryControllerApi.md
+docs/SuccessStoryRequest.md
+docs/SuccessStoryResponse.md
 docs/TopicDetailResponse.md
 docs/TopicItem.md
 docs/TopicProgressResponse.md
