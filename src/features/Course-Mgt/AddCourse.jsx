@@ -114,8 +114,9 @@ const AddCourse = () => {
 
   const onSubmit = async (data) => {
     try {
-      const savedUser = JSON.parse(localStorage.getItem("user"));
-      const staffId = savedUser?.staffId || "SF00001";
+      // const savedUser = JSON.parse(localStorage.getItem("user"));
+      // const staffId = savedUser?.staffId ;
+      const staffId = JSON.parse(localStorage.getItem("staffId"));
 
       const response = await api.createCourse(
         staffId,
@@ -351,7 +352,7 @@ const AddCourse = () => {
                 <div className="relative h-[160px] border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center hover:border-blue-400 transition-all cursor-pointer bg-white group">
                   <input
                     type="file"
-                    accept="image/jpeg, image/png, image/jpg ,video/mp4, video/quicktime"
+                    accept="video/mp4, video/quicktime"
                     {...register("courseVideo", {
                       onChange: (e) => setPreviews((prev) => ({ ...prev, vidName: e.target.files[0]?.name })),
                     })}

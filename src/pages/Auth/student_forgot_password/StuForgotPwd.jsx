@@ -1,12 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Loader, Loader2, CheckCircle } from 'lucide-react';
+import { Loader2, CheckCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Field from '@/components/common/Field';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-hot-toast';
@@ -16,10 +14,9 @@ import { studentApi } from '@/api/student-controller.api';
 const forgotPwdSchema = z.object({
     emailOrmobile: z.string()
         .trim()
-        .min(1, "Email is required.")
-        .email("Enter valid number.")
+        .min(1, "Email or mobile number is required.")
+        .email("Enter a valid email address.")
 });
-
 
 const StuForgotPwd = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -28,8 +25,13 @@ const StuForgotPwd = () => {
 
     const navigate = useNavigate();
 
-
-    const { register, handleSubmit, formState: { errors, isDirty }, watch, setError, reset } = useForm({
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        watch,
+        reset
+    } = useForm({
         resolver: zodResolver(forgotPwdSchema),
         defaultValues: {
             emailOrmobile: ""
@@ -39,7 +41,7 @@ const StuForgotPwd = () => {
     const watchedEmailValue = watch("emailOrmobile");
 
     useEffect(() => {
-    setErrorMsg(null);
+        setErrorMsg(null);
     }, [watchedEmailValue]);
 
     const onSubmit = async (data) => {
@@ -52,23 +54,42 @@ const StuForgotPwd = () => {
         };
 
         setIsLoading(true);
+
         try {
-            const response = await studentApi.forgotPassword(payload);
-            toast.success("OTP sent to entered mail", { duration:5000,className: '!bg-green-800 !text-white' });
-            setTimeout(() => {                                          
-              navigate("/stuResetPwd", { state: { EmailIdOrMobileNo: data.emailOrmobile } });  
-            },5000);
+            await studentApi.forgotPassword(payload);
+
+            toast.success("OTP sent to your email successfully.", {duration: 5000,className: '!bg-green-800 !text-white'
+            });
+
+            setSubmittedMsg(
+                "OTP has been sent to your registered email address. Please verify the OTP to continue."
+            );
 
             reset();
-   
-            setSubmittedMsg("OTP sent to entered mail");
+
+            setTimeout(() => {
+                navigate("/stuResetPwd", {
+                    state: {
+                        EmailIdOrMobileNo: data.emailOrmobile
+                    }
+                });
+            }, 2000);
+
         } catch (error) {
             if (error.response) {
-                setErrorMsg(error.response?.data?.message || error.response?.data || "Failed to request reset link.");
+                setErrorMsg(
+                    error.response?.data?.message ||
+                    error.response?.data ||
+                    "Failed to send OTP. Please try again."
+                );
             } else if (error.request) {
-                setErrorMsg("Network Error: Please check your internet connection.");
+                setErrorMsg(
+                    "Network Error: Please check your internet connection."
+                );
             } else {
-                setErrorMsg("An unexpected error occurred. Please try again.");
+                setErrorMsg(
+                    "An unexpected error occurred. Please try again."
+                );
             }
         } finally {
             setIsLoading(false);
@@ -84,15 +105,20 @@ const StuForgotPwd = () => {
                     <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">
                         Reset your Password
                     </h1>
+
                     <p className="text-sm text-slate-500 leading-relaxed">
-                        Please enter the email address you'd like your password reset information sent to
+                        Enter your registered email address to receive an OTP for
+                        password reset verification.
                     </p>
                 </div>
 
                 {/* Feedback Messages */}
                 {submittedMsg && (
-                    <div className="flex items-center gap-2 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-sm text-emerald-700">
-                        <CheckCircle className="shrink-0 text-emerald-600" size={18} />
+                    <div className="flex items-start gap-2 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-sm text-emerald-700">
+                        <CheckCircle
+                            className="shrink-0 text-emerald-600 mt-0.5"
+                            size={18}
+                        />
                         <span>{submittedMsg}</span>
                     </div>
                 )}
@@ -104,14 +130,20 @@ const StuForgotPwd = () => {
                 )}
 
                 {/* Form */}
-                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-                    <div className="flex flex-col gap-1.5 text-left">
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="flex flex-col gap-5"
+                >
+                    <Field
+                        label="Email or Mobile Number"
+                        error={errors.emailOrmobile?.message}
+                    >
+                        <Input
+                            {...register("emailOrmobile")}
+                            placeholder="Enter your email or mobile number"
+                        />
+                    </Field>
 
-                        <Field label="EmailOrMobileNumber" error={errors.emailOrmobile?.message}>
-                            <Input {...register("emailOrmobile")} placeholder="emailId or mobile number" />
-                        </Field>
-
-                    </div>
                     <Button
                         type="submit"
                         disabled={isLoading}
@@ -119,11 +151,11 @@ const StuForgotPwd = () => {
                     >
                         {isLoading ? (
                             <>
-                                <Loader className="h-4 w-4 animate-spin" />
-                                <span>Requesting...</span>
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                <span>Sending OTP...</span>
                             </>
                         ) : (
-                            "Request reset link"
+                            "Send OTP"
                         )}
                     </Button>
                 </form>
@@ -144,3 +176,4 @@ const StuForgotPwd = () => {
 };
 
 export default StuForgotPwd;
+

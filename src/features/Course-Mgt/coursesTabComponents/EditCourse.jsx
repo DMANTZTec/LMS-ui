@@ -185,8 +185,9 @@ const EditCourse = ({ course, onUpdateSuccess }) => {
 
   const onSubmit = async (data) => {
     try {
-      const savedUser = JSON.parse(localStorage.getItem("user"));
-      const staffId = savedUser?.staffId || "SF00001";
+      // const savedUser = JSON.parse(localStorage.getItem("user"));
+      // const staffId = savedUser?.staffId || "SF00001";
+      const staffId = JSON.parse(localStorage.getItem("staffId"));
       const targetCourseId = Number(course.id || course.courseId);
 
       const updateCourseRequest = {

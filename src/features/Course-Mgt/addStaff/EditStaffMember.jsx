@@ -302,7 +302,7 @@ const EditStaffMember = ({ open, onOpenChange, staffData, onSuccess }) => {
 
       if (data.photo instanceof File) {
         requests.push(
-          staffApi.updateProfileImage(staffData.staffId, data.photo)
+          staffApi.updateProfileImage1(staffData.staffId, data.photo)
         );
       }
 

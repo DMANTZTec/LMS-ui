@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-hot-toast';
 import { Loader, RefreshCwIcon } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 
 import { studentApi } from '@/api/student-controller.api';
 
@@ -46,6 +47,8 @@ const StuResetPwd = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [resending, setResending] = useState(false);
     const [timer, setTimer] = useState(120);
+    const [showNewPwd, setShowNewPwd] = useState(false);
+    const [showConfirmPwd, setShowConfirmPwd] = useState(false);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -238,12 +241,52 @@ const StuResetPwd = () => {
 
 
                                 <Field label="New Password" error={errors.newPwd?.message}>
-                                    <Input {...register("newPwd")} type="password" placeholder="Enter New Password" />
-                                </Field>
+    <div className="relative">
+        <Input
+            {...register("newPwd")}
+            type={showNewPwd ? "text" : "password"}
+            placeholder="Enter New Password"
+            className="pr-10"
+        />
 
-                                <Field label="Confirm Password" error={errors.confirmPwd?.message}>
-                                    <Input {...register("confirmPwd")} type="password" placeholder="Enter Confirm Password" />
-                                </Field>
+        <button
+            type="button"
+            onClick={() => setShowNewPwd((prev) => !prev)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            aria-label={showNewPwd ? "Hide password" : "Show password"}
+        >
+            {showNewPwd ? (
+                <EyeOff className="h-4 w-4" />
+            ) : (
+                <Eye className="h-4 w-4" />
+            )}
+        </button>
+    </div>
+</Field>
+
+<Field label="Confirm Password" error={errors.confirmPwd?.message}>
+    <div className="relative">
+        <Input
+            {...register("confirmPwd")}
+            type={showConfirmPwd ? "text" : "password"}
+            placeholder="Enter Confirm Password"
+            className="pr-10"
+        />
+
+        <button
+            type="button"
+            onClick={() => setShowConfirmPwd((prev) => !prev)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            aria-label={showConfirmPwd ? "Hide password" : "Show password"}
+        >
+            {showConfirmPwd ? (
+                <EyeOff className="h-4 w-4" />
+            ) : (
+                <Eye className="h-4 w-4" />
+            )}
+        </button>
+    </div>
+</Field>
 
                                 <Button type="submit" disabled={isSubmitting}>
                                     {isSubmitting ? (

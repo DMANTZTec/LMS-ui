@@ -38,8 +38,9 @@ const CourseFeeDialog = ({ course }) => {
         effectiveDate: new Date().toISOString().split('T')[0]
     });
 
-    const savedUser = JSON.parse(localStorage.getItem("user"));
-    const staffId = savedUser?.staffId || "SF00003";
+    // const savedUser = JSON.parse(localStorage.getItem("user"));
+    // const staffId = savedUser?.staffId || "SF00003";
+    const staffId = JSON.parse(localStorage.getItem("staffId"));
 
   
     const { data: feeData, isLoading, refetch } = useQuery({

@@ -32,7 +32,7 @@ const from = location.state?.from?.pathname || "/mainPage"; // fallbaack
       const { staffId, email, role } = res.data;
 
 if (staffId) {
-
+  localStorage.setItem('staffId', JSON.stringify(staffId));
   sessionStorage.setItem("otpStaff",JSON.stringify({staffId,email,role,}));
 
   navigate("/verify-staff-otp");

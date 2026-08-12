@@ -40,7 +40,8 @@ const ProgramFeeDialog = ({ program, onViewProgram, onSaveSuccess }) => {
     };
 
     const [formValues, setFormValues] = useState(emptyForm);
-    const staffId = "SF00003";
+    // const staffId = "SF00003";
+    const staffId = JSON.parse(localStorage.getItem("staffId"));
 
     const { data: feeData, isLoading, refetch } = useQuery({
         queryKey: ['programFee', program.programId],
