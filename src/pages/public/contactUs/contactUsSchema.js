@@ -26,8 +26,8 @@ export const ContactUsSchema = z.object({
     location: z
     .string()
     .trim()
-    .min(1, { message: 'Location is required'})
-    .max(100, { message: "Location must be under 100 characters." })        ,
+    // .min(1, { message: 'Location is required'})
+    // .max(100, { message: "Location must be under 100 characters." })        ,
     
 
 

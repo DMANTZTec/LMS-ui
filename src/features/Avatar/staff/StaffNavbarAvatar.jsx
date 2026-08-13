@@ -1,10 +1,11 @@
 import React from "react";
-import { LogOut } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 
 // Shadcn UI Components
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -59,6 +60,16 @@ export default function StaffNavbarAvatar() {
           </div>
           
           <DropdownMenuSeparator className="bg-gray-100 my-1" />
+<DropdownMenuGroup>
+            <DropdownMenuItem 
+              // onClick={() => navigate("/studentProfile")} 
+              className="flex items-center gap-2 px-2.5 py-2 text-sm rounded-lg text-gray-700 cursor-pointer hover:bg-slate-50 focus:bg-slate-50 transition-colors"
+            >
+              <User className="h-4 w-4 text-gray-500" />
+              <span>My Profile</span>
+            </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator className="bg-gray-100 my-1" />
 
           {/* Logout Action */}
           <DropdownMenuItem 

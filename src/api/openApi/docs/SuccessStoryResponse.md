@@ -6,7 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **number** |  | [optional] [default to undefined]
-**studentId** | **number** |  | [optional] [default to undefined]
+**studentId** | **string** |  | [optional] [default to undefined]
 **studentName** | **string** |  | [optional] [default to undefined]
 **profileImg** | **string** |  | [optional] [default to undefined]
 **placedCompany** | **string** |  | [optional] [default to undefined]

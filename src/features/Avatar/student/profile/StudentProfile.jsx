@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'react-hot-toast';
 import { useAtom } from 'jotai';
 import { User, MapPin, ShieldAlert, Upload, Loader2, ArrowLeft, ChevronLeft } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
@@ -40,21 +41,6 @@ const StudentProfile = () => {
   const cachedRegData = JSON.parse(sessionStorage.getItem("stuRegData") || "{}");
   const profilePictureRef = useRef(null);
 
-  // async function imageUrlToFile(imageUrl) {
-
-  //   const response = await fetch(imageUrl);
-  //     const blob = await response.blob();
-  //     const fileName = imageUrl.split("/").pop();
-
-  //     return new File(
-  //         [blob],
-  //         fileName,
-  //         {
-  //             type: blob.type,
-  //             lastModified: Date.now(),
-  //         }
-  //     );
-  // }
 
   const getData = () => {
 
@@ -64,7 +50,7 @@ const StudentProfile = () => {
       lastNm: studentData?.lastNm || cachedRegData?.lastNm || "",
       gender: studentData?.gender || cachedRegData?.gender || "",
       dob: studentData?.dob || cachedRegData?.dob || "",
-      currentStatus: studentData?.currentStatus || cachedRegData?.currentStatus || "",
+      currentStatus: studentData?.status || cachedRegData?.status || "",
       profilePicture: studentData?.profilePicture || cachedRegData?.profileImg || "",
       emailId: studentData?.emailId || cachedRegData?.emailId || "",
       mobileNum: studentData?.mobileNum || cachedRegData?.mobileNum || "",
@@ -107,13 +93,14 @@ const StudentProfile = () => {
   useEffect(() => {
     console.log("entered into useEffect.");
 
-    console.log("profilePictureRef is: ", profilePictureRef);
-    console.log("profilePictureRef.current.value is: ", profilePictureRef?.current?.value);
     setGlobalError(null);
   }, [JSON.stringify(watchedValues)]);
 
   const onSubmit = async (data) => {
     console.log("entered into onSubmit function.");
+    console.log("typeof data.profilePicture === 'string', data.profilePicture === null, data.profilePicture === undefined, data.profilePicture instanceof File are: ", typeof data.profilePicture === "string", data.profilePicture === null, data.profilePicture === undefined, data.profilePicture instanceof File);
+    console.log("value in data.profilePicture is: ", data.profilePicture);
+
     setIsSubmitting(true);
     setGlobalError(null);
     try {
@@ -135,6 +122,7 @@ const StudentProfile = () => {
         'addr2': data.addr2,
         'city': data.city,
         'state': data.state,
+        'status': data.currentStatus,
         'country': data.country,
         'pin': data.pin,
         'mobileNum': data.mobileNum,
@@ -143,26 +131,42 @@ const StudentProfile = () => {
         'dob': formattedDob,                                  //instead of data.dateOfBirth
 
       }
-      console.log("before api line1");
+      //console.log("before api line1");
       const res1 = await studentApi.updateProfile(
         studentId,
         payload_body
       );
 
-      const res2 = await studentApi.updateProfileImage(studentId, data.profilePicture);
 
-      console.log("after api line2");
-      console.log("res1, res2 are: ", res1.data, res2.data);
+      if (data.profilePicture instanceof File) {
+        console.log("entered into if block and data.profilePicture instanceof File is: ", data.profilePicture instanceof File);
+        const res2 = await studentApi.updateProfileImage(studentId, data.profilePicture);
+      }
+      else if (data.profilePicture === null && imageRemoved === true) {
+        console.log("entered into else block.");
+        console.log("data.profilePicture and typeof data.profilePicture and data.profilePicture === null are: ", data.profilePicture, typeof data.profilePicture, data.profilePicture === null);
+        await studentApi.deleteProfileImage(studentId);
+      }
+      else if ((data.profilePicture === null && imageRemoved === false) || typeof data.profilePicture === "string") {
+        console.log("entered into else if block and (data.profilePicture === null && imageRemoved === false) || typeof data.profileImageg === 'string' is: ", (data.profilePicture === null && imageRemoved === false) || typeof data.profileImageg === "string");
 
-      const correctResponseData = { ...res1.data, ...res2.data };
-      const freshProfileData = correctResponseData;
-      console.log("conbinedResponse.data is: ", freshProfileData);
-      setStudentData(freshProfileData);
-      sessionStorage.setItem("stuRegData", JSON.stringify(freshProfileData));
+      } else {
+        console.log("entered into else block: ");
+      }
 
+      const result = await studentApi.getStudentById(studentId);
 
-      alert("Profile saved successfully! 🎉");
-      reset(freshProfileData);
+      const newUpdatedData = result.data;
+      console.log("newUpdatedData is: ", newUpdatedData);
+      setStudentData(newUpdatedData);
+      sessionStorage.setItem("stuRegData", JSON.stringify(newUpdatedData));
+
+      toast.success("Profile saved successfully! 🎉", {
+        duration: 5000,
+        className: '!bg-green-800 !text-white'
+      });
+      reset(newUpdatedData);
+
 
     } catch (error) {
       console.log("entered into catch block and error is: ", error);
@@ -256,12 +260,38 @@ const StudentProfile = () => {
               </Field>
 
               <Field label="Gender *" error={errors.gender?.message}>
-                <select {...register("gender")} className={selectCls(!!errors.gender)}>
+                {/* <select {...register("gender")} className={selectCls(!!errors.gender)}>
                   <option value="">Select gender</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
-                </select>
+                </select> */}
+
+                <Controller
+                  name="gender"
+                  control={control}
+                  render={({ field }) => (
+                    <>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger className={inputCls(!!errors.gender)}>
+                          <SelectValue placeholder="Select Gender" />
+                        </SelectTrigger>
+
+                        <SelectContent>
+                          <SelectItem value="Male">Male</SelectItem>
+                          <SelectItem value="Female">Female</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+
+                      </Select>
+
+                    </>
+                  )}
+                />
+
               </Field>
 
               <Field label="Date of Birth *" error={errors.dob?.message}>
@@ -362,9 +392,14 @@ const StudentProfile = () => {
                           </SelectTrigger>
 
                           <SelectContent>
-                            <SelectItem value="ANDRA PRADESH">Andra Pradesh</SelectItem>
-                            <SelectItem value="TELANGANA">Telangana</SelectItem>
+                            <SelectItem value="Telangana">Telangana</SelectItem>
+                            <SelectItem value="AndhraPradesh">AndhraPradesh</SelectItem>
+                            <SelectItem value="Karnataka">Karnataka</SelectItem>
+                            <SelectItem value="TamilNadu">TamilNadu</SelectItem>
+                            <SelectItem value="Kerala">Kerala</SelectItem>
+                            <SelectItem value="Maharashtra">Maharashtra</SelectItem>
                           </SelectContent>
+
                         </Select>
 
                       </>
@@ -394,7 +429,7 @@ const StudentProfile = () => {
                         </SelectTrigger>
 
                         <SelectContent>
-                          <SelectItem value="INDIA">India</SelectItem>
+                          <SelectItem value="India">India</SelectItem>
                         </SelectContent>
                       </Select>
 

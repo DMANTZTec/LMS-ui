@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **addr2** | **string** |  | [optional] [default to undefined]
 **city** | **string** |  | [optional] [default to undefined]
 **state** | **string** |  | [optional] [default to undefined]
+**status** | **string** |  | [optional] [default to undefined]
 **country** | **string** |  | [optional] [default to undefined]
 **pin** | **string** |  | [optional] [default to undefined]
 **mobileNum** | **string** |  | [optional] [default to undefined]
@@ -32,6 +33,7 @@ const instance: StudentUpdateRequest = {
     addr2,
     city,
     state,
+    status,
     country,
     pin,
     mobileNum,

@@ -31,25 +31,7 @@ export const StudentProfileSchema = z.object({
     .trim()
     .max(200).optional(),
 
-    profilePicture:  z
-      .custom((value) =>{
-        console.log("value === undefined,typeof value === 'string',value instanceof File is : ",value === undefined,typeof value === 'string',value instanceof File );
-        console.log("value === undefined || typeof value === 'string' || value instanceof File is : ",value === undefined || typeof value === "string" || value instanceof File);
-        return value === undefined || typeof value === "string" || value instanceof File;}, {
-        message: "Image is Required."
-      })
-      .refine(
-        (file) => {
-          console.log("entered into refine method of profilePicture and file instance File  and file are : ", file instanceof File,file);
-          if(file instanceof File)
-          return ACCEPTED_IMAGES_TYPES.includes(file.type); 
-          return typeof file === 'string' || file === null ;
-      },
-        
-          {
-          message: "Only JPEG and PNG formats are supported."
-        }
-      )
+    profilePicture:  z.any()
     .optional(),
 
     // section 2 : Contact and Address.
@@ -66,11 +48,20 @@ export const StudentProfileSchema = z.object({
     .min(1, "Mobile number is required")
     .regex(/^\+?[1-9]\d{1,14}$/, "Enter a valid mobile number"),
 
-    addr1: z.string().min(1, "Adress Line 1 is required."),
+    addr1: z.string().trim()
+    .min(1, "Adress Line 1 is required.")
+    .refine(value => value !== 'NOT_SET',{
+      message: "Please enter text instead of 'NOT_SET'."
+    }),
 
     addr2: z.string().optional(),
 
-    city: z.string().min(1, "city is required"),
+    city: z.string().trim()
+    .min(1, "city is required")
+    .regex(/^[A-Za-z\s_]+$/, { message: "City contains only letters, spaces, underscores" })
+    .refine(value => value !== 'NOT_SET',{
+      message: "Please enter text instead of 'NOT_SET'."
+    }),
 
     state: z.string().min(1, "state is required"),
 
@@ -97,14 +88,19 @@ export const StudentProfileSchema = z.object({
   
   // confirm_password: z.string().min(1, "Confirm password is required"),
   
-  emergencyContactNm: z.string().min(1, "Emergency contact name is required"),
-  
+  emergencyContactNm: z.string()
+  .min(1, "Emergency contact name is required")
+  .min(2, { message: "emergencyContactNm must be atleast two charecters long."})
+  .regex(/^[a-zA-Z\s'-]+$/, { 
+      message: "First name must only contain letters, spaces, hyphens, and apostrophes." 
+    }),
+
   emergencyContactNum: z
     .string()
     .trim()
     .min(1, "Emergency Contact Number is required")
     .regex(/^(?:\+91[\-\s]?)?(?:[6-9]\d{9}|0\d{2,4}[\-\s]?\d{6,8})$/, "Enter a valid Emargency Contact Number"), 
-
+  
 }).refine((data) => data.password === data.confirm_password , {
     message: "password and confirm password do not match",
     path: ["confirm_password"],

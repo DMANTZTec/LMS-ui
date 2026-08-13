@@ -4,11 +4,11 @@ All URIs are relative to *http://localhost:9090*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
-|[**createLink**](#createlink) | **POST** /api/social-media | |
-|[**deleteLink**](#deletelink) | **DELETE** /api/social-media/{id} | |
+|[**createLink**](#createlink) | **POST** /api/social-media/staff/{staffId} | |
+|[**deleteLink**](#deletelink) | **DELETE** /api/social-media/{id}/staff/{staffId} | |
 |[**getActiveLinks**](#getactivelinks) | **GET** /api/social-media/active | |
 |[**getAllLinks**](#getalllinks) | **GET** /api/social-media | |
-|[**updateLink**](#updatelink) | **PUT** /api/social-media/{id} | |
+|[**updateLink**](#updatelink) | **PUT** /api/social-media/{id}/staff/{staffId} | |
 
 # **createLink**
 > SocialMediaResponse createLink(socialMediaRequest)
@@ -26,9 +26,11 @@ import {
 const configuration = new Configuration();
 const apiInstance = new SocialMediaControllerApi(configuration);
 
+let staffId: string; // (default to undefined)
 let socialMediaRequest: SocialMediaRequest; //
 
 const { status, data } = await apiInstance.createLink(
+    staffId,
     socialMediaRequest
 );
 ```
@@ -38,6 +40,7 @@ const { status, data } = await apiInstance.createLink(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **socialMediaRequest** | **SocialMediaRequest**|  | |
+| **staffId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -77,9 +80,11 @@ const configuration = new Configuration();
 const apiInstance = new SocialMediaControllerApi(configuration);
 
 let id: number; // (default to undefined)
+let staffId: string; // (default to undefined)
 
 const { status, data } = await apiInstance.deleteLink(
-    id
+    id,
+    staffId
 );
 ```
 
@@ -88,6 +93,7 @@ const { status, data } = await apiInstance.deleteLink(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **id** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -214,10 +220,12 @@ const configuration = new Configuration();
 const apiInstance = new SocialMediaControllerApi(configuration);
 
 let id: number; // (default to undefined)
+let staffId: string; // (default to undefined)
 let socialMediaRequest: SocialMediaRequest; //
 
 const { status, data } = await apiInstance.updateLink(
     id,
+    staffId,
     socialMediaRequest
 );
 ```
@@ -228,6 +236,7 @@ const { status, data } = await apiInstance.updateLink(
 |------------- | ------------- | ------------- | -------------|
 | **socialMediaRequest** | **SocialMediaRequest**|  | |
 | **id** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type

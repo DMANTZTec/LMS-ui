@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**studentId** | **number** |  | [default to undefined]
+**studentId** | **string** |  | [default to undefined]
 **placedCompany** | **string** |  | [default to undefined]
 **placedDesignation** | **string** |  | [default to undefined]
 **reviewMsg** | **string** |  | [default to undefined]

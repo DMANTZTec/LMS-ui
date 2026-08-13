@@ -83,7 +83,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
           mobileNumber: data.mobileNum,
           email: data.emailId,
           currentPosition: data.currentPosition,
-          location: data.location
+          location: data.location || "Not Provided"
         });
   console.log("response is: ",response);
   //setIsSubmitted(true);

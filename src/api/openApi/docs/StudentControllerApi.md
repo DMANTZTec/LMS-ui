@@ -5,6 +5,7 @@ All URIs are relative to *http://localhost:9090*
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
 |[**changePassword**](#changepassword) | **POST** /api/student/change-password | |
+|[**deleteProfileImage**](#deleteprofileimage) | **DELETE** /api/student/profile-image/{studentId} | |
 |[**forgotPassword**](#forgotpassword) | **POST** /api/student/forgot-password | |
 |[**getAllStudents**](#getallstudents) | **GET** /api/student/view-students | |
 |[**getStudentById**](#getstudentbyid) | **GET** /api/student/{studentId} | |
@@ -58,6 +59,56 @@ const { status, data } = await apiInstance.changePassword(
 ### HTTP request headers
 
  - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **deleteProfileImage**
+> object deleteProfileImage()
+
+
+### Example
+
+```typescript
+import {
+    StudentControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StudentControllerApi(configuration);
+
+let studentId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.deleteProfileImage(
+    studentId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **studentId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**object**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
  - **Accept**: */*
 
 

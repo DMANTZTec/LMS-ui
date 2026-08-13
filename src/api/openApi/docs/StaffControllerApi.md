@@ -5,6 +5,7 @@ All URIs are relative to *http://localhost:9090*
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
 |[**createStaff**](#createstaff) | **POST** /api/staff/register | |
+|[**deleteProfileImage1**](#deleteprofileimage1) | **DELETE** /api/staff/profile-image/{staffId} | |
 |[**forgotPassword1**](#forgotpassword1) | **POST** /api/staff/forgot-password | |
 |[**getActiveStaff**](#getactivestaff) | **GET** /api/staff/active | |
 |[**getAllStaff**](#getallstaff) | **GET** /api/staff/view-staff | |
@@ -84,6 +85,56 @@ const { status, data } = await apiInstance.createStaff(
 ### HTTP request headers
 
  - **Content-Type**: multipart/form-data
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **deleteProfileImage1**
+> object deleteProfileImage1()
+
+
+### Example
+
+```typescript
+import {
+    StaffControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StaffControllerApi(configuration);
+
+let staffId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.deleteProfileImage1(
+    staffId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **staffId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**object**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
  - **Accept**: */*
 
 
