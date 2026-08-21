@@ -43,7 +43,7 @@ export default function StaffOtp() {
       setResending(true);
 
       const payload = {
-        emailId: email,
+        emailIdOrMobileNo: email,
       };
 
       await staffApi.resendLoginOtp(payload); // Ensure this matches your staff API endpoint
@@ -71,8 +71,9 @@ export default function StaffOtp() {
 
     try {
       const payload = {
-        emailId: email,
+        emailIdOrMobileNo: email,
         otp: value,
+        channel: "EMAIL"
       };
 
       const res = await staffApi.verifyStaffOtp(payload);

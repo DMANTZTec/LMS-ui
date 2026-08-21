@@ -49,7 +49,7 @@ const StuForgotPwd = () => {
         setErrorMsg(null);
 
         const payload = {
-            getEmailIdOrMobileNo: data.emailOrmobile,
+            emailIdOrMobileNo: data.emailOrmobile,
             otpChannel: "EMAIL"
         };
 

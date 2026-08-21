@@ -18,6 +18,7 @@ const from = location.state?.from?.pathname || "/mainPage"; // fallbaack
       const payload = {
         username: data.identifier, 
         password: data.password,
+        otpChannel: "EMAIL"
       };
       
       const res = await staffApi.staffLogin(payload);

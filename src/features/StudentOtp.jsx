@@ -49,7 +49,7 @@ const [studentDetail, setStudentDetail] = useAtom(studentDataAtom);
       setResending(true);
 
       const payload = {
-        emailId: email,
+        emailId: emailIdOrMobileNo,
         mobileNum: "string",
         purpose: "LOGIN",
         otpChannel: "EMAIL"
