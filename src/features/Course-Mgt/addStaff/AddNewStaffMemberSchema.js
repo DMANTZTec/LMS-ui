@@ -29,7 +29,8 @@ export const staffFormSchema = z.object({
       .string()
       .trim()
       .min(1, { message: 'MobileNumber is required'})
-      .regex(/^(?:\+91 ?[6-9]\d{9}|[6-9]\d{9})$/,{ message: 'Enter a valid mobile number'}),
+      // .regex(/^(?:\+91 ?[6-9]\d{9}|[6-9]\d{9})$/,{ message: 'Enter a valid mobile number'}),
+      .regex(/^(?:\+91 ?[6-9]\d{4} ?\d{5}|[6-9]\d{4} ?\d{5})$/,"Enter a valid mobile number"),
 
   dateOfBirth:z
     .string()

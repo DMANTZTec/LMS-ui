@@ -82,7 +82,6 @@ docs/StaffCourseControllerApi.md
 docs/StaffCourseResponse.md
 docs/StaffLoginRequest.md
 docs/StaffLoginResponse.md
-docs/StaffOtpVerifyRequest.md
 docs/StaffRegistrationRequest.md
 docs/StaffResponse.md
 docs/StaffRoleControllerApi.md

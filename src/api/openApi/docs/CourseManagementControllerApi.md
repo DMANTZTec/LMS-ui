@@ -19,6 +19,7 @@ All URIs are relative to *http://localhost:9090*
 |[**deleteProgram**](#deleteprogram) | **DELETE** /api/delete/program/{id} | |
 |[**deleteProgramCourse**](#deleteprogramcourse) | **DELETE** /api/delete/course/program | |
 |[**deleteSubject**](#deletesubject) | **DELETE** /api/subject/delete/{subjectId} | |
+|[**deleteSubjectImage**](#deletesubjectimage) | **DELETE** /api/subject/{subjectId}/image | |
 |[**deleteTopic**](#deletetopic) | **DELETE** /api/topics/{id} | |
 |[**deleteUrl**](#deleteurl) | **DELETE** /api/references/url/{referenceId} | |
 |[**deleteVideo**](#deletevideo) | **DELETE** /api/references/video/{referenceId} | |
@@ -41,7 +42,9 @@ All URIs are relative to *http://localhost:9090*
 |[**updateCourseIntroVideo**](#updatecourseintrovideo) | **PUT** /api/course/update/{courseId}/intro-video | |
 |[**updateProgram**](#updateprogram) | **PUT** /api/update/program/{id} | |
 |[**updateSubject**](#updatesubject) | **PUT** /api/subject/update/{subjectId} | |
+|[**updateSubjectImage**](#updatesubjectimage) | **PUT** /api/subject/{subjectId}/image | |
 |[**updateTopic**](#updatetopic) | **PUT** /api/topics/{id} | |
+|[**uploadSubjectImage**](#uploadsubjectimage) | **POST** /api/subject/{subjectId}/image | |
 |[**viewAllCourses**](#viewallcourses) | **GET** /api/course/view-courses | |
 |[**viewAllSubjects**](#viewallsubjects) | **GET** /api/subject/view-subjects | |
 |[**viewCoursesBySubject**](#viewcoursesbysubject) | **GET** /api/subjects/{subjectId}/view-courses | |
@@ -838,6 +841,59 @@ let subjectId: number; // (default to undefined)
 let staffId: string; // (default to undefined)
 
 const { status, data } = await apiInstance.deleteSubject(
+    subjectId,
+    staffId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **subjectId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**string**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **deleteSubjectImage**
+> string deleteSubjectImage()
+
+
+### Example
+
+```typescript
+import {
+    CourseManagementControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CourseManagementControllerApi(configuration);
+
+let subjectId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.deleteSubjectImage(
     subjectId,
     staffId
 );
@@ -2004,6 +2060,62 @@ const { status, data } = await apiInstance.updateSubject(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **updateSubjectImage**
+> SubjectResponse updateSubjectImage()
+
+
+### Example
+
+```typescript
+import {
+    CourseManagementControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CourseManagementControllerApi(configuration);
+
+let subjectId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
+let subjectImage: File; // (default to undefined)
+
+const { status, data } = await apiInstance.updateSubjectImage(
+    subjectId,
+    staffId,
+    subjectImage
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **subjectId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
+| **subjectImage** | [**File**] |  | defaults to undefined|
+
+
+### Return type
+
+**SubjectResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **updateTopic**
 > TopicResponseDto updateTopic(topicRequestDto)
 
@@ -2048,6 +2160,62 @@ const { status, data } = await apiInstance.updateTopic(
 ### HTTP request headers
 
  - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **uploadSubjectImage**
+> SubjectResponse uploadSubjectImage()
+
+
+### Example
+
+```typescript
+import {
+    CourseManagementControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CourseManagementControllerApi(configuration);
+
+let subjectId: number; // (default to undefined)
+let staffId: string; // (default to undefined)
+let subjectImage: File; // (default to undefined)
+
+const { status, data } = await apiInstance.uploadSubjectImage(
+    subjectId,
+    staffId,
+    subjectImage
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **subjectId** | [**number**] |  | defaults to undefined|
+| **staffId** | [**string**] |  | defaults to undefined|
+| **subjectImage** | [**File**] |  | defaults to undefined|
+
+
+### Return type
+
+**SubjectResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
  - **Accept**: */*
 
 

@@ -233,12 +233,30 @@ getRoles();
             const formattedDateOfJoining = data.dateOfJoining instanceof Date
                 ? data.dateOfJoining.toISOString().split('T')[0]
                 : data.dateOfJoining;
+console.log("data is: ",data);
+                const payload = {
+                'firstNm':data.firstName,
+                'lastNm': data.lastName,
+                'emailId':data.email,
+                'mobileNum':data.mobileNumber,
+                'otpChannel': "EMAIL",
+                'roleIds': [data.roles],
 
-            const result = await staffApi.createStaff(
+                'dob':formattedDOB,
+                'gender':[data.gender],
+                'dateOfJoining':formattedDateOfJoining,
+                'profileImg': data.photo,
+                
+                
+                }
+  //              console.log("payload.lastNm is",payload.lastNm);
+//const result = await staffApi.createStaff(payload);
+             const result = await staffApi.createStaff(
                 data.firstName,
                 data.lastName,
                 data.email,
                 data.mobileNumber,
+                "EMAIL",
                 [data.roles],
                 formattedDOB,
                 [data.gender],

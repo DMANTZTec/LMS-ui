@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**getEmailIdOrMobileNo** | **string** |  | [default to undefined]
+**emailIdOrMobileNo** | **string** |  | [optional] [default to undefined]
 **otpChannel** | **string** |  | [optional] [default to undefined]
 
 ## Example
@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 import { ForgotPasswordRequest } from './api';
 
 const instance: ForgotPasswordRequest = {
-    getEmailIdOrMobileNo,
+    emailIdOrMobileNo,
     otpChannel,
 };
 ```

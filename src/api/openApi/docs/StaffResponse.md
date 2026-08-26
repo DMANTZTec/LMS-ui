@@ -9,16 +9,25 @@ Name | Type | Description | Notes
 **staffId** | **string** |  | [optional] [default to undefined]
 **firstNm** | **string** |  | [optional] [default to undefined]
 **lastNm** | **string** |  | [optional] [default to undefined]
+**addr1** | **string** |  | [optional] [default to undefined]
+**addr2** | **string** |  | [optional] [default to undefined]
+**city** | **string** |  | [optional] [default to undefined]
+**state** | **string** |  | [optional] [default to undefined]
+**country** | **string** |  | [optional] [default to undefined]
+**pin** | **string** |  | [optional] [default to undefined]
 **email** | **string** |  | [optional] [default to undefined]
 **mobileNum** | **string** |  | [optional] [default to undefined]
 **dateOfJoining** | **string** |  | [optional] [default to undefined]
 **designation** | **string** |  | [optional] [default to undefined]
+**emergencyContactNm** | **string** |  | [optional] [default to undefined]
+**emergencyContactNum** | **string** |  | [optional] [default to undefined]
 **profileImg** | **string** |  | [optional] [default to undefined]
 **gender** | **string** |  | [optional] [default to undefined]
 **status** | **string** |  | [optional] [default to undefined]
 **enabled** | **string** |  | [optional] [default to undefined]
 **dob** | **string** |  | [optional] [default to undefined]
 **createdDt** | **string** |  | [optional] [default to undefined]
+**updatedDt** | **string** |  | [optional] [default to undefined]
 **roles** | **Set&lt;string&gt;** |  | [optional] [default to undefined]
 
 ## Example
@@ -31,16 +40,25 @@ const instance: StaffResponse = {
     staffId,
     firstNm,
     lastNm,
+    addr1,
+    addr2,
+    city,
+    state,
+    country,
+    pin,
     email,
     mobileNum,
     dateOfJoining,
     designation,
+    emergencyContactNm,
+    emergencyContactNum,
     profileImg,
     gender,
     status,
     enabled,
     dob,
     createdDt,
+    updatedDt,
     roles,
 };
 ```

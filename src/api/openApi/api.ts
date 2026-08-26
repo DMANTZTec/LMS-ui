@@ -340,7 +340,7 @@ export interface EnrollStudentResponse {
     'enrolledDate'?: string;
 }
 export interface ForgotPasswordRequest {
-    'getEmailIdOrMobileNo': string;
+    'emailIdOrMobileNo'?: string;
     'otpChannel'?: ForgotPasswordRequestOtpChannelEnum;
 }
 
@@ -414,8 +414,8 @@ export interface PageStaffResponse {
 export interface PageableObject {
     'offset'?: number;
     'sort'?: SortObject;
-    'pageNumber'?: number;
     'pageSize'?: number;
+    'pageNumber'?: number;
     'paged'?: boolean;
     'unpaged'?: boolean;
 }
@@ -575,7 +575,7 @@ export interface ResendOtpResponse {
     'message'?: string;
 }
 export interface ResendStaffOtpRequest {
-    'emailId': string;
+    'emailIdOrMobileNo': string;
 }
 export interface ResetPasswordRequest {
     'emailIdOrMobileNo': string;
@@ -645,17 +645,22 @@ export interface StaffCourseResponse {
 export interface StaffLoginRequest {
     'username': string;
     'password': string;
+    'otpChannel'?: StaffLoginRequestOtpChannelEnum;
 }
+
+export const StaffLoginRequestOtpChannelEnum = {
+    Email: 'EMAIL',
+    Mobile: 'MOBILE',
+} as const;
+
+export type StaffLoginRequestOtpChannelEnum = typeof StaffLoginRequestOtpChannelEnum[keyof typeof StaffLoginRequestOtpChannelEnum];
+
 export interface StaffLoginResponse {
     'role'?: string;
     'staffId'?: string;
     'email'?: string;
     'token'?: string;
     'message'?: string;
-}
-export interface StaffOtpVerifyRequest {
-    'emailId'?: string;
-    'otp'?: string;
 }
 export interface StaffRegistrationRequest {
     'firstNm': string;
@@ -681,16 +686,25 @@ export interface StaffResponse {
     'staffId'?: string;
     'firstNm'?: string;
     'lastNm'?: string;
+    'addr1'?: string;
+    'addr2'?: string;
+    'city'?: string;
+    'state'?: string;
+    'country'?: string;
+    'pin'?: string;
     'email'?: string;
     'mobileNum'?: string;
     'dateOfJoining'?: string;
     'designation'?: string;
+    'emergencyContactNm'?: string;
+    'emergencyContactNum'?: string;
     'profileImg'?: string;
     'gender'?: StaffResponseGenderEnum;
     'status'?: string;
     'enabled'?: string;
     'dob'?: string;
     'createdDt'?: string;
+    'updatedDt'?: string;
     'roles'?: Set<string>;
 }
 
@@ -719,12 +733,23 @@ export interface StaffRoleResponse {
     'updatedDt'?: string;
 }
 export interface StaffUpdateRequest {
-    'firstNm': string;
-    'lastNm': string;
-    'dob'?: string;
+    'firstName': string;
+    'lastName': string;
+    'emailId'?: string;
+    'mobileNumber'?: string;
     'gender'?: StaffUpdateRequestGenderEnum;
+    'dateOfBirth'?: string;
+    'designation'?: string;
     'dateOfJoining'?: string;
-    'roleIds'?: Set<number>;
+    'roles'?: Set<string>;
+    'addressOne'?: string;
+    'addressTwo'?: string;
+    'city'?: string;
+    'state'?: string;
+    'country'?: string;
+    'pincode'?: string;
+    'emergencyContactName'?: string;
+    'emergencyContactNumber'?: string;
 }
 
 export const StaffUpdateRequestGenderEnum = {
@@ -998,6 +1023,7 @@ export interface SubjectResponse {
     'subjectShortCd'?: string;
     'subjectCategory'?: string;
     'description'?: string;
+    'subjectImage'?: string;
     'createdBy'?: number;
     'createdDt'?: string;
     'updatedBy'?: number;
@@ -4185,6 +4211,50 @@ export const CourseManagementControllerApiAxiosParamCreator = function (configur
         },
         /**
          * 
+         * @param {number} subjectId 
+         * @param {string} staffId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteSubjectImage: async (subjectId: number, staffId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'subjectId' is not null or undefined
+            assertParamExists('deleteSubjectImage', 'subjectId', subjectId)
+            // verify required parameter 'staffId' is not null or undefined
+            assertParamExists('deleteSubjectImage', 'staffId', staffId)
+            const localVarPath = `/api/subject/{subjectId}/image`
+                .replace(`{${"subjectId"}}`, encodeURIComponent(String(subjectId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (staffId !== undefined) {
+                localVarQueryParameter['staffId'] = staffId;
+            }
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -5090,6 +5160,60 @@ export const CourseManagementControllerApiAxiosParamCreator = function (configur
         },
         /**
          * 
+         * @param {number} subjectId 
+         * @param {string} staffId 
+         * @param {File} subjectImage 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateSubjectImage: async (subjectId: number, staffId: string, subjectImage: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'subjectId' is not null or undefined
+            assertParamExists('updateSubjectImage', 'subjectId', subjectId)
+            // verify required parameter 'staffId' is not null or undefined
+            assertParamExists('updateSubjectImage', 'staffId', staffId)
+            // verify required parameter 'subjectImage' is not null or undefined
+            assertParamExists('updateSubjectImage', 'subjectImage', subjectImage)
+            const localVarPath = `/api/subject/{subjectId}/image`
+                .replace(`{${"subjectId"}}`, encodeURIComponent(String(subjectId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (staffId !== undefined) {
+                localVarQueryParameter['staffId'] = staffId;
+            }
+
+
+            if (subjectImage !== undefined) { 
+                localVarFormParams.append('subjectImage', subjectImage as any);
+            }
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {TopicRequestDto} topicRequestDto 
          * @param {*} [options] Override http request option.
@@ -5124,6 +5248,60 @@ export const CourseManagementControllerApiAxiosParamCreator = function (configur
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(topicRequestDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} subjectId 
+         * @param {string} staffId 
+         * @param {File} subjectImage 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        uploadSubjectImage: async (subjectId: number, staffId: string, subjectImage: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'subjectId' is not null or undefined
+            assertParamExists('uploadSubjectImage', 'subjectId', subjectId)
+            // verify required parameter 'staffId' is not null or undefined
+            assertParamExists('uploadSubjectImage', 'staffId', staffId)
+            // verify required parameter 'subjectImage' is not null or undefined
+            assertParamExists('uploadSubjectImage', 'subjectImage', subjectImage)
+            const localVarPath = `/api/subject/{subjectId}/image`
+                .replace(`{${"subjectId"}}`, encodeURIComponent(String(subjectId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (staffId !== undefined) {
+                localVarQueryParameter['staffId'] = staffId;
+            }
+
+
+            if (subjectImage !== undefined) { 
+                localVarFormParams.append('subjectImage', subjectImage as any);
+            }
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -5447,6 +5625,19 @@ export const CourseManagementControllerApiFp = function(configuration?: Configur
         },
         /**
          * 
+         * @param {number} subjectId 
+         * @param {string} staffId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteSubjectImage(subjectId: number, staffId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteSubjectImage(subjectId, staffId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.deleteSubjectImage']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -5723,6 +5914,20 @@ export const CourseManagementControllerApiFp = function(configuration?: Configur
         },
         /**
          * 
+         * @param {number} subjectId 
+         * @param {string} staffId 
+         * @param {File} subjectImage 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateSubjectImage(subjectId: number, staffId: string, subjectImage: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SubjectResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateSubjectImage(subjectId, staffId, subjectImage, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.updateSubjectImage']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {TopicRequestDto} topicRequestDto 
          * @param {*} [options] Override http request option.
@@ -5732,6 +5937,20 @@ export const CourseManagementControllerApiFp = function(configuration?: Configur
             const localVarAxiosArgs = await localVarAxiosParamCreator.updateTopic(id, topicRequestDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.updateTopic']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} subjectId 
+         * @param {string} staffId 
+         * @param {File} subjectImage 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async uploadSubjectImage(subjectId: number, staffId: string, subjectImage: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SubjectResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.uploadSubjectImage(subjectId, staffId, subjectImage, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.uploadSubjectImage']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -5934,6 +6153,16 @@ export const CourseManagementControllerApiFactory = function (configuration?: Co
          */
         deleteSubject(subjectId: number, staffId: string, options?: RawAxiosRequestConfig): AxiosPromise<string> {
             return localVarFp.deleteSubject(subjectId, staffId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} subjectId 
+         * @param {string} staffId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteSubjectImage(subjectId: number, staffId: string, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.deleteSubjectImage(subjectId, staffId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -6147,6 +6376,17 @@ export const CourseManagementControllerApiFactory = function (configuration?: Co
         },
         /**
          * 
+         * @param {number} subjectId 
+         * @param {string} staffId 
+         * @param {File} subjectImage 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateSubjectImage(subjectId: number, staffId: string, subjectImage: File, options?: RawAxiosRequestConfig): AxiosPromise<SubjectResponse> {
+            return localVarFp.updateSubjectImage(subjectId, staffId, subjectImage, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {TopicRequestDto} topicRequestDto 
          * @param {*} [options] Override http request option.
@@ -6154,6 +6394,17 @@ export const CourseManagementControllerApiFactory = function (configuration?: Co
          */
         updateTopic(id: number, topicRequestDto: TopicRequestDto, options?: RawAxiosRequestConfig): AxiosPromise<TopicResponseDto> {
             return localVarFp.updateTopic(id, topicRequestDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} subjectId 
+         * @param {string} staffId 
+         * @param {File} subjectImage 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        uploadSubjectImage(subjectId: number, staffId: string, subjectImage: File, options?: RawAxiosRequestConfig): AxiosPromise<SubjectResponse> {
+            return localVarFp.uploadSubjectImage(subjectId, staffId, subjectImage, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -6358,6 +6609,17 @@ export class CourseManagementControllerApi extends BaseAPI {
      */
     public deleteSubject(subjectId: number, staffId: string, options?: RawAxiosRequestConfig) {
         return CourseManagementControllerApiFp(this.configuration).deleteSubject(subjectId, staffId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} subjectId 
+     * @param {string} staffId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public deleteSubjectImage(subjectId: number, staffId: string, options?: RawAxiosRequestConfig) {
+        return CourseManagementControllerApiFp(this.configuration).deleteSubjectImage(subjectId, staffId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -6594,6 +6856,18 @@ export class CourseManagementControllerApi extends BaseAPI {
 
     /**
      * 
+     * @param {number} subjectId 
+     * @param {string} staffId 
+     * @param {File} subjectImage 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public updateSubjectImage(subjectId: number, staffId: string, subjectImage: File, options?: RawAxiosRequestConfig) {
+        return CourseManagementControllerApiFp(this.configuration).updateSubjectImage(subjectId, staffId, subjectImage, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {number} id 
      * @param {TopicRequestDto} topicRequestDto 
      * @param {*} [options] Override http request option.
@@ -6601,6 +6875,18 @@ export class CourseManagementControllerApi extends BaseAPI {
      */
     public updateTopic(id: number, topicRequestDto: TopicRequestDto, options?: RawAxiosRequestConfig) {
         return CourseManagementControllerApiFp(this.configuration).updateTopic(id, topicRequestDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} subjectId 
+     * @param {string} staffId 
+     * @param {File} subjectImage 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public uploadSubjectImage(subjectId: number, staffId: string, subjectImage: File, options?: RawAxiosRequestConfig) {
+        return CourseManagementControllerApiFp(this.configuration).uploadSubjectImage(subjectId, staffId, subjectImage, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8178,6 +8464,7 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
          * @param {string} lastNm 
          * @param {string} emailId 
          * @param {string} mobileNum 
+         * @param {CreateStaffOtpChannelEnum} otpChannel 
          * @param {Set<number>} roleIds 
          * @param {string} [dob] 
          * @param {CreateStaffGenderEnum} [gender] 
@@ -8186,7 +8473,7 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createStaff: async (firstNm: string, lastNm: string, emailId: string, mobileNum: string, roleIds: Set<number>, dob?: string, gender?: CreateStaffGenderEnum, dateOfJoining?: string, profileImg?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createStaff: async (firstNm: string, lastNm: string, emailId: string, mobileNum: string, otpChannel: CreateStaffOtpChannelEnum, roleIds: Set<number>, dob?: string, gender?: CreateStaffGenderEnum, dateOfJoining?: string, profileImg?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'firstNm' is not null or undefined
             assertParamExists('createStaff', 'firstNm', firstNm)
             // verify required parameter 'lastNm' is not null or undefined
@@ -8195,6 +8482,8 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
             assertParamExists('createStaff', 'emailId', emailId)
             // verify required parameter 'mobileNum' is not null or undefined
             assertParamExists('createStaff', 'mobileNum', mobileNum)
+            // verify required parameter 'otpChannel' is not null or undefined
+            assertParamExists('createStaff', 'otpChannel', otpChannel)
             // verify required parameter 'roleIds' is not null or undefined
             assertParamExists('createStaff', 'roleIds', roleIds)
             const localVarPath = `/api/staff/register`;
@@ -8245,6 +8534,10 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
 
             if (profileImg !== undefined) { 
                 localVarFormParams.append('profileImg', profileImg as any);
+            }
+
+            if (otpChannel !== undefined) { 
+                localVarFormParams.append('otpChannel', otpChannel as any);
             }
             if (roleIds) {
                 localVarFormParams.append('roleIds', roleIds.join(COLLECTION_FORMATS.csv));
@@ -8815,13 +9108,13 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
         },
         /**
          * 
-         * @param {StaffOtpVerifyRequest} staffOtpVerifyRequest 
+         * @param {OtpVerifyRequest} otpVerifyRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        verifyStaffOtp: async (staffOtpVerifyRequest: StaffOtpVerifyRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'staffOtpVerifyRequest' is not null or undefined
-            assertParamExists('verifyStaffOtp', 'staffOtpVerifyRequest', staffOtpVerifyRequest)
+        verifyStaffOtp: async (otpVerifyRequest: OtpVerifyRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'otpVerifyRequest' is not null or undefined
+            assertParamExists('verifyStaffOtp', 'otpVerifyRequest', otpVerifyRequest)
             const localVarPath = `/api/staff/login-verification-otp`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8844,7 +9137,7 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(staffOtpVerifyRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(otpVerifyRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -8866,6 +9159,7 @@ export const StaffControllerApiFp = function(configuration?: Configuration) {
          * @param {string} lastNm 
          * @param {string} emailId 
          * @param {string} mobileNum 
+         * @param {CreateStaffOtpChannelEnum} otpChannel 
          * @param {Set<number>} roleIds 
          * @param {string} [dob] 
          * @param {CreateStaffGenderEnum} [gender] 
@@ -8874,8 +9168,8 @@ export const StaffControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createStaff(firstNm: string, lastNm: string, emailId: string, mobileNum: string, roleIds: Set<number>, dob?: string, gender?: CreateStaffGenderEnum, dateOfJoining?: string, profileImg?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createStaff(firstNm, lastNm, emailId, mobileNum, roleIds, dob, gender, dateOfJoining, profileImg, options);
+        async createStaff(firstNm: string, lastNm: string, emailId: string, mobileNum: string, otpChannel: CreateStaffOtpChannelEnum, roleIds: Set<number>, dob?: string, gender?: CreateStaffGenderEnum, dateOfJoining?: string, profileImg?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createStaff(firstNm, lastNm, emailId, mobileNum, otpChannel, roleIds, dob, gender, dateOfJoining, profileImg, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.createStaff']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -9053,12 +9347,12 @@ export const StaffControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {StaffOtpVerifyRequest} staffOtpVerifyRequest 
+         * @param {OtpVerifyRequest} otpVerifyRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async verifyStaffOtp(staffOtpVerifyRequest: StaffOtpVerifyRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffLoginResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.verifyStaffOtp(staffOtpVerifyRequest, options);
+        async verifyStaffOtp(otpVerifyRequest: OtpVerifyRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffLoginResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.verifyStaffOtp(otpVerifyRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.verifyStaffOtp']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -9078,6 +9372,7 @@ export const StaffControllerApiFactory = function (configuration?: Configuration
          * @param {string} lastNm 
          * @param {string} emailId 
          * @param {string} mobileNum 
+         * @param {CreateStaffOtpChannelEnum} otpChannel 
          * @param {Set<number>} roleIds 
          * @param {string} [dob] 
          * @param {CreateStaffGenderEnum} [gender] 
@@ -9086,8 +9381,8 @@ export const StaffControllerApiFactory = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createStaff(firstNm: string, lastNm: string, emailId: string, mobileNum: string, roleIds: Set<number>, dob?: string, gender?: CreateStaffGenderEnum, dateOfJoining?: string, profileImg?: File, options?: RawAxiosRequestConfig): AxiosPromise<StaffResponse> {
-            return localVarFp.createStaff(firstNm, lastNm, emailId, mobileNum, roleIds, dob, gender, dateOfJoining, profileImg, options).then((request) => request(axios, basePath));
+        createStaff(firstNm: string, lastNm: string, emailId: string, mobileNum: string, otpChannel: CreateStaffOtpChannelEnum, roleIds: Set<number>, dob?: string, gender?: CreateStaffGenderEnum, dateOfJoining?: string, profileImg?: File, options?: RawAxiosRequestConfig): AxiosPromise<StaffResponse> {
+            return localVarFp.createStaff(firstNm, lastNm, emailId, mobileNum, otpChannel, roleIds, dob, gender, dateOfJoining, profileImg, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -9220,12 +9515,12 @@ export const StaffControllerApiFactory = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {StaffOtpVerifyRequest} staffOtpVerifyRequest 
+         * @param {OtpVerifyRequest} otpVerifyRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        verifyStaffOtp(staffOtpVerifyRequest: StaffOtpVerifyRequest, options?: RawAxiosRequestConfig): AxiosPromise<StaffLoginResponse> {
-            return localVarFp.verifyStaffOtp(staffOtpVerifyRequest, options).then((request) => request(axios, basePath));
+        verifyStaffOtp(otpVerifyRequest: OtpVerifyRequest, options?: RawAxiosRequestConfig): AxiosPromise<StaffLoginResponse> {
+            return localVarFp.verifyStaffOtp(otpVerifyRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -9240,6 +9535,7 @@ export class StaffControllerApi extends BaseAPI {
      * @param {string} lastNm 
      * @param {string} emailId 
      * @param {string} mobileNum 
+     * @param {CreateStaffOtpChannelEnum} otpChannel 
      * @param {Set<number>} roleIds 
      * @param {string} [dob] 
      * @param {CreateStaffGenderEnum} [gender] 
@@ -9248,8 +9544,8 @@ export class StaffControllerApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public createStaff(firstNm: string, lastNm: string, emailId: string, mobileNum: string, roleIds: Set<number>, dob?: string, gender?: CreateStaffGenderEnum, dateOfJoining?: string, profileImg?: File, options?: RawAxiosRequestConfig) {
-        return StaffControllerApiFp(this.configuration).createStaff(firstNm, lastNm, emailId, mobileNum, roleIds, dob, gender, dateOfJoining, profileImg, options).then((request) => request(this.axios, this.basePath));
+    public createStaff(firstNm: string, lastNm: string, emailId: string, mobileNum: string, otpChannel: CreateStaffOtpChannelEnum, roleIds: Set<number>, dob?: string, gender?: CreateStaffGenderEnum, dateOfJoining?: string, profileImg?: File, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).createStaff(firstNm, lastNm, emailId, mobileNum, otpChannel, roleIds, dob, gender, dateOfJoining, profileImg, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -9397,15 +9693,20 @@ export class StaffControllerApi extends BaseAPI {
 
     /**
      * 
-     * @param {StaffOtpVerifyRequest} staffOtpVerifyRequest 
+     * @param {OtpVerifyRequest} otpVerifyRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public verifyStaffOtp(staffOtpVerifyRequest: StaffOtpVerifyRequest, options?: RawAxiosRequestConfig) {
-        return StaffControllerApiFp(this.configuration).verifyStaffOtp(staffOtpVerifyRequest, options).then((request) => request(this.axios, this.basePath));
+    public verifyStaffOtp(otpVerifyRequest: OtpVerifyRequest, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).verifyStaffOtp(otpVerifyRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
+export const CreateStaffOtpChannelEnum = {
+    Email: 'EMAIL',
+    Mobile: 'MOBILE',
+} as const;
+export type CreateStaffOtpChannelEnum = typeof CreateStaffOtpChannelEnum[keyof typeof CreateStaffOtpChannelEnum];
 export const CreateStaffGenderEnum = {
     Male: 'MALE',
     Female: 'FEMALE',

@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**emailId** | **string** |  | [default to undefined]
+**emailIdOrMobileNo** | **string** |  | [default to undefined]
 
 ## Example
 
@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 import { ResendStaffOtpRequest } from './api';
 
 const instance: ResendStaffOtpRequest = {
-    emailId,
+    emailIdOrMobileNo,
 };
 ```
 

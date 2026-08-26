@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { LogOut, User } from "lucide-react";
 
 // Shadcn UI Components
@@ -14,6 +15,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 export default function StaffNavbarAvatar() {
+
+  const navigate = useNavigate();
+
   // Read from the correct "otpStaff" session key
   const stfData = JSON.parse(
     sessionStorage.getItem("otpStaff") || "{}"
@@ -62,7 +66,7 @@ export default function StaffNavbarAvatar() {
           <DropdownMenuSeparator className="bg-gray-100 my-1" />
 <DropdownMenuGroup>
             <DropdownMenuItem 
-              // onClick={() => navigate("/studentProfile")} 
+              onClick={() => navigate("/staffProfile")} 
               className="flex items-center gap-2 px-2.5 py-2 text-sm rounded-lg text-gray-700 cursor-pointer hover:bg-slate-50 focus:bg-slate-50 transition-colors"
             >
               <User className="h-4 w-4 text-gray-500" />

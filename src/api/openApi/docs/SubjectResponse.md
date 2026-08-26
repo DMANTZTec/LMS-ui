@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **subjectShortCd** | **string** |  | [optional] [default to undefined]
 **subjectCategory** | **string** |  | [optional] [default to undefined]
 **description** | **string** |  | [optional] [default to undefined]
+**subjectImage** | **string** |  | [optional] [default to undefined]
 **createdBy** | **number** |  | [optional] [default to undefined]
 **createdDt** | **string** |  | [optional] [default to undefined]
 **updatedBy** | **number** |  | [optional] [default to undefined]
@@ -26,6 +27,7 @@ const instance: SubjectResponse = {
     subjectShortCd,
     subjectCategory,
     description,
+    subjectImage,
     createdBy,
     createdDt,
     updatedBy,

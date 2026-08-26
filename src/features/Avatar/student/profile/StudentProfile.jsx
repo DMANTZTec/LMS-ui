@@ -136,21 +136,27 @@ const StudentProfile = () => {
         studentId,
         payload_body
       );
-
+      console.log("typeof initialValues.profilePicture is: ",typeof initialValues.profilePicture);
+      console.log("initialValues.profilePicture and data.profilePicure and imageRemoved are: ",initialValues.profilePicture,data.profilePicture,imageRemoved);
+      console.log("data.profilePictue instanceof File is: ", data.profilePicture instanceof File);
 
       if (data.profilePicture instanceof File) {
         console.log("entered into if block and data.profilePicture instanceof File is: ", data.profilePicture instanceof File);
         const res2 = await studentApi.updateProfileImage(studentId, data.profilePicture);
       }
+      else if(initialValues.profilePicture === "" && data.profilePicture === null && imageRemoved === true) {
+console.log("entered into else if block and (typeof initialValue.profilePicture === 'string' && data.profilePicture == null && imageRemoved === true) is: ",(typeof initialValues.profilePicture === "string" && data.profilePicture === null && imageRemoved === true));
+      }
       else if (data.profilePicture === null && imageRemoved === true) {
-        console.log("entered into else block.");
+        console.log("entered into else if block.");
         console.log("data.profilePicture and typeof data.profilePicture and data.profilePicture === null are: ", data.profilePicture, typeof data.profilePicture, data.profilePicture === null);
         await studentApi.deleteProfileImage(studentId);
       }
       else if ((data.profilePicture === null && imageRemoved === false) || typeof data.profilePicture === "string") {
         console.log("entered into else if block and (data.profilePicture === null && imageRemoved === false) || typeof data.profileImageg === 'string' is: ", (data.profilePicture === null && imageRemoved === false) || typeof data.profileImageg === "string");
 
-      } else {
+      }
+       else {
         console.log("entered into else block: ");
       }
 
@@ -165,6 +171,7 @@ const StudentProfile = () => {
         duration: 5000,
         className: '!bg-green-800 !text-white'
       });
+      console.log("newUpdatedData is: ",newUpdatedData);
       reset(newUpdatedData);
 
 
@@ -184,6 +191,7 @@ const StudentProfile = () => {
       }
     } finally {
       setIsSubmitting(false);
+    setImageRemoved(false);
     }
   };
 
@@ -218,7 +226,7 @@ const StudentProfile = () => {
 
   return (
     <div className="min-h-screen bg-[#f4f7fa] py-12 px-4 sm:px-6 lg:px-8">
-
+          
       <div className="max-w-4xl mx-auto space-y-6">
 
         <div className="relative flex items-center justify-center">
