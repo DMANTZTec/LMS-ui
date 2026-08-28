@@ -16,7 +16,7 @@ const ResetStaffPwdModal = ({open, onOpenChange, staffData, onSuccess}) => {
     setGlobalError(null);
     
 const payload = {
-  "getEmailIdOrMobileNo": staffData.email,
+  "emailIdOrMobileNo": staffData.email,
   "otpChannel": "EMAIL"
 }
 

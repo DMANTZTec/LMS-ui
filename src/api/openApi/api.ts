@@ -340,8 +340,8 @@ export interface EnrollStudentResponse {
     'enrolledDate'?: string;
 }
 export interface ForgotPasswordRequest {
-    'emailIdOrMobileNo'?: string;
     'otpChannel'?: ForgotPasswordRequestOtpChannelEnum;
+    'emailIdOrMobileNo'?: string;
 }
 
 export const ForgotPasswordRequestOtpChannelEnum = {
@@ -360,6 +360,20 @@ export interface InstructorResponse {
     'firstNm'?: string;
     'lastNm'?: string;
     'designation'?: string;
+}
+export interface LearnerPathRequest {
+    'icon': string;
+    'title': string;
+    'description': string;
+    'items': Array<string>;
+    'displayOrder': number;
+}
+export interface LearnerPathResponse {
+    'id'?: number;
+    'icon'?: string;
+    'title'?: string;
+    'description'?: string;
+    'items'?: Array<string>;
 }
 export interface LocalTime {
     'hour'?: number;
@@ -399,14 +413,14 @@ export interface OverallProgressResponse {
     'completed'?: boolean;
 }
 export interface PageStaffResponse {
-    'totalElements'?: number;
     'totalPages'?: number;
+    'totalElements'?: number;
+    'first'?: boolean;
+    'last'?: boolean;
     'size'?: number;
     'content'?: Array<StaffResponse>;
     'number'?: number;
     'sort'?: SortObject;
-    'first'?: boolean;
-    'last'?: boolean;
     'numberOfElements'?: number;
     'pageable'?: PageableObject;
     'empty'?: boolean;
@@ -414,8 +428,8 @@ export interface PageStaffResponse {
 export interface PageableObject {
     'offset'?: number;
     'sort'?: SortObject;
-    'pageSize'?: number;
     'pageNumber'?: number;
+    'pageSize'?: number;
     'paged'?: boolean;
     'unpaged'?: boolean;
 }
@@ -6924,6 +6938,442 @@ export const CreateCourseLevelEnum = {
     Advanced: 'ADVANCED',
 } as const;
 export type CreateCourseLevelEnum = typeof CreateCourseLevelEnum[keyof typeof CreateCourseLevelEnum];
+
+
+/**
+ * LearnerPathControllerApi - axios parameter creator
+ */
+export const LearnerPathControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {LearnerPathRequest} learnerPathRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        create1: async (learnerPathRequest: LearnerPathRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'learnerPathRequest' is not null or undefined
+            assertParamExists('create1', 'learnerPathRequest', learnerPathRequest)
+            const localVarPath = `/api/learner-paths`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(learnerPathRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete1: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('delete1', 'id', id)
+            const localVarPath = `/api/learner-paths/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getActivePaths: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/learner-paths/active`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllPaths: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/learner-paths/all`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getById1: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getById1', 'id', id)
+            const localVarPath = `/api/learner-paths/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {LearnerPathRequest} learnerPathRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update1: async (id: number, learnerPathRequest: LearnerPathRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('update1', 'id', id)
+            // verify required parameter 'learnerPathRequest' is not null or undefined
+            assertParamExists('update1', 'learnerPathRequest', learnerPathRequest)
+            const localVarPath = `/api/learner-paths/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(learnerPathRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * LearnerPathControllerApi - functional programming interface
+ */
+export const LearnerPathControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = LearnerPathControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {LearnerPathRequest} learnerPathRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async create1(learnerPathRequest: LearnerPathRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LearnerPathResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.create1(learnerPathRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['LearnerPathControllerApi.create1']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async delete1(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.delete1(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['LearnerPathControllerApi.delete1']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getActivePaths(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<LearnerPathResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getActivePaths(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['LearnerPathControllerApi.getActivePaths']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllPaths(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<LearnerPathResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllPaths(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['LearnerPathControllerApi.getAllPaths']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getById1(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LearnerPathResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getById1(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['LearnerPathControllerApi.getById1']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {LearnerPathRequest} learnerPathRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async update1(id: number, learnerPathRequest: LearnerPathRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LearnerPathResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.update1(id, learnerPathRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['LearnerPathControllerApi.update1']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * LearnerPathControllerApi - factory interface
+ */
+export const LearnerPathControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = LearnerPathControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {LearnerPathRequest} learnerPathRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        create1(learnerPathRequest: LearnerPathRequest, options?: RawAxiosRequestConfig): AxiosPromise<LearnerPathResponse> {
+            return localVarFp.create1(learnerPathRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete1(id: number, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.delete1(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getActivePaths(options?: RawAxiosRequestConfig): AxiosPromise<Array<LearnerPathResponse>> {
+            return localVarFp.getActivePaths(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllPaths(options?: RawAxiosRequestConfig): AxiosPromise<Array<LearnerPathResponse>> {
+            return localVarFp.getAllPaths(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getById1(id: number, options?: RawAxiosRequestConfig): AxiosPromise<LearnerPathResponse> {
+            return localVarFp.getById1(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {LearnerPathRequest} learnerPathRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update1(id: number, learnerPathRequest: LearnerPathRequest, options?: RawAxiosRequestConfig): AxiosPromise<LearnerPathResponse> {
+            return localVarFp.update1(id, learnerPathRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * LearnerPathControllerApi - object-oriented interface
+ */
+export class LearnerPathControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {LearnerPathRequest} learnerPathRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public create1(learnerPathRequest: LearnerPathRequest, options?: RawAxiosRequestConfig) {
+        return LearnerPathControllerApiFp(this.configuration).create1(learnerPathRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public delete1(id: number, options?: RawAxiosRequestConfig) {
+        return LearnerPathControllerApiFp(this.configuration).delete1(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getActivePaths(options?: RawAxiosRequestConfig) {
+        return LearnerPathControllerApiFp(this.configuration).getActivePaths(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getAllPaths(options?: RawAxiosRequestConfig) {
+        return LearnerPathControllerApiFp(this.configuration).getAllPaths(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getById1(id: number, options?: RawAxiosRequestConfig) {
+        return LearnerPathControllerApiFp(this.configuration).getById1(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {LearnerPathRequest} learnerPathRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public update1(id: number, learnerPathRequest: LearnerPathRequest, options?: RawAxiosRequestConfig) {
+        return LearnerPathControllerApiFp(this.configuration).update1(id, learnerPathRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
 
 
 /**

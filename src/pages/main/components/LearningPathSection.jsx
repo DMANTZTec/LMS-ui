@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { GraduationCap, Rocket, Code2, TrendingUp } from 'lucide-react';
 import StudentCategoryCard from './StudentCategoryCard';
 import ActionSidebar from './ActionSidebar';
+import { learnerPathapi } from '@/api/learner-path-controller';
 
-const categories = [
+
+const iconMap = {
+    GraduationCap,
+    Rocket,
+    Code2,
+    TrendingUp,
+};
+
+
+const staticCategories = [
     {
+        id: 1,
         Icon: GraduationCap,
         title: 'I am a Beginner',
         description: "Starting your journey in tech? We'll guide you from zero to confident coder.",
@@ -17,6 +28,7 @@ const categories = [
         ],
     },
     {
+        id: 2,
         Icon: Rocket,
         title: 'Advanced Learner',
         description: 'Already know the basics? Take your skills to the next level with advanced concepts.',
@@ -27,8 +39,10 @@ const categories = [
             'Code review sessions with experienced developers',
             'Preparation for technical interviews',
         ],
+        displayOrder: 2,
     },
     {
+        id: 3,
         Icon: Code2,
         title: 'Ready to do Projects',
         description: 'Put theory into practice with real-world projects that build your portfolio.',
@@ -39,8 +53,10 @@ const categories = [
             'Deployment and DevOps (AWS, Docker)',
             'Team collaboration experience',
         ],
+        displayOrder: 3,
     },
     {
+        id: 4,
         Icon: TrendingUp,
         title: 'I want to Upskill',
         description: 'Stay ahead in your career with the latest tools, technologies and certifications.',
@@ -51,10 +67,48 @@ const categories = [
             'Weekend/evening batches',
             'Industry connections and job placement support',
         ],
+        displayOrder: 4,
     },
 ];
 
 const LearningPathSection = () => {
+    const [categories, setCategories] = useState(staticCategories);
+
+    useEffect(() => {
+        const fetchPaths = async () => {
+            try {
+                const response = await learnerPathapi.getAllPaths();
+                const res=response.data;
+                
+                const rawData = res && typeof res.json === 'function' ? await res.json() : res;
+
+                if (Array.isArray(rawData) && rawData.length > 0) {
+                    // Map API items to format components
+                    const apiData = rawData.map((item) => ({
+                        ...item,
+                        Icon: iconMap[item.icon] || GraduationCap,
+                    }));
+
+                    if (apiData.length >= 4) {
+                        setCategories(apiData.slice(0, 4));
+                    } else {
+                        const remainingCount = 4 - apiData.length;
+                        const filledCategories = [
+                            ...apiData,
+                            ...staticCategories.slice(0, remainingCount),
+                        ];
+                        setCategories(filledCategories);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching learning paths:', error);
+              
+            }
+        };
+
+        fetchPaths();
+    }, []);
+
     return (
         <section className="px-4 py-8 md:py-12">
             <div className="max-w-[1280px] mx-auto">
@@ -68,7 +122,7 @@ const LearningPathSection = () => {
                 <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:col-span-2">
                         {categories.map((category) => (
-                            <StudentCategoryCard key={category.title} {...category} />
+                            <StudentCategoryCard key={category.id || category.title} {...category} />
                         ))}
                     </div>
                     <ActionSidebar />

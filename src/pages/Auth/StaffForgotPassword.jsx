@@ -15,7 +15,7 @@ const ForgotPassword = () => {
     setErrorMsg(null);
 
     const payload = {
-      getEmailIdOrMobileNo: email,
+      emailIdOrMobileNo: email,
       otpChannel: "EMAIL"
     };
 

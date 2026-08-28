@@ -1,6 +1,5 @@
 .gitignore
 .npmignore
-.openapi-generator-ignore
 api.ts
 base.ts
 common.ts
@@ -44,6 +43,9 @@ docs/EnrollStudentResponse.md
 docs/ForgotPasswordRequest.md
 docs/HoursSpentResponse.md
 docs/InstructorResponse.md
+docs/LearnerPathControllerApi.md
+docs/LearnerPathRequest.md
+docs/LearnerPathResponse.md
 docs/LocalTime.md
 docs/MentorPointsResponse.md
 docs/MyCourseResponse.md
