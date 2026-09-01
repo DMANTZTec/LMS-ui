@@ -20,6 +20,7 @@ const StaffDashBoard = lazy(() => import('@/pages/staffPages/StaffDashBoard'));
 const CourseMgtMain = lazy(() => import('../features/Course-Mgt/main'));
 const AddCourse = lazy(() => import('@/features/Course-Mgt/AddCourse'));
 const CourseStructureBuilder = lazy(() => import('@/features/courseBuilder/CourseStructureBuilder'));
+const InstructorDashBoard = lazy(() => import('@/pages/instructorPages/instructorDashBoard/InstructorDashBoard').then(m => ({ default: m.InstructorDashBoard })));
 const CourseDetails = lazy(() => import('../features/Course-Mgt/CourseDetail/CourseDetails'));
 
 import AuthGuard from '../components/protectedRoutes/AuthGuard';
@@ -55,6 +56,7 @@ const AppRoute = () => {
                     {/* STAFF Routes */}
                     <Route element={<AuthGuard allowedRole="STAFF" />}>
                         <Route path="/Staff-dashboard" element={<StaffDashBoard />} />
+                        <Route path="/Instructor-dashboard" element={<InstructorDashBoard />} />
                         <Route path="/staffProfile" element={<StaffProfile />} />
                         <Route path="courseMgt" element={<CourseMgtMain />} />
                         <Route path="/addCourse" element={<AddCourse />} />
