@@ -13,8 +13,7 @@ Name | Type | Description | Notes
 **dayOfWeek** | **string** |  | [optional] [default to undefined]
 **startTime** | [**LocalTime**](LocalTime.md) |  | [optional] [default to undefined]
 **endTime** | [**LocalTime**](LocalTime.md) |  | [optional] [default to undefined]
-**staffId** | **string** |  | [optional] [default to undefined]
-**staffName** | **string** |  | [optional] [default to undefined]
+**instructors** | [**Array&lt;BatchInstructorResponse&gt;**](BatchInstructorResponse.md) |  | [optional] [default to undefined]
 **mode** | **string** |  | [optional] [default to undefined]
 **meetingLink** | **string** |  | [optional] [default to undefined]
 **location** | **string** |  | [optional] [default to undefined]
@@ -34,8 +33,7 @@ const instance: ClassScheduleResponse = {
     dayOfWeek,
     startTime,
     endTime,
-    staffId,
-    staffName,
+    instructors,
     mode,
     meetingLink,
     location,

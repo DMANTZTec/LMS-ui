@@ -1,21 +1,21 @@
-# HoursSpentResponse
+# CourseDropdownResponse
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**totalHours** | **number** |  | [optional] [default to undefined]
-**label** | **string** |  | [optional] [default to undefined]
+**courseId** | **string** |  | [optional] [default to undefined]
+**courseTitle** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
 ```typescript
-import { HoursSpentResponse } from './api';
+import { CourseDropdownResponse } from './api';
 
-const instance: HoursSpentResponse = {
-    totalHours,
-    label,
+const instance: CourseDropdownResponse = {
+    courseId,
+    courseTitle,
 };
 ```
 

@@ -5,23 +5,14 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**firstName** | **string** |  | [default to undefined]
-**lastName** | **string** |  | [default to undefined]
+**firstNm** | **string** |  | [optional] [default to undefined]
+**lastNm** | **string** |  | [optional] [default to undefined]
 **emailId** | **string** |  | [optional] [default to undefined]
-**mobileNumber** | **string** |  | [optional] [default to undefined]
+**mobileNum** | **string** |  | [optional] [default to undefined]
+**dob** | **string** |  | [optional] [default to undefined]
 **gender** | **string** |  | [optional] [default to undefined]
-**dateOfBirth** | **string** |  | [optional] [default to undefined]
-**designation** | **string** |  | [optional] [default to undefined]
 **dateOfJoining** | **string** |  | [optional] [default to undefined]
-**roles** | **Set&lt;string&gt;** |  | [optional] [default to undefined]
-**addressOne** | **string** |  | [optional] [default to undefined]
-**addressTwo** | **string** |  | [optional] [default to undefined]
-**city** | **string** |  | [optional] [default to undefined]
-**state** | **string** |  | [optional] [default to undefined]
-**country** | **string** |  | [optional] [default to undefined]
-**pincode** | **string** |  | [optional] [default to undefined]
-**emergencyContactName** | **string** |  | [optional] [default to undefined]
-**emergencyContactNumber** | **string** |  | [optional] [default to undefined]
+**roleIds** | **Set&lt;number&gt;** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -29,23 +20,14 @@ Name | Type | Description | Notes
 import { StaffUpdateRequest } from './api';
 
 const instance: StaffUpdateRequest = {
-    firstName,
-    lastName,
+    firstNm,
+    lastNm,
     emailId,
-    mobileNumber,
+    mobileNum,
+    dob,
     gender,
-    dateOfBirth,
-    designation,
     dateOfJoining,
-    roles,
-    addressOne,
-    addressTwo,
-    city,
-    state,
-    country,
-    pincode,
-    emergencyContactName,
-    emergencyContactNumber,
+    roleIds,
 };
 ```
 

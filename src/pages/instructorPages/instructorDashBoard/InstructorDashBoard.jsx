@@ -13,9 +13,11 @@ export function InstructorDashBoard() {
   const [activeNav, setActiveNav] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  if (getUserRole() !== "INSTRUCTOR") {
-    return <Navigate to="/Staff-dashboard" replace />;
-  }
+  const role = JSON.parse(sessionStorage.getItem("otpStaff")).role;
+
+  //  if (getUserRole() !== "INSTRUCTOR") {
+  //   return <Navigate to="/Staff-dashboard" replace />;
+  // }
 
   const activeItem = NAV_ITEMS.find((item) => item.id === activeNav);
 

@@ -6,8 +6,9 @@ const AuthGuard = ({allowedRole}) => {
     const role = getUserRole();
     console.log("allowedRole is: ",allowedRole);
     console.log("token is deleted ?. ",token);
-if(!token) {
     
+if(!token) {
+  
     return <Navigate to={allowedRole === "STUDENT" ? "/studentLogin": "/staffLogin"} replace />
 }
 

@@ -32,7 +32,7 @@ export interface AddClassTopicRequest {
 export interface AddScheduleRequest {
     'className'?: string;
     'courseName'?: string;
-    'staffId': string;
+    'staffId'?: string;
     'classDate'?: string;
     'startTime'?: LocalTime;
     'endTime'?: LocalTime;
@@ -66,6 +66,20 @@ export const AssignProgramResponseStatusEnum = {
 
 export type AssignProgramResponseStatusEnum = typeof AssignProgramResponseStatusEnum[keyof typeof AssignProgramResponseStatusEnum];
 
+export interface AssignStudentToBatchRequest {
+    'enrollmentId': number;
+    'batchId': number;
+}
+export interface AttachmentRequest {
+    'fileName': string;
+    'fileUrl': string;
+    'fileType'?: string;
+}
+export interface AttachmentResponse {
+    'fileName'?: string;
+    'fileUrl'?: string;
+    'fileType'?: string;
+}
 export interface BatchInstructorRequest {
     'staffIds'?: Array<string>;
 }
@@ -85,6 +99,10 @@ export interface ChapterDetailResponse {
     'chapterNumber'?: number;
     'chapterTitle'?: string;
     'topics'?: Array<TopicDetailResponse>;
+}
+export interface ChapterDropdownResponse {
+    'id'?: number;
+    'chapterNm'?: string;
 }
 export interface ChapterProgressResponse {
     'chapterId'?: number;
@@ -145,8 +163,7 @@ export interface ClassScheduleResponse {
     'dayOfWeek'?: string;
     'startTime'?: LocalTime;
     'endTime'?: LocalTime;
-    'staffId'?: string;
-    'staffName'?: string;
+    'instructors'?: Array<BatchInstructorResponse>;
     'mode'?: string;
     'meetingLink'?: string;
     'location'?: string;
@@ -215,6 +232,10 @@ export interface CourseDetailsResponse {
     'courseTitle'?: string;
     'description'?: string;
     'chapters'?: Array<ChapterDetailResponse>;
+}
+export interface CourseDropdownResponse {
+    'courseId'?: string;
+    'courseTitle'?: string;
 }
 export interface CourseFeeHistoryResponse {
     'serialNumber'?: number;
@@ -318,6 +339,10 @@ export interface CreateClassRequest {
     'dayTimes': { [key: string]: DayTimeSlot; };
     'selectedInstructors': Array<string>;
 }
+export interface DailyScheduleResponse {
+    'day'?: string;
+    'items'?: Array<ScheduleItemResponse>;
+}
 export interface DayTimeSlot {
     'start'?: LocalTime;
     'end'?: LocalTime;
@@ -339,6 +364,50 @@ export interface EnrollStudentResponse {
     'status'?: string;
     'enrolledDate'?: string;
 }
+export interface EnrollmentBatchResponse {
+    'id'?: number;
+    'enrollmentId'?: number;
+    'studentId'?: string;
+    'courseId'?: string;
+    'batchId'?: number;
+    'batchName'?: string;
+    'assignedBy'?: string;
+    'assignedDate'?: string;
+}
+export interface EnrollmentRequest {
+    'studentId'?: string;
+    'courseId'?: string;
+    'programId'?: string;
+}
+export interface EnrollmentResponse {
+    'id'?: number;
+    'studentId'?: string;
+    'studentName'?: string;
+    'courseId'?: string;
+    'courseTitle'?: string;
+    'programId'?: string;
+    'programName'?: string;
+    'courses'?: Array<CourseDropdownResponse>;
+    'enrollmentType'?: EnrollmentResponseEnrollmentTypeEnum;
+    'enrollmentDate'?: string;
+    'status'?: EnrollmentResponseStatusEnum;
+    'paymentStatus'?: string;
+}
+
+export const EnrollmentResponseEnrollmentTypeEnum = {
+    Course: 'COURSE',
+    Program: 'PROGRAM',
+} as const;
+
+export type EnrollmentResponseEnrollmentTypeEnum = typeof EnrollmentResponseEnrollmentTypeEnum[keyof typeof EnrollmentResponseEnrollmentTypeEnum];
+export const EnrollmentResponseStatusEnum = {
+    Pending: 'PENDING',
+    Active: 'ACTIVE',
+    Cancelled: 'CANCELLED',
+} as const;
+
+export type EnrollmentResponseStatusEnum = typeof EnrollmentResponseStatusEnum[keyof typeof EnrollmentResponseStatusEnum];
+
 export interface ForgotPasswordRequest {
     'otpChannel'?: ForgotPasswordRequestOtpChannelEnum;
     'emailIdOrMobileNo'?: string;
@@ -351,15 +420,60 @@ export const ForgotPasswordRequestOtpChannelEnum = {
 
 export type ForgotPasswordRequestOtpChannelEnum = typeof ForgotPasswordRequestOtpChannelEnum[keyof typeof ForgotPasswordRequestOtpChannelEnum];
 
-export interface HoursSpentResponse {
-    'totalHours'?: number;
-    'label'?: string;
+export interface InstructorBatchResponse {
+    'batchId'?: number;
+    'className'?: string;
+    'courseId'?: string;
+    'courseName'?: string;
+    'startDate'?: string;
+    'endDate'?: string;
+    'status'?: string;
+}
+export interface InstructorBatchSummaryResponse {
+    'activeBatchCount'?: number;
+    'completedBatchCount'?: number;
+    'activeBatches'?: Array<InstructorBatchResponse>;
+    'completedBatches'?: Array<InstructorBatchResponse>;
+}
+export interface InstructorClassStatsResponse {
+    'classesTaken'?: number;
+    'scheduled'?: number;
+    'hoursSpent'?: number;
 }
 export interface InstructorResponse {
     'staffId'?: string;
     'firstNm'?: string;
     'lastNm'?: string;
     'designation'?: string;
+}
+export interface InstructorScheduleResponse {
+    'id'?: number;
+    'time'?: string;
+    'date'?: string;
+    'batchName'?: string;
+    'course'?: string;
+    'className'?: string;
+}
+export interface InstructorStudentStatsResponse {
+    'activeStudents'?: number;
+    'totalStudents'?: number;
+}
+export interface InstructorTaskRequest {
+    'title': string;
+    'description'?: string;
+    'courseId': string;
+    'batchId': number;
+    'chapterId': number;
+    'topicId': number;
+    'assignedBy': string;
+}
+export interface InstructorTaskResponse {
+    'title'?: string;
+    'description'?: string;
+    'courseId'?: string;
+    'batchId'?: number;
+    'assignedStudentCount'?: number;
+    'assignedTasks'?: Array<StudentTaskResponse>;
 }
 export interface LearnerPathRequest {
     'icon': string;
@@ -413,14 +527,14 @@ export interface OverallProgressResponse {
     'completed'?: boolean;
 }
 export interface PageStaffResponse {
-    'totalPages'?: number;
     'totalElements'?: number;
-    'first'?: boolean;
-    'last'?: boolean;
+    'totalPages'?: number;
     'size'?: number;
     'content'?: Array<StaffResponse>;
     'number'?: number;
     'sort'?: SortObject;
+    'first'?: boolean;
+    'last'?: boolean;
     'numberOfElements'?: number;
     'pageable'?: PageableObject;
     'empty'?: boolean;
@@ -430,8 +544,8 @@ export interface PageableObject {
     'sort'?: SortObject;
     'pageNumber'?: number;
     'pageSize'?: number;
-    'paged'?: boolean;
     'unpaged'?: boolean;
+    'paged'?: boolean;
 }
 export interface ProgramCourseRequest {
     'programId': string;
@@ -609,6 +723,11 @@ export interface RoleResponse {
     'updatedBy'?: number;
     'updatedDt'?: string;
 }
+export interface ScheduleItemResponse {
+    'title'?: string;
+    'time'?: string;
+    'instructor'?: string;
+}
 export interface SetStaffPasswordRequest {
     'token': string;
     'password': string;
@@ -746,24 +865,45 @@ export interface StaffRoleResponse {
     'updatedBy'?: number;
     'updatedDt'?: string;
 }
-export interface StaffUpdateRequest {
-    'firstName': string;
-    'lastName': string;
+export interface StaffUpdateReq1 {
+    'firstNm': string;
+    'lastNm': string;
     'emailId'?: string;
-    'mobileNumber'?: string;
-    'gender'?: StaffUpdateRequestGenderEnum;
-    'dateOfBirth'?: string;
+    'mobileNum'?: string;
+    'gender'?: StaffUpdateReq1GenderEnum;
+    'dob'?: string;
     'designation'?: string;
     'dateOfJoining'?: string;
     'roles'?: Set<string>;
-    'addressOne'?: string;
-    'addressTwo'?: string;
+    'addr1'?: string;
+    'addr2'?: string;
     'city'?: string;
     'state'?: string;
     'country'?: string;
-    'pincode'?: string;
-    'emergencyContactName'?: string;
-    'emergencyContactNumber'?: string;
+    'pin'?: string;
+    'emergencyContactNm'?: string;
+    'emergencyContactNum'?: string;
+}
+
+export const StaffUpdateReq1GenderEnum = {
+    Male: 'MALE',
+    Female: 'FEMALE',
+    PreferNotToSay: 'PREFER_NOT_TO_SAY',
+    NonBinary: 'NON_BINARY',
+    Other: 'OTHER',
+} as const;
+
+export type StaffUpdateReq1GenderEnum = typeof StaffUpdateReq1GenderEnum[keyof typeof StaffUpdateReq1GenderEnum];
+
+export interface StaffUpdateRequest {
+    'firstNm'?: string;
+    'lastNm'?: string;
+    'emailId'?: string;
+    'mobileNum'?: string;
+    'dob'?: string;
+    'gender'?: StaffUpdateRequestGenderEnum;
+    'dateOfJoining'?: string;
+    'roleIds'?: Set<number>;
 }
 
 export const StaffUpdateRequestGenderEnum = {
@@ -840,11 +980,6 @@ export interface StudentMyCoursesResponse {
     'ongoing'?: number;
     'completed'?: number;
     'courses'?: Array<MyCourseResponse>;
-}
-export interface StudentNeedHelpRequest {
-    'studentId': string;
-    'topicId': number;
-    'needHelp': boolean;
 }
 export interface StudentRegistrationRequest {
     'firstNm': string;
@@ -933,54 +1068,43 @@ export const StudentTaskMentorResponseStatusEnum = {
 export type StudentTaskMentorResponseStatusEnum = typeof StudentTaskMentorResponseStatusEnum[keyof typeof StudentTaskMentorResponseStatusEnum];
 
 export interface StudentTaskRequest {
+    'title': string;
+    'description'?: string;
+    'courseId': string;
+    'chapterId'?: number;
+    'topicId'?: number;
+    'batchId': number;
     'studentId': string;
-    'topicId': number;
 }
 export interface StudentTaskResponse {
+    'id'?: string;
+    'title'?: string;
+    'description'?: string;
+    'courseId'?: string;
+    'batchId'?: number;
+    'tags'?: Array<string>;
+}
+export interface StudentTaskSubmissionRequest {
+    'studentTaskId': number;
+    'studentId': string;
+    'submissionNotes'?: string;
+    'attachments': Array<AttachmentRequest>;
+}
+export interface StudentTaskSubmissionResponse {
     'id'?: number;
     'studentId'?: string;
-    'topicId'?: number;
+    'studentName'?: string;
+    'courseTitle'?: string;
     'topicName'?: string;
-    'topicReferences'?: Array<{ [key: string]: object; }>;
-    'startDt'?: string;
-    'endDt'?: string;
-    'commitUrl'?: string;
-    'status'?: StudentTaskResponseStatusEnum;
-    'needHelp'?: boolean;
-    'studentCommentTxt'?: string;
-    'reviewerCommentTxt'?: string;
+    'taskTitle'?: string;
+    'submissionNotes'?: string;
+    'attachments'?: Array<AttachmentResponse>;
+    'status'?: string;
+    'submittedAt'?: string;
+    'reviewFeedback'?: string;
+    'pointsAwarded'?: number;
+    'reviewedAt'?: string;
 }
-
-export const StudentTaskResponseStatusEnum = {
-    NotStarted: 'NOT_STARTED',
-    InProgress: 'IN_PROGRESS',
-    Submitted: 'SUBMITTED',
-    Reviewed: 'REVIEWED',
-    Completed: 'COMPLETED',
-} as const;
-
-export type StudentTaskResponseStatusEnum = typeof StudentTaskResponseStatusEnum[keyof typeof StudentTaskResponseStatusEnum];
-
-export interface StudentTaskUpdateRequest {
-    'studentId': string;
-    'topicId': number;
-    'commitUrl'?: string;
-    'status'?: StudentTaskUpdateRequestStatusEnum;
-    'needHelp'?: boolean;
-    'studentCommentTxt'?: string;
-    'reviewerCommentTxt'?: string;
-}
-
-export const StudentTaskUpdateRequestStatusEnum = {
-    NotStarted: 'NOT_STARTED',
-    InProgress: 'IN_PROGRESS',
-    Submitted: 'SUBMITTED',
-    Reviewed: 'REVIEWED',
-    Completed: 'COMPLETED',
-} as const;
-
-export type StudentTaskUpdateRequestStatusEnum = typeof StudentTaskUpdateRequestStatusEnum[keyof typeof StudentTaskUpdateRequestStatusEnum];
-
 export interface StudentTopicReferenceProgressRequest {
     'studentId'?: string;
     'referenceId'?: number;
@@ -1066,6 +1190,10 @@ export interface TopicDetailResponse {
     'duration'?: string;
     'topicDescription'?: string;
     'resources'?: TopicReferencesDetailResponse;
+}
+export interface TopicDropdownResponse {
+    'id'?: number;
+    'topicNm'?: string;
 }
 export interface TopicItem {
     'topicId'?: number;
@@ -1661,13 +1789,14 @@ export const ClassAdminControllerApiAxiosParamCreator = function (configuration?
         /**
          * 
          * @param {string} staffId 
+         * @param {GetSchedulesByInstructorFilterEnum} [filter] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getSchedulesByStaff: async (staffId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getSchedulesByInstructor: async (staffId: string, filter?: GetSchedulesByInstructorFilterEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'staffId' is not null or undefined
-            assertParamExists('getSchedulesByStaff', 'staffId', staffId)
-            const localVarPath = `/api/admin/schedules/staff/{staffId}`
+            assertParamExists('getSchedulesByInstructor', 'staffId', staffId)
+            const localVarPath = `/api/admin/instructor/{staffId}`
                 .replace(`{${"staffId"}}`, encodeURIComponent(String(staffId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1683,6 +1812,10 @@ export const ClassAdminControllerApiAxiosParamCreator = function (configuration?
             // authentication BearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (filter !== undefined) {
+                localVarQueryParameter['filter'] = filter;
+            }
 
             localVarHeaderParameter['Accept'] = '*/*';
 
@@ -2187,13 +2320,14 @@ export const ClassAdminControllerApiFp = function(configuration?: Configuration)
         /**
          * 
          * @param {string} staffId 
+         * @param {GetSchedulesByInstructorFilterEnum} [filter] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getSchedulesByStaff(staffId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ClassScheduleResponse>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getSchedulesByStaff(staffId, options);
+        async getSchedulesByInstructor(staffId: string, filter?: GetSchedulesByInstructorFilterEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<InstructorScheduleResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getSchedulesByInstructor(staffId, filter, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ClassAdminControllerApi.getSchedulesByStaff']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['ClassAdminControllerApi.getSchedulesByInstructor']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -2428,11 +2562,12 @@ export const ClassAdminControllerApiFactory = function (configuration?: Configur
         /**
          * 
          * @param {string} staffId 
+         * @param {GetSchedulesByInstructorFilterEnum} [filter] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getSchedulesByStaff(staffId: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<ClassScheduleResponse>> {
-            return localVarFp.getSchedulesByStaff(staffId, options).then((request) => request(axios, basePath));
+        getSchedulesByInstructor(staffId: string, filter?: GetSchedulesByInstructorFilterEnum, options?: RawAxiosRequestConfig): AxiosPromise<Array<InstructorScheduleResponse>> {
+            return localVarFp.getSchedulesByInstructor(staffId, filter, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2653,11 +2788,12 @@ export class ClassAdminControllerApi extends BaseAPI {
     /**
      * 
      * @param {string} staffId 
+     * @param {GetSchedulesByInstructorFilterEnum} [filter] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public getSchedulesByStaff(staffId: string, options?: RawAxiosRequestConfig) {
-        return ClassAdminControllerApiFp(this.configuration).getSchedulesByStaff(staffId, options).then((request) => request(this.axios, this.basePath));
+    public getSchedulesByInstructor(staffId: string, filter?: GetSchedulesByInstructorFilterEnum, options?: RawAxiosRequestConfig) {
+        return ClassAdminControllerApiFp(this.configuration).getSchedulesByInstructor(staffId, filter, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2745,6 +2881,12 @@ export class ClassAdminControllerApi extends BaseAPI {
     }
 }
 
+export const GetSchedulesByInstructorFilterEnum = {
+    All: 'ALL',
+    Week: 'WEEK',
+    Month: 'MONTH',
+} as const;
+export type GetSchedulesByInstructorFilterEnum = typeof GetSchedulesByInstructorFilterEnum[keyof typeof GetSchedulesByInstructorFilterEnum];
 
 
 /**
@@ -4453,7 +4595,7 @@ export const CourseManagementControllerApiAxiosParamCreator = function (configur
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getChaptersByCourse: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getChaptersByCourse1: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/chapters/getAll`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5714,10 +5856,10 @@ export const CourseManagementControllerApiFp = function(configuration?: Configur
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getChaptersByCourse(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ChapterResponse>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getChaptersByCourse(options);
+        async getChaptersByCourse1(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ChapterResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getChaptersByCourse1(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.getChaptersByCourse']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.getChaptersByCourse1']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -6227,8 +6369,8 @@ export const CourseManagementControllerApiFactory = function (configuration?: Co
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getChaptersByCourse(options?: RawAxiosRequestConfig): AxiosPromise<Array<ChapterResponse>> {
-            return localVarFp.getChaptersByCourse(options).then((request) => request(axios, basePath));
+        getChaptersByCourse1(options?: RawAxiosRequestConfig): AxiosPromise<Array<ChapterResponse>> {
+            return localVarFp.getChaptersByCourse1(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -6690,8 +6832,8 @@ export class CourseManagementControllerApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public getChaptersByCourse(options?: RawAxiosRequestConfig) {
-        return CourseManagementControllerApiFp(this.configuration).getChaptersByCourse(options).then((request) => request(this.axios, this.basePath));
+    public getChaptersByCourse1(options?: RawAxiosRequestConfig) {
+        return CourseManagementControllerApiFp(this.configuration).getChaptersByCourse1(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -6938,6 +7080,1283 @@ export const CreateCourseLevelEnum = {
     Advanced: 'ADVANCED',
 } as const;
 export type CreateCourseLevelEnum = typeof CreateCourseLevelEnum[keyof typeof CreateCourseLevelEnum];
+
+
+/**
+ * EnrollmentBatchControllerApi - axios parameter creator
+ */
+export const EnrollmentBatchControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {AssignStudentToBatchRequest} assignStudentToBatchRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        assignStudentToBatch: async (assignStudentToBatchRequest: AssignStudentToBatchRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'assignStudentToBatchRequest' is not null or undefined
+            assertParamExists('assignStudentToBatch', 'assignStudentToBatchRequest', assignStudentToBatchRequest)
+            const localVarPath = `/api/enrollment-batches/assign`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(assignStudentToBatchRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnrolledBatchesByStudentId: async (studentId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'studentId' is not null or undefined
+            assertParamExists('getEnrolledBatchesByStudentId', 'studentId', studentId)
+            const localVarPath = `/api/enrollment-batches/students/{studentId}/batches`
+                .replace(`{${"studentId"}}`, encodeURIComponent(String(studentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnrollmentBatch: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getEnrollmentBatch', 'id', id)
+            const localVarPath = `/api/enrollment-batches/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStudentWeeklySchedule: async (studentId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'studentId' is not null or undefined
+            assertParamExists('getStudentWeeklySchedule', 'studentId', studentId)
+            const localVarPath = `/api/enrollment-batches/students/{studentId}/weekly-schedule`
+                .replace(`{${"studentId"}}`, encodeURIComponent(String(studentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} batchId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStudentsByBatch: async (batchId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'batchId' is not null or undefined
+            assertParamExists('getStudentsByBatch', 'batchId', batchId)
+            const localVarPath = `/api/enrollment-batches/batches/{batchId}/students`
+                .replace(`{${"batchId"}}`, encodeURIComponent(String(batchId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeStudentFromBatch: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('removeStudentFromBatch', 'id', id)
+            const localVarPath = `/api/enrollment-batches/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * EnrollmentBatchControllerApi - functional programming interface
+ */
+export const EnrollmentBatchControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = EnrollmentBatchControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {AssignStudentToBatchRequest} assignStudentToBatchRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async assignStudentToBatch(assignStudentToBatchRequest: AssignStudentToBatchRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnrollmentBatchResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.assignStudentToBatch(assignStudentToBatchRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EnrollmentBatchControllerApi.assignStudentToBatch']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getEnrolledBatchesByStudentId(studentId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<EnrollmentBatchResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEnrolledBatchesByStudentId(studentId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EnrollmentBatchControllerApi.getEnrolledBatchesByStudentId']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getEnrollmentBatch(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnrollmentBatchResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEnrollmentBatch(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EnrollmentBatchControllerApi.getEnrollmentBatch']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStudentWeeklySchedule(studentId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DailyScheduleResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStudentWeeklySchedule(studentId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EnrollmentBatchControllerApi.getStudentWeeklySchedule']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} batchId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStudentsByBatch(batchId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<EnrollmentBatchResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStudentsByBatch(batchId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EnrollmentBatchControllerApi.getStudentsByBatch']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async removeStudentFromBatch(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.removeStudentFromBatch(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EnrollmentBatchControllerApi.removeStudentFromBatch']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * EnrollmentBatchControllerApi - factory interface
+ */
+export const EnrollmentBatchControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = EnrollmentBatchControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {AssignStudentToBatchRequest} assignStudentToBatchRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        assignStudentToBatch(assignStudentToBatchRequest: AssignStudentToBatchRequest, options?: RawAxiosRequestConfig): AxiosPromise<EnrollmentBatchResponse> {
+            return localVarFp.assignStudentToBatch(assignStudentToBatchRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnrolledBatchesByStudentId(studentId: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<EnrollmentBatchResponse>> {
+            return localVarFp.getEnrolledBatchesByStudentId(studentId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnrollmentBatch(id: number, options?: RawAxiosRequestConfig): AxiosPromise<EnrollmentBatchResponse> {
+            return localVarFp.getEnrollmentBatch(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStudentWeeklySchedule(studentId: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<DailyScheduleResponse>> {
+            return localVarFp.getStudentWeeklySchedule(studentId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} batchId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStudentsByBatch(batchId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<EnrollmentBatchResponse>> {
+            return localVarFp.getStudentsByBatch(batchId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeStudentFromBatch(id: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.removeStudentFromBatch(id, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * EnrollmentBatchControllerApi - object-oriented interface
+ */
+export class EnrollmentBatchControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {AssignStudentToBatchRequest} assignStudentToBatchRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public assignStudentToBatch(assignStudentToBatchRequest: AssignStudentToBatchRequest, options?: RawAxiosRequestConfig) {
+        return EnrollmentBatchControllerApiFp(this.configuration).assignStudentToBatch(assignStudentToBatchRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} studentId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getEnrolledBatchesByStudentId(studentId: string, options?: RawAxiosRequestConfig) {
+        return EnrollmentBatchControllerApiFp(this.configuration).getEnrolledBatchesByStudentId(studentId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getEnrollmentBatch(id: number, options?: RawAxiosRequestConfig) {
+        return EnrollmentBatchControllerApiFp(this.configuration).getEnrollmentBatch(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} studentId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getStudentWeeklySchedule(studentId: string, options?: RawAxiosRequestConfig) {
+        return EnrollmentBatchControllerApiFp(this.configuration).getStudentWeeklySchedule(studentId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} batchId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getStudentsByBatch(batchId: number, options?: RawAxiosRequestConfig) {
+        return EnrollmentBatchControllerApiFp(this.configuration).getStudentsByBatch(batchId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public removeStudentFromBatch(id: number, options?: RawAxiosRequestConfig) {
+        return EnrollmentBatchControllerApiFp(this.configuration).removeStudentFromBatch(id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * EnrollmentControllerApi - axios parameter creator
+ */
+export const EnrollmentControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {EnrollmentRequest} enrollmentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createEnrollment: async (enrollmentRequest: EnrollmentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'enrollmentRequest' is not null or undefined
+            assertParamExists('createEnrollment', 'enrollmentRequest', enrollmentRequest)
+            const localVarPath = `/api/enrollments`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(enrollmentRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteEnrollment: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteEnrollment', 'id', id)
+            const localVarPath = `/api/enrollments/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllEnrollments: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/enrollments`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnrollmentById: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getEnrollmentById', 'id', id)
+            const localVarPath = `/api/enrollments/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnrollmentsByStudent: async (studentId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'studentId' is not null or undefined
+            assertParamExists('getEnrollmentsByStudent', 'studentId', studentId)
+            const localVarPath = `/api/enrollments/student/{studentId}`
+                .replace(`{${"studentId"}}`, encodeURIComponent(String(studentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {EnrollmentRequest} enrollmentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEnrollment: async (id: number, enrollmentRequest: EnrollmentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('updateEnrollment', 'id', id)
+            // verify required parameter 'enrollmentRequest' is not null or undefined
+            assertParamExists('updateEnrollment', 'enrollmentRequest', enrollmentRequest)
+            const localVarPath = `/api/enrollments/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(enrollmentRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * EnrollmentControllerApi - functional programming interface
+ */
+export const EnrollmentControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = EnrollmentControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {EnrollmentRequest} enrollmentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createEnrollment(enrollmentRequest: EnrollmentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnrollmentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createEnrollment(enrollmentRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EnrollmentControllerApi.createEnrollment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteEnrollment(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteEnrollment(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EnrollmentControllerApi.deleteEnrollment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllEnrollments(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<EnrollmentResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllEnrollments(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EnrollmentControllerApi.getAllEnrollments']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getEnrollmentById(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnrollmentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEnrollmentById(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EnrollmentControllerApi.getEnrollmentById']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getEnrollmentsByStudent(studentId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<EnrollmentResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEnrollmentsByStudent(studentId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EnrollmentControllerApi.getEnrollmentsByStudent']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {EnrollmentRequest} enrollmentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateEnrollment(id: number, enrollmentRequest: EnrollmentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnrollmentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateEnrollment(id, enrollmentRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EnrollmentControllerApi.updateEnrollment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * EnrollmentControllerApi - factory interface
+ */
+export const EnrollmentControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = EnrollmentControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {EnrollmentRequest} enrollmentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createEnrollment(enrollmentRequest: EnrollmentRequest, options?: RawAxiosRequestConfig): AxiosPromise<EnrollmentResponse> {
+            return localVarFp.createEnrollment(enrollmentRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteEnrollment(id: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deleteEnrollment(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllEnrollments(options?: RawAxiosRequestConfig): AxiosPromise<Array<EnrollmentResponse>> {
+            return localVarFp.getAllEnrollments(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnrollmentById(id: number, options?: RawAxiosRequestConfig): AxiosPromise<EnrollmentResponse> {
+            return localVarFp.getEnrollmentById(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnrollmentsByStudent(studentId: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<EnrollmentResponse>> {
+            return localVarFp.getEnrollmentsByStudent(studentId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {EnrollmentRequest} enrollmentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEnrollment(id: number, enrollmentRequest: EnrollmentRequest, options?: RawAxiosRequestConfig): AxiosPromise<EnrollmentResponse> {
+            return localVarFp.updateEnrollment(id, enrollmentRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * EnrollmentControllerApi - object-oriented interface
+ */
+export class EnrollmentControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {EnrollmentRequest} enrollmentRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public createEnrollment(enrollmentRequest: EnrollmentRequest, options?: RawAxiosRequestConfig) {
+        return EnrollmentControllerApiFp(this.configuration).createEnrollment(enrollmentRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public deleteEnrollment(id: number, options?: RawAxiosRequestConfig) {
+        return EnrollmentControllerApiFp(this.configuration).deleteEnrollment(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getAllEnrollments(options?: RawAxiosRequestConfig) {
+        return EnrollmentControllerApiFp(this.configuration).getAllEnrollments(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getEnrollmentById(id: number, options?: RawAxiosRequestConfig) {
+        return EnrollmentControllerApiFp(this.configuration).getEnrollmentById(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} studentId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getEnrollmentsByStudent(studentId: string, options?: RawAxiosRequestConfig) {
+        return EnrollmentControllerApiFp(this.configuration).getEnrollmentsByStudent(studentId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {EnrollmentRequest} enrollmentRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public updateEnrollment(id: number, enrollmentRequest: EnrollmentRequest, options?: RawAxiosRequestConfig) {
+        return EnrollmentControllerApiFp(this.configuration).updateEnrollment(id, enrollmentRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * InstructorDashboardControllerApi - axios parameter creator
+ */
+export const InstructorDashboardControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {InstructorTaskRequest} instructorTaskRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createTask: async (instructorTaskRequest: InstructorTaskRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'instructorTaskRequest' is not null or undefined
+            assertParamExists('createTask', 'instructorTaskRequest', instructorTaskRequest)
+            const localVarPath = `/api/instructor/tasks`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(instructorTaskRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} instructorId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getBatchSummary: async (instructorId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'instructorId' is not null or undefined
+            assertParamExists('getBatchSummary', 'instructorId', instructorId)
+            const localVarPath = `/api/instructor/batches`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (instructorId !== undefined) {
+                localVarQueryParameter['instructorId'] = instructorId;
+            }
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} instructorId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getClassStats: async (instructorId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'instructorId' is not null or undefined
+            assertParamExists('getClassStats', 'instructorId', instructorId)
+            const localVarPath = `/api/instructor/class-stats`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (instructorId !== undefined) {
+                localVarQueryParameter['instructorId'] = instructorId;
+            }
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} instructorId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStudentStats: async (instructorId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'instructorId' is not null or undefined
+            assertParamExists('getStudentStats', 'instructorId', instructorId)
+            const localVarPath = `/api/instructor/student-stats`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (instructorId !== undefined) {
+                localVarQueryParameter['instructorId'] = instructorId;
+            }
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {string} [courseId] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTaskSubmissions: async (staffId: string, courseId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'staffId' is not null or undefined
+            assertParamExists('getTaskSubmissions', 'staffId', staffId)
+            const localVarPath = `/api/instructor/submissions`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (staffId !== undefined) {
+                localVarQueryParameter['staffId'] = staffId;
+            }
+
+            if (courseId !== undefined) {
+                localVarQueryParameter['courseId'] = courseId;
+            }
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * InstructorDashboardControllerApi - functional programming interface
+ */
+export const InstructorDashboardControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = InstructorDashboardControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {InstructorTaskRequest} instructorTaskRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createTask(instructorTaskRequest: InstructorTaskRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InstructorTaskResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createTask(instructorTaskRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InstructorDashboardControllerApi.createTask']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} instructorId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getBatchSummary(instructorId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InstructorBatchSummaryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getBatchSummary(instructorId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InstructorDashboardControllerApi.getBatchSummary']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} instructorId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getClassStats(instructorId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InstructorClassStatsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getClassStats(instructorId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InstructorDashboardControllerApi.getClassStats']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} instructorId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStudentStats(instructorId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InstructorStudentStatsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStudentStats(instructorId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InstructorDashboardControllerApi.getStudentStats']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {string} [courseId] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTaskSubmissions(staffId: string, courseId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<StudentTaskSubmissionResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTaskSubmissions(staffId, courseId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InstructorDashboardControllerApi.getTaskSubmissions']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * InstructorDashboardControllerApi - factory interface
+ */
+export const InstructorDashboardControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = InstructorDashboardControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {InstructorTaskRequest} instructorTaskRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createTask(instructorTaskRequest: InstructorTaskRequest, options?: RawAxiosRequestConfig): AxiosPromise<InstructorTaskResponse> {
+            return localVarFp.createTask(instructorTaskRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} instructorId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getBatchSummary(instructorId: string, options?: RawAxiosRequestConfig): AxiosPromise<InstructorBatchSummaryResponse> {
+            return localVarFp.getBatchSummary(instructorId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} instructorId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getClassStats(instructorId: string, options?: RawAxiosRequestConfig): AxiosPromise<InstructorClassStatsResponse> {
+            return localVarFp.getClassStats(instructorId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} instructorId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStudentStats(instructorId: string, options?: RawAxiosRequestConfig): AxiosPromise<InstructorStudentStatsResponse> {
+            return localVarFp.getStudentStats(instructorId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {string} [courseId] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTaskSubmissions(staffId: string, courseId?: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<StudentTaskSubmissionResponse>> {
+            return localVarFp.getTaskSubmissions(staffId, courseId, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * InstructorDashboardControllerApi - object-oriented interface
+ */
+export class InstructorDashboardControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {InstructorTaskRequest} instructorTaskRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public createTask(instructorTaskRequest: InstructorTaskRequest, options?: RawAxiosRequestConfig) {
+        return InstructorDashboardControllerApiFp(this.configuration).createTask(instructorTaskRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} instructorId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getBatchSummary(instructorId: string, options?: RawAxiosRequestConfig) {
+        return InstructorDashboardControllerApiFp(this.configuration).getBatchSummary(instructorId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} instructorId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getClassStats(instructorId: string, options?: RawAxiosRequestConfig) {
+        return InstructorDashboardControllerApiFp(this.configuration).getClassStats(instructorId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} instructorId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getStudentStats(instructorId: string, options?: RawAxiosRequestConfig) {
+        return InstructorDashboardControllerApiFp(this.configuration).getStudentStats(instructorId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} staffId 
+     * @param {string} [courseId] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getTaskSubmissions(staffId: string, courseId?: string, options?: RawAxiosRequestConfig) {
+        return InstructorDashboardControllerApiFp(this.configuration).getTaskSubmissions(staffId, courseId, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
 
 
 /**
@@ -9486,7 +10905,7 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
             assertParamExists('updateStaff', 'staffId', staffId)
             // verify required parameter 'staffUpdateRequest' is not null or undefined
             assertParamExists('updateStaff', 'staffUpdateRequest', staffUpdateRequest)
-            const localVarPath = `/api/staff/{staffId}`
+            const localVarPath = `/api/staff/{staffId}/update`
                 .replace(`{${"staffId"}}`, encodeURIComponent(String(staffId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -9510,6 +10929,48 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(staffUpdateRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {StaffUpdateReq1} staffUpdateReq1 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateStaff1: async (staffId: string, staffUpdateReq1: StaffUpdateReq1, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'staffId' is not null or undefined
+            assertParamExists('updateStaff1', 'staffId', staffId)
+            // verify required parameter 'staffUpdateReq1' is not null or undefined
+            assertParamExists('updateStaff1', 'staffUpdateReq1', staffUpdateReq1)
+            const localVarPath = `/api/staff/{staffId}/update1`
+                .replace(`{${"staffId"}}`, encodeURIComponent(String(staffId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(staffUpdateReq1, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -9785,6 +11246,19 @@ export const StaffControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} staffId 
+         * @param {StaffUpdateReq1} staffUpdateReq1 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateStaff1(staffId: string, staffUpdateReq1: StaffUpdateReq1, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateStaff1(staffId, staffUpdateReq1, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.updateStaff1']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {string} token 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -9953,6 +11427,16 @@ export const StaffControllerApiFactory = function (configuration?: Configuration
          */
         updateStaff(staffId: string, staffUpdateRequest: StaffUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<StaffResponse> {
             return localVarFp.updateStaff(staffId, staffUpdateRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {StaffUpdateReq1} staffUpdateReq1 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateStaff1(staffId: string, staffUpdateReq1: StaffUpdateReq1, options?: RawAxiosRequestConfig): AxiosPromise<StaffResponse> {
+            return localVarFp.updateStaff1(staffId, staffUpdateReq1, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -10129,6 +11613,17 @@ export class StaffControllerApi extends BaseAPI {
      */
     public updateStaff(staffId: string, staffUpdateRequest: StaffUpdateRequest, options?: RawAxiosRequestConfig) {
         return StaffControllerApiFp(this.configuration).updateStaff(staffId, staffUpdateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} staffId 
+     * @param {StaffUpdateReq1} staffUpdateReq1 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public updateStaff1(staffId: string, staffUpdateReq1: StaffUpdateReq1, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).updateStaff1(staffId, staffUpdateReq1, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -12879,62 +14374,14 @@ export const StudentTaskControllerApiAxiosParamCreator = function (configuration
         },
         /**
          * 
-         * @param {string} studentId 
-         * @param {number} topicId 
+         * @param {string} courseId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteTask: async (studentId: string, topicId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'studentId' is not null or undefined
-            assertParamExists('deleteTask', 'studentId', studentId)
-            // verify required parameter 'topicId' is not null or undefined
-            assertParamExists('deleteTask', 'topicId', topicId)
-            const localVarPath = `/api/student-task/deletetask`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            if (studentId !== undefined) {
-                localVarQueryParameter['studentId'] = studentId;
-            }
-
-            if (topicId !== undefined) {
-                localVarQueryParameter['topicId'] = topicId;
-            }
-
-            localVarHeaderParameter['Accept'] = '*/*';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} studentId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getHoursSpent: async (studentId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'studentId' is not null or undefined
-            assertParamExists('getHoursSpent', 'studentId', studentId)
-            const localVarPath = `/api/student-task/hours-spent/{studentId}`
-                .replace(`{${"studentId"}}`, encodeURIComponent(String(studentId)));
+        getChaptersByCourse: async (courseId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'courseId' is not null or undefined
+            assertParamExists('getChaptersByCourse', 'courseId', courseId)
+            const localVarPath = `/api/student-task/dropdown/chapters`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -12950,6 +14397,10 @@ export const StudentTaskControllerApiAxiosParamCreator = function (configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+            if (courseId !== undefined) {
+                localVarQueryParameter['courseId'] = courseId;
+            }
+
             localVarHeaderParameter['Accept'] = '*/*';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -12964,14 +14415,56 @@ export const StudentTaskControllerApiAxiosParamCreator = function (configuration
         /**
          * 
          * @param {string} studentId 
-         * @param {GetStudentTasksStatusEnum} [status] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getStudentTasks: async (studentId: string, status?: GetStudentTasksStatusEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getEnrolledCourses: async (studentId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'studentId' is not null or undefined
-            assertParamExists('getStudentTasks', 'studentId', studentId)
-            const localVarPath = `/api/student-task`;
+            assertParamExists('getEnrolledCourses', 'studentId', studentId)
+            const localVarPath = `/api/student-task/dropdown/courses`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (studentId !== undefined) {
+                localVarQueryParameter['studentId'] = studentId;
+            }
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {GetTasksByStatusStatusEnum} status 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTasksByStatus: async (studentId: string, status: GetTasksByStatusStatusEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'studentId' is not null or undefined
+            assertParamExists('getTasksByStatus', 'studentId', studentId)
+            // verify required parameter 'status' is not null or undefined
+            assertParamExists('getTasksByStatus', 'status', status)
+            const localVarPath = `/api/student-task/status`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -13008,14 +14501,14 @@ export const StudentTaskControllerApiAxiosParamCreator = function (configuration
         },
         /**
          * 
-         * @param {StudentNeedHelpRequest} studentNeedHelpRequest 
+         * @param {number} chapterId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        markNeedHelp: async (studentNeedHelpRequest: StudentNeedHelpRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'studentNeedHelpRequest' is not null or undefined
-            assertParamExists('markNeedHelp', 'studentNeedHelpRequest', studentNeedHelpRequest)
-            const localVarPath = `/api/student-task/need-help`;
+        getTopicsByChapter: async (chapterId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'chapterId' is not null or undefined
+            assertParamExists('getTopicsByChapter', 'chapterId', chapterId)
+            const localVarPath = `/api/student-task/dropdown/topics`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -13023,7 +14516,7 @@ export const StudentTaskControllerApiAxiosParamCreator = function (configuration
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -13031,50 +14524,8 @@ export const StudentTaskControllerApiAxiosParamCreator = function (configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            localVarHeaderParameter['Accept'] = '*/*';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(studentNeedHelpRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {number} taskId 
-         * @param {string} studentId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        markTaskCompleted: async (taskId: number, studentId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'taskId' is not null or undefined
-            assertParamExists('markTaskCompleted', 'taskId', taskId)
-            // verify required parameter 'studentId' is not null or undefined
-            assertParamExists('markTaskCompleted', 'studentId', studentId)
-            const localVarPath = `/api/student-task/{taskId}/complete`
-                .replace(`{${"taskId"}}`, encodeURIComponent(String(taskId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            if (studentId !== undefined) {
-                localVarQueryParameter['studentId'] = studentId;
+            if (chapterId !== undefined) {
+                localVarQueryParameter['chapterId'] = chapterId;
             }
 
             localVarHeaderParameter['Accept'] = '*/*';
@@ -13082,44 +14533,6 @@ export const StudentTaskControllerApiAxiosParamCreator = function (configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {StudentTaskUpdateRequest} studentTaskUpdateRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        updateStudentTask: async (studentTaskUpdateRequest: StudentTaskUpdateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'studentTaskUpdateRequest' is not null or undefined
-            assertParamExists('updateStudentTask', 'studentTaskUpdateRequest', studentTaskUpdateRequest)
-            const localVarPath = `/api/student-task/updatetask`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            localVarHeaderParameter['Accept'] = '*/*';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(studentTaskUpdateRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -13149,15 +14562,14 @@ export const StudentTaskControllerApiFp = function(configuration?: Configuration
         },
         /**
          * 
-         * @param {string} studentId 
-         * @param {number} topicId 
+         * @param {string} courseId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteTask(studentId: string, topicId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteTask(studentId, topicId, options);
+        async getChaptersByCourse(courseId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ChapterDropdownResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getChaptersByCourse(courseId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.deleteTask']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.getChaptersByCourse']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -13166,60 +14578,35 @@ export const StudentTaskControllerApiFp = function(configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getHoursSpent(studentId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HoursSpentResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getHoursSpent(studentId, options);
+        async getEnrolledCourses(studentId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<CourseDropdownResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEnrolledCourses(studentId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.getHoursSpent']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.getEnrolledCourses']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
          * @param {string} studentId 
-         * @param {GetStudentTasksStatusEnum} [status] 
+         * @param {GetTasksByStatusStatusEnum} status 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getStudentTasks(studentId: string, status?: GetStudentTasksStatusEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentTaskListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getStudentTasks(studentId, status, options);
+        async getTasksByStatus(studentId: string, status: GetTasksByStatusStatusEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentTaskListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTasksByStatus(studentId, status, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.getStudentTasks']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.getTasksByStatus']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
-         * @param {StudentNeedHelpRequest} studentNeedHelpRequest 
+         * @param {number} chapterId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async markNeedHelp(studentNeedHelpRequest: StudentNeedHelpRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentTaskResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.markNeedHelp(studentNeedHelpRequest, options);
+        async getTopicsByChapter(chapterId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TopicDropdownResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTopicsByChapter(chapterId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.markNeedHelp']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {number} taskId 
-         * @param {string} studentId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async markTaskCompleted(taskId: number, studentId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentTaskResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.markTaskCompleted(taskId, studentId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.markTaskCompleted']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {StudentTaskUpdateRequest} studentTaskUpdateRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async updateStudentTask(studentTaskUpdateRequest: StudentTaskUpdateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentTaskResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateStudentTask(studentTaskUpdateRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.updateStudentTask']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['StudentTaskControllerApi.getTopicsByChapter']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -13242,13 +14629,12 @@ export const StudentTaskControllerApiFactory = function (configuration?: Configu
         },
         /**
          * 
-         * @param {string} studentId 
-         * @param {number} topicId 
+         * @param {string} courseId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteTask(studentId: string, topicId: number, options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.deleteTask(studentId, topicId, options).then((request) => request(axios, basePath));
+        getChaptersByCourse(courseId: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<ChapterDropdownResponse>> {
+            return localVarFp.getChaptersByCourse(courseId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -13256,46 +14642,27 @@ export const StudentTaskControllerApiFactory = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getHoursSpent(studentId: string, options?: RawAxiosRequestConfig): AxiosPromise<HoursSpentResponse> {
-            return localVarFp.getHoursSpent(studentId, options).then((request) => request(axios, basePath));
+        getEnrolledCourses(studentId: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<CourseDropdownResponse>> {
+            return localVarFp.getEnrolledCourses(studentId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {string} studentId 
-         * @param {GetStudentTasksStatusEnum} [status] 
+         * @param {GetTasksByStatusStatusEnum} status 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getStudentTasks(studentId: string, status?: GetStudentTasksStatusEnum, options?: RawAxiosRequestConfig): AxiosPromise<StudentTaskListResponse> {
-            return localVarFp.getStudentTasks(studentId, status, options).then((request) => request(axios, basePath));
+        getTasksByStatus(studentId: string, status: GetTasksByStatusStatusEnum, options?: RawAxiosRequestConfig): AxiosPromise<StudentTaskListResponse> {
+            return localVarFp.getTasksByStatus(studentId, status, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {StudentNeedHelpRequest} studentNeedHelpRequest 
+         * @param {number} chapterId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        markNeedHelp(studentNeedHelpRequest: StudentNeedHelpRequest, options?: RawAxiosRequestConfig): AxiosPromise<StudentTaskResponse> {
-            return localVarFp.markNeedHelp(studentNeedHelpRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {number} taskId 
-         * @param {string} studentId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        markTaskCompleted(taskId: number, studentId: string, options?: RawAxiosRequestConfig): AxiosPromise<StudentTaskResponse> {
-            return localVarFp.markTaskCompleted(taskId, studentId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {StudentTaskUpdateRequest} studentTaskUpdateRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        updateStudentTask(studentTaskUpdateRequest: StudentTaskUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<StudentTaskResponse> {
-            return localVarFp.updateStudentTask(studentTaskUpdateRequest, options).then((request) => request(axios, basePath));
+        getTopicsByChapter(chapterId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<TopicDropdownResponse>> {
+            return localVarFp.getTopicsByChapter(chapterId, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -13316,13 +14683,12 @@ export class StudentTaskControllerApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} studentId 
-     * @param {number} topicId 
+     * @param {string} courseId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public deleteTask(studentId: string, topicId: number, options?: RawAxiosRequestConfig) {
-        return StudentTaskControllerApiFp(this.configuration).deleteTask(studentId, topicId, options).then((request) => request(this.axios, this.basePath));
+    public getChaptersByCourse(courseId: string, options?: RawAxiosRequestConfig) {
+        return StudentTaskControllerApiFp(this.configuration).getChaptersByCourse(courseId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -13331,58 +14697,37 @@ export class StudentTaskControllerApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public getHoursSpent(studentId: string, options?: RawAxiosRequestConfig) {
-        return StudentTaskControllerApiFp(this.configuration).getHoursSpent(studentId, options).then((request) => request(this.axios, this.basePath));
+    public getEnrolledCourses(studentId: string, options?: RawAxiosRequestConfig) {
+        return StudentTaskControllerApiFp(this.configuration).getEnrolledCourses(studentId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @param {string} studentId 
-     * @param {GetStudentTasksStatusEnum} [status] 
+     * @param {GetTasksByStatusStatusEnum} status 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public getStudentTasks(studentId: string, status?: GetStudentTasksStatusEnum, options?: RawAxiosRequestConfig) {
-        return StudentTaskControllerApiFp(this.configuration).getStudentTasks(studentId, status, options).then((request) => request(this.axios, this.basePath));
+    public getTasksByStatus(studentId: string, status: GetTasksByStatusStatusEnum, options?: RawAxiosRequestConfig) {
+        return StudentTaskControllerApiFp(this.configuration).getTasksByStatus(studentId, status, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {StudentNeedHelpRequest} studentNeedHelpRequest 
+     * @param {number} chapterId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public markNeedHelp(studentNeedHelpRequest: StudentNeedHelpRequest, options?: RawAxiosRequestConfig) {
-        return StudentTaskControllerApiFp(this.configuration).markNeedHelp(studentNeedHelpRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {number} taskId 
-     * @param {string} studentId 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    public markTaskCompleted(taskId: number, studentId: string, options?: RawAxiosRequestConfig) {
-        return StudentTaskControllerApiFp(this.configuration).markTaskCompleted(taskId, studentId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {StudentTaskUpdateRequest} studentTaskUpdateRequest 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    public updateStudentTask(studentTaskUpdateRequest: StudentTaskUpdateRequest, options?: RawAxiosRequestConfig) {
-        return StudentTaskControllerApiFp(this.configuration).updateStudentTask(studentTaskUpdateRequest, options).then((request) => request(this.axios, this.basePath));
+    public getTopicsByChapter(chapterId: number, options?: RawAxiosRequestConfig) {
+        return StudentTaskControllerApiFp(this.configuration).getTopicsByChapter(chapterId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
-export const GetStudentTasksStatusEnum = {
+export const GetTasksByStatusStatusEnum = {
     Active: 'ACTIVE',
     Completed: 'COMPLETED',
 } as const;
-export type GetStudentTasksStatusEnum = typeof GetStudentTasksStatusEnum[keyof typeof GetStudentTasksStatusEnum];
+export type GetTasksByStatusStatusEnum = typeof GetTasksByStatusStatusEnum[keyof typeof GetTasksByStatusStatusEnum];
 
 
 /**
@@ -13702,6 +15047,108 @@ export class StudentTaskMentorControllerApi extends BaseAPI {
      */
     public updateMentoringMinutes(id: number, updateMentorMinutesRequest: UpdateMentorMinutesRequest, options?: RawAxiosRequestConfig) {
         return StudentTaskMentorControllerApiFp(this.configuration).updateMentoringMinutes(id, updateMentorMinutesRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * StudentTaskSubmissionControllerApi - axios parameter creator
+ */
+export const StudentTaskSubmissionControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {StudentTaskSubmissionRequest} studentTaskSubmissionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        submitTask: async (studentTaskSubmissionRequest: StudentTaskSubmissionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'studentTaskSubmissionRequest' is not null or undefined
+            assertParamExists('submitTask', 'studentTaskSubmissionRequest', studentTaskSubmissionRequest)
+            const localVarPath = `/api/student-task-submission`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(studentTaskSubmissionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * StudentTaskSubmissionControllerApi - functional programming interface
+ */
+export const StudentTaskSubmissionControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = StudentTaskSubmissionControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {StudentTaskSubmissionRequest} studentTaskSubmissionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async submitTask(studentTaskSubmissionRequest: StudentTaskSubmissionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentTaskSubmissionResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.submitTask(studentTaskSubmissionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StudentTaskSubmissionControllerApi.submitTask']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * StudentTaskSubmissionControllerApi - factory interface
+ */
+export const StudentTaskSubmissionControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = StudentTaskSubmissionControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {StudentTaskSubmissionRequest} studentTaskSubmissionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        submitTask(studentTaskSubmissionRequest: StudentTaskSubmissionRequest, options?: RawAxiosRequestConfig): AxiosPromise<StudentTaskSubmissionResponse> {
+            return localVarFp.submitTask(studentTaskSubmissionRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * StudentTaskSubmissionControllerApi - object-oriented interface
+ */
+export class StudentTaskSubmissionControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {StudentTaskSubmissionRequest} studentTaskSubmissionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public submitTask(studentTaskSubmissionRequest: StudentTaskSubmissionRequest, options?: RawAxiosRequestConfig) {
+        return StudentTaskSubmissionControllerApiFp(this.configuration).submitTask(studentTaskSubmissionRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

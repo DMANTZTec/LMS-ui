@@ -1,37 +1,36 @@
-# StaffCourseControllerApi
+# EnrollmentControllerApi
 
 All URIs are relative to *http://localhost:9090/lms*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
-|[**assignInstructorsToCourse**](#assigninstructorstocourse) | **POST** /api/staff-course/assign | |
-|[**getAllInstructors**](#getallinstructors) | **GET** /api/staff-course/instructors | |
-|[**getCoursesByStaff**](#getcoursesbystaff) | **GET** /api/staff-course/staff/{staffId} | |
-|[**getInstructorsByCourse**](#getinstructorsbycourse) | **GET** /api/staff-course/course/{courseId} | |
-|[**removeInstructorFromCourse**](#removeinstructorfromcourse) | **DELETE** /api/staff-course/remove | |
+|[**createEnrollment**](#createenrollment) | **POST** /api/enrollments | |
+|[**deleteEnrollment**](#deleteenrollment) | **DELETE** /api/enrollments/{id} | |
+|[**getAllEnrollments**](#getallenrollments) | **GET** /api/enrollments | |
+|[**getEnrollmentById**](#getenrollmentbyid) | **GET** /api/enrollments/{id} | |
+|[**getEnrollmentsByStudent**](#getenrollmentsbystudent) | **GET** /api/enrollments/student/{studentId} | |
+|[**updateEnrollment**](#updateenrollment) | **PUT** /api/enrollments/{id} | |
 
-# **assignInstructorsToCourse**
-> string assignInstructorsToCourse(assignInstructorToCourseRequest)
+# **createEnrollment**
+> EnrollmentResponse createEnrollment(enrollmentRequest)
 
 
 ### Example
 
 ```typescript
 import {
-    StaffCourseControllerApi,
+    EnrollmentControllerApi,
     Configuration,
-    AssignInstructorToCourseRequest
+    EnrollmentRequest
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StaffCourseControllerApi(configuration);
+const apiInstance = new EnrollmentControllerApi(configuration);
 
-let courseId: string; // (default to undefined)
-let assignInstructorToCourseRequest: AssignInstructorToCourseRequest; //
+let enrollmentRequest: EnrollmentRequest; //
 
-const { status, data } = await apiInstance.assignInstructorsToCourse(
-    courseId,
-    assignInstructorToCourseRequest
+const { status, data } = await apiInstance.createEnrollment(
+    enrollmentRequest
 );
 ```
 
@@ -39,13 +38,12 @@ const { status, data } = await apiInstance.assignInstructorsToCourse(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **assignInstructorToCourseRequest** | **AssignInstructorToCourseRequest**|  | |
-| **courseId** | [**string**] |  | defaults to undefined|
+| **enrollmentRequest** | **EnrollmentRequest**|  | |
 
 
 ### Return type
 
-**string**
+**EnrollmentResponse**
 
 ### Authorization
 
@@ -64,22 +62,72 @@ const { status, data } = await apiInstance.assignInstructorsToCourse(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getAllInstructors**
-> Array<InstructorResponse> getAllInstructors()
+# **deleteEnrollment**
+> deleteEnrollment()
 
 
 ### Example
 
 ```typescript
 import {
-    StaffCourseControllerApi,
+    EnrollmentControllerApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StaffCourseControllerApi(configuration);
+const apiInstance = new EnrollmentControllerApi(configuration);
 
-const { status, data } = await apiInstance.getAllInstructors();
+let id: number; // (default to undefined)
+
+const { status, data } = await apiInstance.deleteEnrollment(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: Not defined
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getAllEnrollments**
+> Array<EnrollmentResponse> getAllEnrollments()
+
+
+### Example
+
+```typescript
+import {
+    EnrollmentControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new EnrollmentControllerApi(configuration);
+
+const { status, data } = await apiInstance.getAllEnrollments();
 ```
 
 ### Parameters
@@ -88,7 +136,7 @@ This endpoint does not have any parameters.
 
 ### Return type
 
-**Array<InstructorResponse>**
+**Array<EnrollmentResponse>**
 
 ### Authorization
 
@@ -107,25 +155,25 @@ This endpoint does not have any parameters.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getCoursesByStaff**
-> Array<StaffCourseResponse> getCoursesByStaff()
+# **getEnrollmentById**
+> EnrollmentResponse getEnrollmentById()
 
 
 ### Example
 
 ```typescript
 import {
-    StaffCourseControllerApi,
+    EnrollmentControllerApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StaffCourseControllerApi(configuration);
+const apiInstance = new EnrollmentControllerApi(configuration);
 
-let staffId: string; // (default to undefined)
+let id: number; // (default to undefined)
 
-const { status, data } = await apiInstance.getCoursesByStaff(
-    staffId
+const { status, data } = await apiInstance.getEnrollmentById(
+    id
 );
 ```
 
@@ -133,12 +181,12 @@ const { status, data } = await apiInstance.getCoursesByStaff(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **staffId** | [**string**] |  | defaults to undefined|
+| **id** | [**number**] |  | defaults to undefined|
 
 
 ### Return type
 
-**Array<StaffCourseResponse>**
+**EnrollmentResponse**
 
 ### Authorization
 
@@ -157,25 +205,25 @@ const { status, data } = await apiInstance.getCoursesByStaff(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getInstructorsByCourse**
-> Array<InstructorResponse> getInstructorsByCourse()
+# **getEnrollmentsByStudent**
+> Array<EnrollmentResponse> getEnrollmentsByStudent()
 
 
 ### Example
 
 ```typescript
 import {
-    StaffCourseControllerApi,
+    EnrollmentControllerApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StaffCourseControllerApi(configuration);
+const apiInstance = new EnrollmentControllerApi(configuration);
 
-let courseId: string; // (default to undefined)
+let studentId: string; // (default to undefined)
 
-const { status, data } = await apiInstance.getInstructorsByCourse(
-    courseId
+const { status, data } = await apiInstance.getEnrollmentsByStudent(
+    studentId
 );
 ```
 
@@ -183,12 +231,12 @@ const { status, data } = await apiInstance.getInstructorsByCourse(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **courseId** | [**string**] |  | defaults to undefined|
+| **studentId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
 
-**Array<InstructorResponse>**
+**Array<EnrollmentResponse>**
 
 ### Authorization
 
@@ -207,27 +255,28 @@ const { status, data } = await apiInstance.getInstructorsByCourse(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **removeInstructorFromCourse**
-> string removeInstructorFromCourse()
+# **updateEnrollment**
+> EnrollmentResponse updateEnrollment(enrollmentRequest)
 
 
 ### Example
 
 ```typescript
 import {
-    StaffCourseControllerApi,
-    Configuration
+    EnrollmentControllerApi,
+    Configuration,
+    EnrollmentRequest
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StaffCourseControllerApi(configuration);
+const apiInstance = new EnrollmentControllerApi(configuration);
 
-let courseId: string; // (default to undefined)
-let staffId: string; // (default to undefined)
+let id: number; // (default to undefined)
+let enrollmentRequest: EnrollmentRequest; //
 
-const { status, data } = await apiInstance.removeInstructorFromCourse(
-    courseId,
-    staffId
+const { status, data } = await apiInstance.updateEnrollment(
+    id,
+    enrollmentRequest
 );
 ```
 
@@ -235,13 +284,13 @@ const { status, data } = await apiInstance.removeInstructorFromCourse(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **courseId** | [**string**] |  | defaults to undefined|
-| **staffId** | [**string**] |  | defaults to undefined|
+| **enrollmentRequest** | **EnrollmentRequest**|  | |
+| **id** | [**number**] |  | defaults to undefined|
 
 
 ### Return type
 
-**string**
+**EnrollmentResponse**
 
 ### Authorization
 
@@ -249,7 +298,7 @@ const { status, data } = await apiInstance.removeInstructorFromCourse(
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: */*
 
 

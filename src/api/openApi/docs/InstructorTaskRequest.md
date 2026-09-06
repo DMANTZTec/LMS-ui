@@ -1,4 +1,4 @@
-# StudentTaskRequest
+# InstructorTaskRequest
 
 
 ## Properties
@@ -8,24 +8,24 @@ Name | Type | Description | Notes
 **title** | **string** |  | [default to undefined]
 **description** | **string** |  | [optional] [default to undefined]
 **courseId** | **string** |  | [default to undefined]
-**chapterId** | **number** |  | [optional] [default to undefined]
-**topicId** | **number** |  | [optional] [default to undefined]
 **batchId** | **number** |  | [default to undefined]
-**studentId** | **string** |  | [default to undefined]
+**chapterId** | **number** |  | [default to undefined]
+**topicId** | **number** |  | [default to undefined]
+**assignedBy** | **string** |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { StudentTaskRequest } from './api';
+import { InstructorTaskRequest } from './api';
 
-const instance: StudentTaskRequest = {
+const instance: InstructorTaskRequest = {
     title,
     description,
     courseId,
+    batchId,
     chapterId,
     topicId,
-    batchId,
-    studentId,
+    assignedBy,
 };
 ```
 

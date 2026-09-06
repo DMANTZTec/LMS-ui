@@ -56,12 +56,17 @@ const AppRoute = () => {
                     {/* STAFF Routes */}
                     <Route element={<AuthGuard allowedRole="STAFF" />}>
                         <Route path="/Staff-dashboard" element={<StaffDashBoard />} />
-                        <Route path="/Instructor-dashboard" element={<InstructorDashBoard />} />
+                        
                         <Route path="/staffProfile" element={<StaffProfile />} />
                         <Route path="courseMgt" element={<CourseMgtMain />} />
                         <Route path="/addCourse" element={<AddCourse />} />
                         <Route  path='/course-builder/:courseId' element={<CourseStructureBuilder />} />
                         <Route path="/courseDetails/:courseId" element={<CourseDetails />} />
+                    </Route>
+
+                    {/* INSTRUCTOR Routes */}
+                    <Route element={<AuthGuard allowedRole="INSTRUCTOR" />}>
+                    <Route path="/Instructor-dashboard" element={<InstructorDashBoard />} />
                     </Route>
 
                     {/* STUDENT Routes */}

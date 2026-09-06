@@ -1,37 +1,36 @@
-# StaffRoleControllerApi
+# EnrollmentBatchControllerApi
 
 All URIs are relative to *http://localhost:9090/lms*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
-|[**assignRole**](#assignrole) | **POST** /api/staff-roles | |
-|[**getAll**](#getall) | **GET** /api/staff-roles | |
-|[**getById**](#getbyid) | **GET** /api/staff-roles/{id} | |
-|[**getRolesByStaffId**](#getrolesbystaffid) | **GET** /api/staff-roles/staff/{staffId} | |
-|[**getStaffByRoleId**](#getstaffbyroleid) | **GET** /api/staff-roles/role/{roleId} | |
-|[**removeRole**](#removerole) | **DELETE** /api/staff-roles/{id} | |
-|[**updateStaffRole**](#updatestaffrole) | **PUT** /api/staff-roles/{id} | |
+|[**assignStudentToBatch**](#assignstudenttobatch) | **POST** /api/enrollment-batches/assign | |
+|[**getEnrolledBatchesByStudentId**](#getenrolledbatchesbystudentid) | **GET** /api/enrollment-batches/students/{studentId}/batches | |
+|[**getEnrollmentBatch**](#getenrollmentbatch) | **GET** /api/enrollment-batches/{id} | |
+|[**getStudentWeeklySchedule**](#getstudentweeklyschedule) | **GET** /api/enrollment-batches/students/{studentId}/weekly-schedule | |
+|[**getStudentsByBatch**](#getstudentsbybatch) | **GET** /api/enrollment-batches/batches/{batchId}/students | |
+|[**removeStudentFromBatch**](#removestudentfrombatch) | **DELETE** /api/enrollment-batches/{id} | |
 
-# **assignRole**
-> StaffRoleResponse assignRole(staffRoleRequest)
+# **assignStudentToBatch**
+> EnrollmentBatchResponse assignStudentToBatch(assignStudentToBatchRequest)
 
 
 ### Example
 
 ```typescript
 import {
-    StaffRoleControllerApi,
+    EnrollmentBatchControllerApi,
     Configuration,
-    StaffRoleRequest
+    AssignStudentToBatchRequest
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StaffRoleControllerApi(configuration);
+const apiInstance = new EnrollmentBatchControllerApi(configuration);
 
-let staffRoleRequest: StaffRoleRequest; //
+let assignStudentToBatchRequest: AssignStudentToBatchRequest; //
 
-const { status, data } = await apiInstance.assignRole(
-    staffRoleRequest
+const { status, data } = await apiInstance.assignStudentToBatch(
+    assignStudentToBatchRequest
 );
 ```
 
@@ -39,12 +38,12 @@ const { status, data } = await apiInstance.assignRole(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **staffRoleRequest** | **StaffRoleRequest**|  | |
+| **assignStudentToBatchRequest** | **AssignStudentToBatchRequest**|  | |
 
 
 ### Return type
 
-**StaffRoleResponse**
+**EnrollmentBatchResponse**
 
 ### Authorization
 
@@ -63,31 +62,38 @@ const { status, data } = await apiInstance.assignRole(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getAll**
-> Array<StaffRoleResponse> getAll()
+# **getEnrolledBatchesByStudentId**
+> Array<EnrollmentBatchResponse> getEnrolledBatchesByStudentId()
 
 
 ### Example
 
 ```typescript
 import {
-    StaffRoleControllerApi,
+    EnrollmentBatchControllerApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StaffRoleControllerApi(configuration);
+const apiInstance = new EnrollmentBatchControllerApi(configuration);
 
-const { status, data } = await apiInstance.getAll();
+let studentId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.getEnrolledBatchesByStudentId(
+    studentId
+);
 ```
 
 ### Parameters
-This endpoint does not have any parameters.
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **studentId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
 
-**Array<StaffRoleResponse>**
+**Array<EnrollmentBatchResponse>**
 
 ### Authorization
 
@@ -106,24 +112,24 @@ This endpoint does not have any parameters.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getById**
-> StaffRoleResponse getById()
+# **getEnrollmentBatch**
+> EnrollmentBatchResponse getEnrollmentBatch()
 
 
 ### Example
 
 ```typescript
 import {
-    StaffRoleControllerApi,
+    EnrollmentBatchControllerApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StaffRoleControllerApi(configuration);
+const apiInstance = new EnrollmentBatchControllerApi(configuration);
 
 let id: number; // (default to undefined)
 
-const { status, data } = await apiInstance.getById(
+const { status, data } = await apiInstance.getEnrollmentBatch(
     id
 );
 ```
@@ -137,7 +143,7 @@ const { status, data } = await apiInstance.getById(
 
 ### Return type
 
-**StaffRoleResponse**
+**EnrollmentBatchResponse**
 
 ### Authorization
 
@@ -156,25 +162,25 @@ const { status, data } = await apiInstance.getById(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getRolesByStaffId**
-> Array<StaffRoleResponse> getRolesByStaffId()
+# **getStudentWeeklySchedule**
+> Array<DailyScheduleResponse> getStudentWeeklySchedule()
 
 
 ### Example
 
 ```typescript
 import {
-    StaffRoleControllerApi,
+    EnrollmentBatchControllerApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StaffRoleControllerApi(configuration);
+const apiInstance = new EnrollmentBatchControllerApi(configuration);
 
-let staffId: string; // (default to undefined)
+let studentId: string; // (default to undefined)
 
-const { status, data } = await apiInstance.getRolesByStaffId(
-    staffId
+const { status, data } = await apiInstance.getStudentWeeklySchedule(
+    studentId
 );
 ```
 
@@ -182,12 +188,12 @@ const { status, data } = await apiInstance.getRolesByStaffId(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **staffId** | [**string**] |  | defaults to undefined|
+| **studentId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
 
-**Array<StaffRoleResponse>**
+**Array<DailyScheduleResponse>**
 
 ### Authorization
 
@@ -206,25 +212,25 @@ const { status, data } = await apiInstance.getRolesByStaffId(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getStaffByRoleId**
-> Array<StaffRoleResponse> getStaffByRoleId()
+# **getStudentsByBatch**
+> Array<EnrollmentBatchResponse> getStudentsByBatch()
 
 
 ### Example
 
 ```typescript
 import {
-    StaffRoleControllerApi,
+    EnrollmentBatchControllerApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StaffRoleControllerApi(configuration);
+const apiInstance = new EnrollmentBatchControllerApi(configuration);
 
-let roleId: number; // (default to undefined)
+let batchId: number; // (default to undefined)
 
-const { status, data } = await apiInstance.getStaffByRoleId(
-    roleId
+const { status, data } = await apiInstance.getStudentsByBatch(
+    batchId
 );
 ```
 
@@ -232,12 +238,12 @@ const { status, data } = await apiInstance.getStaffByRoleId(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **roleId** | [**number**] |  | defaults to undefined|
+| **batchId** | [**number**] |  | defaults to undefined|
 
 
 ### Return type
 
-**Array<StaffRoleResponse>**
+**Array<EnrollmentBatchResponse>**
 
 ### Authorization
 
@@ -256,24 +262,24 @@ const { status, data } = await apiInstance.getStaffByRoleId(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **removeRole**
-> removeRole()
+# **removeStudentFromBatch**
+> removeStudentFromBatch()
 
 
 ### Example
 
 ```typescript
 import {
-    StaffRoleControllerApi,
+    EnrollmentBatchControllerApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StaffRoleControllerApi(configuration);
+const apiInstance = new EnrollmentBatchControllerApi(configuration);
 
 let id: number; // (default to undefined)
 
-const { status, data } = await apiInstance.removeRole(
+const { status, data } = await apiInstance.removeStudentFromBatch(
     id
 );
 ```
@@ -297,60 +303,6 @@ void (empty response body)
 
  - **Content-Type**: Not defined
  - **Accept**: Not defined
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **updateStaffRole**
-> StaffRoleResponse updateStaffRole(staffRoleRequest)
-
-
-### Example
-
-```typescript
-import {
-    StaffRoleControllerApi,
-    Configuration,
-    StaffRoleRequest
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new StaffRoleControllerApi(configuration);
-
-let id: number; // (default to undefined)
-let staffRoleRequest: StaffRoleRequest; //
-
-const { status, data } = await apiInstance.updateStaffRole(
-    id,
-    staffRoleRequest
-);
-```
-
-### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **staffRoleRequest** | **StaffRoleRequest**|  | |
-| **id** | [**number**] |  | defaults to undefined|
-
-
-### Return type
-
-**StaffRoleResponse**
-
-### Authorization
-
-[BearerAuth](../README.md#BearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: */*
 
 
 ### HTTP response details

@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { decodeToken } from "@/utils/tokenUtility";
+
 import { staffApi } from "@/api/staff-controller.api";
 
 export default function StaffOtp() {
@@ -85,7 +87,12 @@ export default function StaffOtp() {
       }
 
       setTimeout(() => {
+        const roleInfo = JSON.parse(sessionStorage.getItem("otpStaff") ).role;
+        console.log("roleInfo and roleInfo.toUpperCase() === 'ADMIN'and roleInfo.toUpperCase() === 'INSTRUCTOR'is: ",roleInfo,roleInfo.toUpperCase() === "ADMIN",roleInfo.toUpperCase() === "INSTRUCTOR");
+        if(roleInfo.toUpperCase() === "ADMIN")
         navigate("/Staff-dashboard");
+        if(roleInfo.toUpperCase() === "INSTRUCTOR")
+        navigate("/Instructor-dashboard");
       }, 1000);
     } catch (error) {
       const errorMsg =

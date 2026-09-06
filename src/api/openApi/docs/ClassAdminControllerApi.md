@@ -1,6 +1,6 @@
 # ClassAdminControllerApi
 
-All URIs are relative to *http://localhost:9090*
+All URIs are relative to *http://localhost:9090/lms*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
@@ -17,7 +17,7 @@ All URIs are relative to *http://localhost:9090*
 |[**getInstructorsByBatchId**](#getinstructorsbybatchid) | **GET** /api/admin/courseschedule/classes/{batchId}/instructors | |
 |[**getScheduleById**](#getschedulebyid) | **GET** /api/admin/schedules/{scheduleId} | |
 |[**getSchedulesByBatch**](#getschedulesbybatch) | **GET** /api/admin/courseschedule/{batchId}/schedules | |
-|[**getSchedulesByStaff**](#getschedulesbystaff) | **GET** /api/admin/schedules/staff/{staffId} | |
+|[**getSchedulesByInstructor**](#getschedulesbyinstructor) | **GET** /api/admin/instructor/{staffId} | |
 |[**getStaffDailySchedule**](#getstaffdailyschedule) | **GET** /api/admin/staff/{staffId}/dailySchedules | |
 |[**getStudentDetails**](#getstudentdetails) | **GET** /api/admin/student-details/{studentId} | |
 |[**getTopicsByBatchId**](#gettopicsbybatchid) | **GET** /api/admin/classes/{batchId}/topics | |
@@ -687,8 +687,8 @@ const { status, data } = await apiInstance.getSchedulesByBatch(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getSchedulesByStaff**
-> Array<ClassScheduleResponse> getSchedulesByStaff()
+# **getSchedulesByInstructor**
+> Array<InstructorScheduleResponse> getSchedulesByInstructor()
 
 
 ### Example
@@ -703,9 +703,11 @@ const configuration = new Configuration();
 const apiInstance = new ClassAdminControllerApi(configuration);
 
 let staffId: string; // (default to undefined)
+let filter: 'ALL' | 'WEEK' | 'MONTH'; // (optional) (default to 'ALL')
 
-const { status, data } = await apiInstance.getSchedulesByStaff(
-    staffId
+const { status, data } = await apiInstance.getSchedulesByInstructor(
+    staffId,
+    filter
 );
 ```
 
@@ -714,11 +716,12 @@ const { status, data } = await apiInstance.getSchedulesByStaff(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **staffId** | [**string**] |  | defaults to undefined|
+| **filter** | [**&#39;ALL&#39; | &#39;WEEK&#39; | &#39;MONTH&#39;**]**Array<&#39;ALL&#39; &#124; &#39;WEEK&#39; &#124; &#39;MONTH&#39;>** |  | (optional) defaults to 'ALL'|
 
 
 ### Return type
 
-**Array<ClassScheduleResponse>**
+**Array<InstructorScheduleResponse>**
 
 ### Authorization
 

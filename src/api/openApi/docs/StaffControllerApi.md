@@ -1,6 +1,6 @@
 # StaffControllerApi
 
-All URIs are relative to *http://localhost:9090*
+All URIs are relative to *http://localhost:9090/lms*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
@@ -17,7 +17,8 @@ All URIs are relative to *http://localhost:9090*
 |[**setPassword**](#setpassword) | **POST** /api/staff/set-Newpassword | |
 |[**staffLogin**](#stafflogin) | **POST** /api/staff/login | |
 |[**updateProfileImage1**](#updateprofileimage1) | **PUT** /api/staff/{staffId}/profile-image | |
-|[**updateStaff**](#updatestaff) | **PUT** /api/staff/{staffId} | |
+|[**updateStaff**](#updatestaff) | **PUT** /api/staff/{staffId}/update | |
+|[**updateStaff1**](#updatestaff1) | **PUT** /api/staff/{staffId}/update1 | |
 |[**validateResetToken**](#validateresettoken) | **GET** /api/staff/reset-password/validate | |
 |[**verifyStaffOtp**](#verifystaffotp) | **POST** /api/staff/login-verification-otp | |
 
@@ -736,6 +737,60 @@ const { status, data } = await apiInstance.updateStaff(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **staffUpdateRequest** | **StaffUpdateRequest**|  | |
+| **staffId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**StaffResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **updateStaff1**
+> StaffResponse updateStaff1(staffUpdateReq1)
+
+
+### Example
+
+```typescript
+import {
+    StaffControllerApi,
+    Configuration,
+    StaffUpdateReq1
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StaffControllerApi(configuration);
+
+let staffId: string; // (default to undefined)
+let staffUpdateReq1: StaffUpdateReq1; //
+
+const { status, data } = await apiInstance.updateStaff1(
+    staffId,
+    staffUpdateReq1
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **staffUpdateReq1** | **StaffUpdateReq1**|  | |
 | **staffId** | [**string**] |  | defaults to undefined|
 
 

@@ -1,31 +1,31 @@
-# StudentTopicReferenceProgressControllerApi
+# StudentTaskSubmissionControllerApi
 
 All URIs are relative to *http://localhost:9090/lms*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
-|[**markReferenceCompleted**](#markreferencecompleted) | **POST** /api/progress/markascomplete | |
+|[**submitTask**](#submittask) | **POST** /api/student-task-submission | |
 
-# **markReferenceCompleted**
-> StudentTopicReferenceProgressResponse markReferenceCompleted(studentTopicReferenceProgressRequest)
+# **submitTask**
+> StudentTaskSubmissionResponse submitTask(studentTaskSubmissionRequest)
 
 
 ### Example
 
 ```typescript
 import {
-    StudentTopicReferenceProgressControllerApi,
+    StudentTaskSubmissionControllerApi,
     Configuration,
-    StudentTopicReferenceProgressRequest
+    StudentTaskSubmissionRequest
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StudentTopicReferenceProgressControllerApi(configuration);
+const apiInstance = new StudentTaskSubmissionControllerApi(configuration);
 
-let studentTopicReferenceProgressRequest: StudentTopicReferenceProgressRequest; //
+let studentTaskSubmissionRequest: StudentTaskSubmissionRequest; //
 
-const { status, data } = await apiInstance.markReferenceCompleted(
-    studentTopicReferenceProgressRequest
+const { status, data } = await apiInstance.submitTask(
+    studentTaskSubmissionRequest
 );
 ```
 
@@ -33,12 +33,12 @@ const { status, data } = await apiInstance.markReferenceCompleted(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **studentTopicReferenceProgressRequest** | **StudentTopicReferenceProgressRequest**|  | |
+| **studentTaskSubmissionRequest** | **StudentTaskSubmissionRequest**|  | |
 
 
 ### Return type
 
-**StudentTopicReferenceProgressResponse**
+**StudentTaskSubmissionResponse**
 
 ### Authorization
 

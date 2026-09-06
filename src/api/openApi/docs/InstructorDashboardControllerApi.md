@@ -1,37 +1,35 @@
-# StaffCourseControllerApi
+# InstructorDashboardControllerApi
 
 All URIs are relative to *http://localhost:9090/lms*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
-|[**assignInstructorsToCourse**](#assigninstructorstocourse) | **POST** /api/staff-course/assign | |
-|[**getAllInstructors**](#getallinstructors) | **GET** /api/staff-course/instructors | |
-|[**getCoursesByStaff**](#getcoursesbystaff) | **GET** /api/staff-course/staff/{staffId} | |
-|[**getInstructorsByCourse**](#getinstructorsbycourse) | **GET** /api/staff-course/course/{courseId} | |
-|[**removeInstructorFromCourse**](#removeinstructorfromcourse) | **DELETE** /api/staff-course/remove | |
+|[**createTask**](#createtask) | **POST** /api/instructor/tasks | |
+|[**getBatchSummary**](#getbatchsummary) | **GET** /api/instructor/batches | |
+|[**getClassStats**](#getclassstats) | **GET** /api/instructor/class-stats | |
+|[**getStudentStats**](#getstudentstats) | **GET** /api/instructor/student-stats | |
+|[**getTaskSubmissions**](#gettasksubmissions) | **GET** /api/instructor/submissions | |
 
-# **assignInstructorsToCourse**
-> string assignInstructorsToCourse(assignInstructorToCourseRequest)
+# **createTask**
+> InstructorTaskResponse createTask(instructorTaskRequest)
 
 
 ### Example
 
 ```typescript
 import {
-    StaffCourseControllerApi,
+    InstructorDashboardControllerApi,
     Configuration,
-    AssignInstructorToCourseRequest
+    InstructorTaskRequest
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StaffCourseControllerApi(configuration);
+const apiInstance = new InstructorDashboardControllerApi(configuration);
 
-let courseId: string; // (default to undefined)
-let assignInstructorToCourseRequest: AssignInstructorToCourseRequest; //
+let instructorTaskRequest: InstructorTaskRequest; //
 
-const { status, data } = await apiInstance.assignInstructorsToCourse(
-    courseId,
-    assignInstructorToCourseRequest
+const { status, data } = await apiInstance.createTask(
+    instructorTaskRequest
 );
 ```
 
@@ -39,13 +37,12 @@ const { status, data } = await apiInstance.assignInstructorsToCourse(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **assignInstructorToCourseRequest** | **AssignInstructorToCourseRequest**|  | |
-| **courseId** | [**string**] |  | defaults to undefined|
+| **instructorTaskRequest** | **InstructorTaskRequest**|  | |
 
 
 ### Return type
 
-**string**
+**InstructorTaskResponse**
 
 ### Authorization
 
@@ -64,68 +61,25 @@ const { status, data } = await apiInstance.assignInstructorsToCourse(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getAllInstructors**
-> Array<InstructorResponse> getAllInstructors()
+# **getBatchSummary**
+> InstructorBatchSummaryResponse getBatchSummary()
 
 
 ### Example
 
 ```typescript
 import {
-    StaffCourseControllerApi,
+    InstructorDashboardControllerApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StaffCourseControllerApi(configuration);
+const apiInstance = new InstructorDashboardControllerApi(configuration);
 
-const { status, data } = await apiInstance.getAllInstructors();
-```
+let instructorId: string; // (default to undefined)
 
-### Parameters
-This endpoint does not have any parameters.
-
-
-### Return type
-
-**Array<InstructorResponse>**
-
-### Authorization
-
-[BearerAuth](../README.md#BearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **getCoursesByStaff**
-> Array<StaffCourseResponse> getCoursesByStaff()
-
-
-### Example
-
-```typescript
-import {
-    StaffCourseControllerApi,
-    Configuration
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new StaffCourseControllerApi(configuration);
-
-let staffId: string; // (default to undefined)
-
-const { status, data } = await apiInstance.getCoursesByStaff(
-    staffId
+const { status, data } = await apiInstance.getBatchSummary(
+    instructorId
 );
 ```
 
@@ -133,12 +87,12 @@ const { status, data } = await apiInstance.getCoursesByStaff(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **staffId** | [**string**] |  | defaults to undefined|
+| **instructorId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
 
-**Array<StaffCourseResponse>**
+**InstructorBatchSummaryResponse**
 
 ### Authorization
 
@@ -157,24 +111,126 @@ const { status, data } = await apiInstance.getCoursesByStaff(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getInstructorsByCourse**
-> Array<InstructorResponse> getInstructorsByCourse()
+# **getClassStats**
+> InstructorClassStatsResponse getClassStats()
 
 
 ### Example
 
 ```typescript
 import {
-    StaffCourseControllerApi,
+    InstructorDashboardControllerApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new StaffCourseControllerApi(configuration);
+const apiInstance = new InstructorDashboardControllerApi(configuration);
 
-let courseId: string; // (default to undefined)
+let instructorId: string; // (default to undefined)
 
-const { status, data } = await apiInstance.getInstructorsByCourse(
+const { status, data } = await apiInstance.getClassStats(
+    instructorId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **instructorId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**InstructorClassStatsResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getStudentStats**
+> InstructorStudentStatsResponse getStudentStats()
+
+
+### Example
+
+```typescript
+import {
+    InstructorDashboardControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new InstructorDashboardControllerApi(configuration);
+
+let instructorId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.getStudentStats(
+    instructorId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **instructorId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**InstructorStudentStatsResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getTaskSubmissions**
+> Array<StudentTaskSubmissionResponse> getTaskSubmissions()
+
+
+### Example
+
+```typescript
+import {
+    InstructorDashboardControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new InstructorDashboardControllerApi(configuration);
+
+let staffId: string; // (default to undefined)
+let courseId: string; // (optional) (default to undefined)
+
+const { status, data } = await apiInstance.getTaskSubmissions(
+    staffId,
     courseId
 );
 ```
@@ -183,65 +239,13 @@ const { status, data } = await apiInstance.getInstructorsByCourse(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **courseId** | [**string**] |  | defaults to undefined|
-
-
-### Return type
-
-**Array<InstructorResponse>**
-
-### Authorization
-
-[BearerAuth](../README.md#BearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **removeInstructorFromCourse**
-> string removeInstructorFromCourse()
-
-
-### Example
-
-```typescript
-import {
-    StaffCourseControllerApi,
-    Configuration
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new StaffCourseControllerApi(configuration);
-
-let courseId: string; // (default to undefined)
-let staffId: string; // (default to undefined)
-
-const { status, data } = await apiInstance.removeInstructorFromCourse(
-    courseId,
-    staffId
-);
-```
-
-### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **courseId** | [**string**] |  | defaults to undefined|
 | **staffId** | [**string**] |  | defaults to undefined|
+| **courseId** | [**string**] |  | (optional) defaults to undefined|
 
 
 ### Return type
 
-**string**
+**Array<StudentTaskSubmissionResponse>**
 
 ### Authorization
 

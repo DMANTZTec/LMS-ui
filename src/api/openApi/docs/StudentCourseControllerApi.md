@@ -1,6 +1,6 @@
 # StudentCourseControllerApi
 
-All URIs are relative to *http://localhost:9090*
+All URIs are relative to *http://localhost:9090/lms*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|

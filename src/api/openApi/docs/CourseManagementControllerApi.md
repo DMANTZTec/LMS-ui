@@ -1,6 +1,6 @@
 # CourseManagementControllerApi
 
-All URIs are relative to *http://localhost:9090*
+All URIs are relative to *http://localhost:9090/lms*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
@@ -25,7 +25,7 @@ All URIs are relative to *http://localhost:9090*
 |[**deleteVideo**](#deletevideo) | **DELETE** /api/references/video/{referenceId} | |
 |[**getAllPrograms**](#getallprograms) | **GET** /api/getAll/program | |
 |[**getChapterById**](#getchapterbyid) | **GET** /api/get/{chapterId} | |
-|[**getChaptersByCourse**](#getchaptersbycourse) | **GET** /api/chapters/getAll | |
+|[**getChaptersByCourse1**](#getchaptersbycourse1) | **GET** /api/chapters/getAll | |
 |[**getChaptersByCourseId**](#getchaptersbycourseid) | **GET** /api/course/{courseId}/chapters | |
 |[**getCourseDetails**](#getcoursedetails) | **GET** /api/coursedetails/{courseId} | |
 |[**getDocuments**](#getdocuments) | **GET** /api/topics/{topicId}/references/documents | |
@@ -1171,8 +1171,8 @@ const { status, data } = await apiInstance.getChapterById(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getChaptersByCourse**
-> Array<ChapterResponse> getChaptersByCourse()
+# **getChaptersByCourse1**
+> Array<ChapterResponse> getChaptersByCourse1()
 
 
 ### Example
@@ -1186,7 +1186,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new CourseManagementControllerApi(configuration);
 
-const { status, data } = await apiInstance.getChaptersByCourse();
+const { status, data } = await apiInstance.getChaptersByCourse1();
 ```
 
 ### Parameters

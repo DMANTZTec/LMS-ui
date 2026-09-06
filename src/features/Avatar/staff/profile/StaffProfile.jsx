@@ -19,7 +19,8 @@ import {
   UserCheck,
   Camera,
   Loader2,
-  RotateCcw
+  RotateCcw,
+  CircleX
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -48,9 +49,11 @@ export default function StaffProfileScreen() {
   const [activeTab, setActiveTab] = useState("personal");
   const [isDisabled, setIsDisabled] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [initialValues, setInitialValues] = useState(null);
   const [staffData, setStaffData] = useState({});
   const [previewProfilePicture, setPreviewProfilePicture] = useState(null);
+  const [isNewImageSelected, setIsNewImageSelected] = useState(false);
   const [imageRemoved, setImageRemoved] = useState(false);
   const [selectedStaffResetData, setSelectedStaffResetData] = useState(null);
   const [isResetStaffPwdModal, setIsResetStaffPwdModal] = useState(false);
@@ -60,10 +63,11 @@ export default function StaffProfileScreen() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { dirtyFields, errors },
     setValue,
     control,
-    reset
+    reset,
+    getValues
   } = useForm({
     defaultValues: {},
     resolver: zodResolver(StaffProfileSchema),
@@ -72,6 +76,7 @@ export default function StaffProfileScreen() {
 
   // Fetch registered user details from backend on component mount
   useEffect(() => {
+    setSubmitting(false);
     const fetchAddNewStaffData = async () => {
       setIsLoading(true);
       try {
@@ -92,13 +97,16 @@ export default function StaffProfileScreen() {
         const response = await staffApi.getStaffById(staffId);
         const apiData = response?.data;
         setStaffData(apiData);
+        
+        if(typeof apiData.profileImg === "string")
+        setIsNewImageSelected(true);
 
 
 
         if (apiData) {
           // 1. Save original initial data to a state variable for future reference
           setInitialValues(apiData);
-
+          
           // 2. Populate form fields dynamically with the backend registration data
           reset(apiData);
 
@@ -143,58 +151,95 @@ export default function StaffProfileScreen() {
 
   const totalErrorCount = Object.keys(errors).length;
 
+// 2. Define fields belonging to each Tab
+const TAB_FIELDS = {
+  Personal_Info: ["firstNm" , "lastNm" , "email", "mobileNum", "gender","dob"],
+  Employment_Address: ["staffId", "designation","dateOfJoining", "roles", "addr1", "addr2", "city", "state", "country", "pin"],
+  Emergency_Contact: ["emergencyContactNm", "emergencyContactNum"]
+};
+
+  // Helper function to check if any field inside a tab is dirty
+  const isTabDirty = (tabKey) => {
+    const fieldsInTab = TAB_FIELDS[tabKey] || [];
+    return fieldsInTab.some((field) => !!dirtyFields[field]);
+  };
+
   const saveProfile = async (data) => {
-    console.log("entered into saveProfile function. and data is: ", data);
+    setSubmitting(true);
+    
     const payload = {
 
-      "firstName": data.firstNm,
-      "lastName": data.lastNm,
+      "firstNm": data.firstNm,
+      "lastNm": data.lastNm,
       "emailId": data.email,
-      "mobileNumber": data.mobileNum,
+      "mobileNum": data.mobileNum,
       "gender": data.gender,
-      "dateOfBirth": data.dob,                              // this field is not their in swagger response
+      "dob": data.dob,                              
       "designation": data.designation,
       "dateOfJoining": data.dateOfJoining,
       "roles": data.roles,
-      "addressOne": data.addr1,
-      "addressTwo": data.addr2,
+      "addr1": data.addr1,
+      "addr2": data.addr2,
       "city": data.city,
       "state": data.state,
       "country": data.country,
-      "pincode": data.pin,
-      "emergencyContactName": data.emergencyContactNm,
-      "emergencyContactNumber": data.emergencyContactNum
+      "pin": data.pin,
+      "emergencyContactNm": data.emergencyContactNm,
+      "emergencyContactNum": data.emergencyContactNum
     }
-    const resultOne = await staffApi.updateStaff(data.staffId, payload);
-    const updatedStaffData = resultOne.data;
-    console.log("updatedStaffData is: ", updatedStaffData);
 
-    console.log("data.profileImg is: ", data.profileImg);
-    console.log("data.profileImg instanceof File is: ", data.profileImg instanceof File);
-    console.log("imageRemoved is: ", imageRemoved);
-    console.log("typeof data.profileImg is: ", typeof data.profileImg);
+    try {
+
+    const resultOne = await staffApi.updateStaff1(data.staffId, payload);
+
+    const updatedStaffData = resultOne.data;
 
     if (data.profileImg instanceof File) {
-      console.log("entered into if block and data.profileImg instanceof File is: ", data.profileImg instanceof File);
       const resultTwo = await staffApi.updateProfileImage1(data.staffId, data.profileImg);
     }
     else if (initialValues.profileImg === null && data.profileImg === null && imageRemoved === true) {
-      console.log("entered into else if block and (typeof initialValue.profileImg === 'string' && data.profileImg == null && imageRemoved === true) is: ", (typeof initialValues.profileImg === "string" && data.profileImg === null && imageRemoved === true));
+
     }
     else if (data.profileImg === null && imageRemoved === true) {
-      console.log("entered into else if block.");
-      console.log("data.profileImg and (data.profileImg ===null && imageRemoved ===true) are: ", data.profileImg, data.profileImg === null && imageRemoved === true);
+
       await staffApi.deleteProfileImage1(data.staffId);
     }
     else if ((data.profileImg === null && imageRemoved === false) || typeof data.profileImg === "string") {
-      console.log("entered into else if block and (data.profileImg === null && imageRemoved === false) || typeof data.profileImg === 'string' is: ", (data.profileImg === null && imageRemoved === false) || typeof data.profileImg === "string");
+
 
     } else {
-      console.log("entered into else block: ");
+
     }
 
-    setIsDisabled(true);
+    // calling again api to new data from database table.
+    
+        const otpData = sessionStorage.getItem("otpStaff");
+        let staffId = null;
 
+        if (otpData) {
+          staffId = JSON.parse(otpData).staffId;
+        }
+
+        if (!staffId) {
+          setIsLoading(false);
+          return;
+        }
+
+        // Call Backend API to fetch registration details
+        const response = await staffApi.getStaffById(staffId);
+        const apiData = response?.data;
+        setStaffData(apiData);
+        
+reset(apiData);
+setPreviewProfilePicture(apiData.profileImg);
+    setIsDisabled(true);
+    }catch(error) {
+      setSubmitting(false);
+    }
+    finally {
+      //setImageRemoved(false);
+      setSubmitting(false);
+    }
   }
 
   const openFilePicker = () => {
@@ -202,9 +247,16 @@ export default function StaffProfileScreen() {
   }
 
   const uploadPicture = (e) => {
+    let ACCEPTED_IMAGES_TYPES = ["image/jpeg", "image/png"];
+    
     //profileImageRef.current.click();
+
+
     const file = e.target?.files[0];
     if (file) {
+      if(!ACCEPTED_IMAGES_TYPES.includes(file.types)) {
+        setIsNewImageSelected(false);
+      }
       if (previewProfilePicture)
         URL.revokeObjectURL(previewProfilePicture);
       const url = URL.createObjectURL(file);
@@ -215,12 +267,12 @@ export default function StaffProfileScreen() {
         shouldDirty: true,
         shouldTouch: true
       });
+      setIsNewImageSelected(true);
     }
 
   }
 
   const removePhoto = () => {
-    console.log("entered into remoePhoto function.");
     if (previewProfilePicture)
       URL.revokeObjectURL(previewProfilePicture);
     setPreviewProfilePicture(null);
@@ -230,17 +282,16 @@ export default function StaffProfileScreen() {
       shouldDirty: true,
       shouldTouch: true
     });
+    setIsNewImageSelected(false);
 
     if (profileImageRef.current)
       profileImageRef.current.value = "";
   }
 
   const resetPwdModal = (data) => {
-    console.log("entered into resetPwdModal function and data is: ", data);
 
 
     setIsResetStaffPwdModal(true);
-    console.log("isResetStaffPwdModal value is: ", isResetStaffPwdModal);
 
   }
 
@@ -269,17 +320,18 @@ export default function StaffProfileScreen() {
                       src={previewProfilePicture}
                       className="w-full h-full rounded-full object-cover border-2 border-slate-100 shadow-sm"
                     />
-                  ) : !imageRemoved && initialValues?.profileImg ? (
+                  ) : (!imageRemoved && initialValues?.profileImg) ? (
                     <img
                       src={initialValues.profileImg}
                       className="w-28 h-28 rounded-full object-cover border-2 border-slate-100 shadow-sm"
                     />
-                  ) : (
-                    <User className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-gray-300" />
-                  )}
+                      ) : (
+                             <User className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-gray-300" />
+                    )}
 
-                  {errors.profileImg?.message && <p className="text-xs font-medium text-red-500">{errors.profileImg?.message}</p>}
-                  {(!errors.profileImg?.message && !imageRemoved) && <p className="text-sm cursor-pointer text-blue underline" onClick={() => removePhoto()}>Remove Photo</p>}
+                  {/* {errors.profileImg?.message && <p className="text-xs font-medium text-red-500">{errors.profileImg?.message}</p>} */}
+                  {/*{(!errors.profileImg?.message && !imageRemoved) && <p className="text-sm cursor-pointer text-blue underline" onClick={() => removePhoto()}>Remove Photo</p>} */}
+                  
                   {/* <img
                     src={staffData.profileImage}
                     alt={`${staffData.firstName} ${staffData.lastName}`}
@@ -295,11 +347,16 @@ export default function StaffProfileScreen() {
                     <Camera className="w-3.5 h-3.5 text-slate-600" onClick={() => openFilePicker()} />
                   </button>
                 </div>
+                {errors.profileImg?.message && <p className="text-xs font-medium text-red-500">{errors.profileImg?.message}</p>}
+                { isNewImageSelected && <p className="text-sm cursor-pointer text-blue underline" onClick={() => removePhoto()}>Remove Photo</p>}
                 <div className="space-y-1 mb-1">
                   <div className="flex items-center justify-center md:justify-start gap-2 flex-wrap">
-                    <h1 className="text-2xl font-bold text-slate-900">
+                    {/* <h1 className="text-2xl font-bold text-slate-900">
                       {staffData.firstNm} {staffData.lastNm}
-                    </h1>
+                    </h1> */}
+                    <p className="truncate sm:text-base  sm:text-2xl font-bold text-slate-900">
+                      {staffData.firstNm} {staffData.lastNm}
+                    </p>
                     <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 font-medium">
                       {staffData.status}
                     </Badge>
@@ -339,24 +396,34 @@ export default function StaffProfileScreen() {
             {/* <form onSubmit={handleSubmit(saveProfile, onError)} noValidate> */}
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="bg-slate-200/60 p-1 rounded-xl w-full justify-start gap-1">
-                <TabsTrigger value="personal" className="rounded-lg text-sm font-medium">
+              <TabsList className="bg-slate-200/60 p-1 rounded-xl w-full justify-start gap-1  overflow-x-auto overflow-y-hidden whitespace-nowrap rounded-md scrollbar-none">
+                
+                <TabsTrigger value="personal" className="rounded-lg text-sm font-medium shrink-0">
                   Personal Info
                   {tabErrors.personal && (
-                    <span className="ml-2 flex h-2 w-2 rounded-full bg-red-500" />
+                    <span className="ml-2 flex h-4 w-4 rounded-full bg-red-500" />
                   )}
+                  {isTabDirty("Personal_Info") &&
+                   <span className="flex h-2 w-2 rounded-full bg-amber-500 ring-2 ring-white" title="Unsaved changes" />
+                  }
                 </TabsTrigger>
-                <TabsTrigger value="employment" className="rounded-lg text-sm font-medium">
+                <TabsTrigger value="employment" className="rounded-lg text-sm font-medium shrink-0">
                   Employment & Address
                   {tabErrors.employment && (
-                    <span className="ml-2 flex h-2 w-2 rounded-full bg-red-500" />
+                    <span className="ml-2 flex h-4 w-4 rounded-full bg-red-500" />
                   )}
+                  {isTabDirty("Employment_Address") && 
+                  <span className="flex h-2 w-2 rounded-full bg-amber-500 ring-2 ring-white" title="Unsaved changes" />
+                  }
                 </TabsTrigger>
-                <TabsTrigger value="emergency" className="rounded-lg text-sm font-medium">
+                <TabsTrigger value="emergency" className="rounded-lg text-sm font-medium shrink-0">
                   Emergency Contact
                   {tabErrors.emergency && (
-                    <span className="ml-2 flex h-2 w-2 rounded-full bg-red-500" />
+                    <span className="ml-2 flex h-4 w-4 rounded-full bg-red-500" />
                   )}
+                  {isTabDirty("Emergency_Contact") &&
+                   <span className="flex h-2 w-2 rounded-full bg-amber-500 ring-2 ring-white" title="Unsaved changes" />
+                   }
                 </TabsTrigger>
               </TabsList>
 
@@ -428,11 +495,11 @@ export default function StaffProfileScreen() {
                     <ReadOnlyField label="Gender" value={staffData.gender} />
                     <ReadOnlyField label="Date of Birth" value={staffData.dateOfBirth} icon={Calendar} /> */}
                   </CardContent>
-                  <div className="flex justify-end pt-2">
+                  {/* <div className="flex justify-end pt-2">
                     <Button type="button" onClick={() => setActiveTab("employment")}>
                       Next: Employment & Address →
                     </Button>
-                  </div>
+                  </div> */}
                 </Card>
               </TabsContent>
 
@@ -494,9 +561,9 @@ export default function StaffProfileScreen() {
                     <Field label={"City"} error={errors.city?.message}>
                       <Input {...register("city")} className="h-10 text-sm font-medium text-slate-800 bg-slate-50/80 p-2.5 rounded-lg border border-slate-100" disabled={isDisabled} />
                     </Field>
-                    <Field label={"State"} error={errors.state?.message}>
+                    {/* <Field label={"State"} error={errors.state?.message}>
                       <Input {...register("state")} className="h-10 text-sm font-medium text-slate-800 bg-slate-50/80 p-2.5 rounded-lg border border-slate-100" disabled={isDisabled} />
-                    </Field>
+                    </Field> */}
 
 <Field label="State *" error={errors.state?.message}>
 
@@ -547,11 +614,11 @@ export default function StaffProfileScreen() {
                     <ReadOnlyField label="Pincode" value={staffData.pinCode} /> */}
                   </CardContent>
 
-                  <div className="flex justify-end pt-2">
+                  {/* <div className="flex justify-end pt-2">
                     <Button type="button" onClick={() => setActiveTab("emergency")}>
                       Next: Emergency Contact →
                     </Button>
-                  </div>
+                  </div> */}
                 </Card>
               </TabsContent>
 
@@ -580,14 +647,17 @@ export default function StaffProfileScreen() {
 
 
                   </CardContent>
-                  <div className="flex justify-end pt-2">
+                  {/* <div className="flex justify-end pt-2">
                     <Button type="submit" className="bg-blue-600">
                       Save Profile
                     </Button>
-                  </div>
+                  </div> */}
                 </Card>
               </TabsContent>
             </Tabs>
+
+
+
             {/* </form> */}
 
           </div>
@@ -628,6 +698,20 @@ export default function StaffProfileScreen() {
           </div>
 
         </div>
+<div className="sticky bottom-0 z-20 border-t border-slate-200 bg-background p-4 md:border-t-0">
+<div className="flex justify-center gap-2 pt-2">
+                    <Button type="button" variant="outline" onClick={() => setIsDisabled(true)}>Cancel</Button>
+                    
+                    <Button type="submit" className="bg-blue-600">
+                    { submitting ? ( <>
+                    <Loader2 className="w-4 h-4 animate-spin"/>Save Profile
+                    </>) : ( 
+                      "Save Profile"
+                           )
+}
+                  </Button>
+                  </div>
+</div>
       </form>
       {isResetStaffPwdModal &&
         <ResetStaffPwdModal
