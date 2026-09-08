@@ -7,6 +7,7 @@ All URIs are relative to *http://localhost:9090/lms*
 |[**createTask**](#createtask) | **POST** /api/instructor/tasks | |
 |[**getBatchSummary**](#getbatchsummary) | **GET** /api/instructor/batches | |
 |[**getClassStats**](#getclassstats) | **GET** /api/instructor/class-stats | |
+|[**getMyCourses1**](#getmycourses1) | **GET** /api/instructor/courses | |
 |[**getStudentStats**](#getstudentstats) | **GET** /api/instructor/student-stats | |
 |[**getTaskSubmissions**](#gettasksubmissions) | **GET** /api/instructor/submissions | |
 
@@ -161,6 +162,56 @@ const { status, data } = await apiInstance.getClassStats(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **getMyCourses1**
+> Array<InstructorCourseResponse> getMyCourses1()
+
+
+### Example
+
+```typescript
+import {
+    InstructorDashboardControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new InstructorDashboardControllerApi(configuration);
+
+let instructorId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.getMyCourses1(
+    instructorId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **instructorId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**Array<InstructorCourseResponse>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **getStudentStats**
 > InstructorStudentStatsResponse getStudentStats()
 
@@ -227,11 +278,9 @@ const configuration = new Configuration();
 const apiInstance = new InstructorDashboardControllerApi(configuration);
 
 let staffId: string; // (default to undefined)
-let courseId: string; // (optional) (default to undefined)
 
 const { status, data } = await apiInstance.getTaskSubmissions(
-    staffId,
-    courseId
+    staffId
 );
 ```
 
@@ -240,7 +289,6 @@ const { status, data } = await apiInstance.getTaskSubmissions(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **staffId** | [**string**] |  | defaults to undefined|
-| **courseId** | [**string**] |  | (optional) defaults to undefined|
 
 
 ### Return type

@@ -8,7 +8,6 @@ Name | Type | Description | Notes
 **title** | **string** |  | [default to undefined]
 **description** | **string** |  | [optional] [default to undefined]
 **courseId** | **string** |  | [default to undefined]
-**batchId** | **number** |  | [default to undefined]
 **chapterId** | **number** |  | [default to undefined]
 **topicId** | **number** |  | [default to undefined]
 **assignedBy** | **string** |  | [default to undefined]
@@ -22,7 +21,6 @@ const instance: InstructorTaskRequest = {
     title,
     description,
     courseId,
-    batchId,
     chapterId,
     topicId,
     assignedBy,

@@ -5,6 +5,7 @@ All URIs are relative to *http://localhost:9090/lms*
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
 |[**addStudentTask**](#addstudenttask) | **POST** /api/student-task/addtask | |
+|[**getAllTasks**](#getalltasks) | **GET** /api/student-task/tasks/{studentId} | |
 |[**getChaptersByCourse**](#getchaptersbycourse) | **GET** /api/student-task/dropdown/chapters | |
 |[**getEnrolledCourses**](#getenrolledcourses) | **GET** /api/student-task/dropdown/courses | |
 |[**getTasksByStatus**](#gettasksbystatus) | **GET** /api/student-task/status | |
@@ -51,6 +52,56 @@ const { status, data } = await apiInstance.addStudentTask(
 ### HTTP request headers
 
  - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getAllTasks**
+> Array<StudentTaskResponse> getAllTasks()
+
+
+### Example
+
+```typescript
+import {
+    StudentTaskControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StudentTaskControllerApi(configuration);
+
+let studentId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.getAllTasks(
+    studentId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **studentId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**Array<StudentTaskResponse>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
  - **Accept**: */*
 
 

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import { useAtom } from "jotai";
 import { api } from '@/api/CourseMgtController';
 import { openChaptersAtom } from "@/store/atoms/courseAtoms";
 import { openTopicsAtom } from "@/store/atoms/courseAtoms";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, List, ChevronDown, ChevronRight, Clock, FileText, Link, Video, ExternalLink } from "lucide-react";
+import { BookOpen, List, ChevronDown, ChevronRight, Clock, FileText, Link, Video, ExternalLink, ChevronLeft } from "lucide-react";
 import { useParams } from "react-router-dom";
 
 import ChapterItem from "./ChapterItem";
@@ -23,6 +24,8 @@ const CourseDetails = () => {
   const [course, setCourse] = useState([]);
   
   const { courseId } = useParams();
+
+const navigate = useNavigate();
 
   const toggleChapter = (id) => {
     if (openChapters.includes(id)) {
@@ -64,6 +67,12 @@ const CourseDetails = () => {
 
 
   return (
+<div className="p-6 max-w-5xl mx-auto mt-8">
+  
+  <span onClick={() => navigate(-1)} className="flex gap-1 items-center cursor-pointer text-blue-500 ">
+    <ChevronLeft className="w-4 h-4" />back
+    </span>
+    
     <div className="p-6 max-w-5xl mx-auto border mt-10 rounded-xl">
       {/* Header */}
       {/* <Card className="mb-6">
@@ -158,6 +167,11 @@ const CourseDetails = () => {
         );
       })}
     </div >
+
+
+
+
+</div>
   );
 }
 

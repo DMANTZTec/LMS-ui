@@ -13,8 +13,8 @@ docs/AssignInstructorToCourseRequest.md
 docs/AssignProgramRequest.md
 docs/AssignProgramResponse.md
 docs/AssignStudentToBatchRequest.md
-docs/AttachmentRequest.md
 docs/AttachmentResponse.md
+docs/BatchDetail.md
 docs/BatchInstructorRequest.md
 docs/BatchInstructorResponse.md
 docs/ChangePasswordRequest.md
@@ -56,6 +56,7 @@ docs/ForgotPasswordRequest.md
 docs/InstructorBatchResponse.md
 docs/InstructorBatchSummaryResponse.md
 docs/InstructorClassStatsResponse.md
+docs/InstructorCourseResponse.md
 docs/InstructorDashboardControllerApi.md
 docs/InstructorResponse.md
 docs/InstructorScheduleResponse.md
@@ -132,7 +133,6 @@ docs/StudentTaskMentorResponse.md
 docs/StudentTaskRequest.md
 docs/StudentTaskResponse.md
 docs/StudentTaskSubmissionControllerApi.md
-docs/StudentTaskSubmissionRequest.md
 docs/StudentTaskSubmissionResponse.md
 docs/StudentTopicReferenceProgressControllerApi.md
 docs/StudentTopicReferenceProgressRequest.md

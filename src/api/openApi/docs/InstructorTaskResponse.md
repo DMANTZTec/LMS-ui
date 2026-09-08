@@ -8,7 +8,6 @@ Name | Type | Description | Notes
 **title** | **string** |  | [optional] [default to undefined]
 **description** | **string** |  | [optional] [default to undefined]
 **courseId** | **string** |  | [optional] [default to undefined]
-**batchId** | **number** |  | [optional] [default to undefined]
 **assignedStudentCount** | **number** |  | [optional] [default to undefined]
 **assignedTasks** | [**Array&lt;StudentTaskResponse&gt;**](StudentTaskResponse.md) |  | [optional] [default to undefined]
 
@@ -21,7 +20,6 @@ const instance: InstructorTaskResponse = {
     title,
     description,
     courseId,
-    batchId,
     assignedStudentCount,
     assignedTasks,
 };

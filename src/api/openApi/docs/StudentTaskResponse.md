@@ -9,7 +9,6 @@ Name | Type | Description | Notes
 **title** | **string** |  | [optional] [default to undefined]
 **description** | **string** |  | [optional] [default to undefined]
 **courseId** | **string** |  | [optional] [default to undefined]
-**batchId** | **number** |  | [optional] [default to undefined]
 **tags** | **Array&lt;string&gt;** |  | [optional] [default to undefined]
 
 ## Example
@@ -22,7 +21,6 @@ const instance: StudentTaskResponse = {
     title,
     description,
     courseId,
-    batchId,
     tags,
 };
 ```

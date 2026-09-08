@@ -10,7 +10,6 @@ Name | Type | Description | Notes
 **courseId** | **string** |  | [default to undefined]
 **chapterId** | **number** |  | [optional] [default to undefined]
 **topicId** | **number** |  | [optional] [default to undefined]
-**batchId** | **number** |  | [default to undefined]
 **studentId** | **string** |  | [default to undefined]
 
 ## Example
@@ -24,7 +23,6 @@ const instance: StudentTaskRequest = {
     courseId,
     chapterId,
     topicId,
-    batchId,
     studentId,
 };
 ```

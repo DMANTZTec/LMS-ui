@@ -7,7 +7,7 @@ All URIs are relative to *http://localhost:9090/lms*
 |[**submitTask**](#submittask) | **POST** /api/student-task-submission | |
 
 # **submitTask**
-> StudentTaskSubmissionResponse submitTask(studentTaskSubmissionRequest)
+> StudentTaskSubmissionResponse submitTask()
 
 
 ### Example
@@ -15,17 +15,22 @@ All URIs are relative to *http://localhost:9090/lms*
 ```typescript
 import {
     StudentTaskSubmissionControllerApi,
-    Configuration,
-    StudentTaskSubmissionRequest
+    Configuration
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new StudentTaskSubmissionControllerApi(configuration);
 
-let studentTaskSubmissionRequest: StudentTaskSubmissionRequest; //
+let studentTaskId: number; // (default to undefined)
+let studentId: string; // (default to undefined)
+let attachments: Array<File>; // (default to undefined)
+let submissionNotes: string; // (optional) (default to undefined)
 
 const { status, data } = await apiInstance.submitTask(
-    studentTaskSubmissionRequest
+    studentTaskId,
+    studentId,
+    attachments,
+    submissionNotes
 );
 ```
 
@@ -33,7 +38,10 @@ const { status, data } = await apiInstance.submitTask(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **studentTaskSubmissionRequest** | **StudentTaskSubmissionRequest**|  | |
+| **studentTaskId** | [**number**] |  | defaults to undefined|
+| **studentId** | [**string**] |  | defaults to undefined|
+| **attachments** | **Array&lt;File&gt;** |  | defaults to undefined|
+| **submissionNotes** | [**string**] |  | (optional) defaults to undefined|
 
 
 ### Return type
@@ -46,7 +54,7 @@ const { status, data } = await apiInstance.submitTask(
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: multipart/form-data
  - **Accept**: */*
 
 

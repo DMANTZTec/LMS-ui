@@ -12,7 +12,7 @@ console.log("value of topic is: ", topic);
     return (
         <>
             <h3 className="uppercase text-gray-500 mt-2 font-sm">Learning Reasources</h3>
-            <div className="mt-3 flex flex-wrap gap-3 justify-evenly bg-slate-200 rounded-xl">
+            <div className="mt-3 flex gap-3 justify-evenly bg-slate-200 rounded-xl  overflow-x-auto no-scrollbar whitespace-nowrap">
                 {Object.keys(topic.resources).map(resource => (
 
 
@@ -32,17 +32,17 @@ console.log("value of topic is: ", topic);
 
                         {topic.resources.documents.map((document,index) => (
                     <div key={document.id} className="flex items-center justify-between mb-3">
-                      <div className="flex gap-3">
-                        <div>
+                      <div className="w-full flex gap-3 items-center justify-center">
+                        <div className="bg-white rounded shrink-0">
                             <FileText className="text-green-600 w-5 h-5" />
                         </div>
-                        <div>
-                            <h4 className="font-medium text-gray-900">{document.refValue.fileUrl}</h4>
+                        <div className='bg-white rounded flex-1 min-w-0 overflow-x-auto no-scrollbar'>
+                            <h4 className="font-medium text-gray-900 whitespace-nowrap">{document.refValue.fileUrl}</h4>
 
                         </div>
-                    <div>
-                    <div><ExternalLink className="text-gray-400 w-5 h-5" /></div>
-                </div>
+                    
+                    <div className="bg-white rounded shrink-0"><ExternalLink className="text-gray-400 w-5 h-5" /></div>
+                
                 </div>
                 </div>
                     ))}
@@ -55,17 +55,17 @@ console.log("value of topic is: ", topic);
 
                         {topic.resources.videos.map((video,index) => (
                     <div key={video.id} className="flex items-center justify-between mb-3">
-                      <div className="flex gap-3">
-                        <div>
+                      <div className="w-full flex gap-3 items-center justify-center">
+                        <div className='bg-white rounded shrink-0'>
                             <Video className="text-green-600 w-5 h-5" />
                         </div>
-                        <div>
-                            <h4 className="font-medium text-gray-900">{video.refValue.fileUrl}</h4>
+                        <div className='bg-white rounded flex-1 min-w-0 overflow-x-auto no-scrollbar'>
+                            <h4 className="font-medium text-gray-900 whitespace-nowrap">{video.refValue.fileUrl}</h4>
 
                         </div>
-                    <div>
-                    <div><ExternalLink className="text-gray-400 w-5 h-5" /></div>
-                </div>
+                    
+                    <div className="bg-white rounded shrink-0"><ExternalLink className="text-gray-400 w-5 h-5" /></div>
+            
                 </div>
                 </div>
                     ))}
@@ -78,17 +78,17 @@ console.log("value of topic is: ", topic);
 
                         {topic.resources.urls.map((url,index) => (
                     <div key={url.id} className="flex items-center justify-between mb-3">
-                      <div className="flex gap-3">
-                        <div>
+                      <div className="w-full flex gap-3 items-center justify-center">
+                        <div className="bg-white rounded shrink-0">
                             <Link className="text-green-600 w-5 h-5" />
                         </div>
-                        <div>
-                            <h4 className="font-medium text-gray-900">{url.refValue.url}</h4>
+                        <div className='bg-white rounded flex-1 min-w-0 overflow-x-auto no-scrollbar'>
+                            <h4 className="font-medium text-gray-900 whitespace-nowrap">{url.refValue.url}</h4>
 
                         </div>
-                    <div>
-                    <div><ExternalLink className="text-gray-400 w-5 h-5" /></div>
-                </div>
+                    
+                    <div className="bg-white rounded shrink-0"><ExternalLink className="text-gray-400 w-5 h-5" /></div>
+                
                 </div>
                 </div>
                     ))}
