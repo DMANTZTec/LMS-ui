@@ -7,6 +7,7 @@ import StaffNavbarAvatar from "@/features/Avatar/staff/StaffNavbarAvatar";
 function getStaffFromSession() {
   try {
     return JSON.parse(sessionStorage.getItem("otpStaff") || "{}");
+    //const staffId = JSON.parse(localStorage.getItem("staffId"));
   } catch {
     return {};
   }

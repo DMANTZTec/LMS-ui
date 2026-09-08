@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Clock,
   Eye,
@@ -24,12 +24,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { cAdminControllerApi } from "@/api/class-admin-controller";
 import {
   overviewMetrics,
   tasksData,
-  scheduleData,
   SCHEDULE_VIEWS,
 } from "../data";
+import PlanClassModal from "../components/PlanClassModal";
+import ReviewModal from "../components/ReviewModal";
 
 function MetricCards() {
   return (
@@ -94,6 +96,7 @@ function TasksForReview() {
   const [search, setSearch] = useState("");
   const [pendingReview, setPendingReview] = useState(true);
   const [myClassesOnly, setMyClassesOnly] = useState(false);
+  const [reviewTask, setReviewTask] = useState(null);
 
   const filtered = tasksData.filter((task) => {
     if (search) {
@@ -114,6 +117,29 @@ function TasksForReview() {
   return (
     <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-sm lg:col-span-7 lg:flex lg:min-h-0 lg:flex-col">
       <CardContent className="p-5 sm:p-6 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col lg:overflow-hidden lg:p-5">
+        {reviewTask && (
+          <ReviewModal
+            isOpen={!!reviewTask}
+            onClose={() => setReviewTask(null)}
+            onStartReview={() => {
+              console.log("Starting review for", reviewTask.name);
+              setReviewTask(null);
+            }}
+            details={{
+              studentName: reviewTask.name,
+              studentInitials: reviewTask.initials,
+              courseTitle: "React Advanced Patterns",
+              topic: reviewTask.topic,
+              submittedDate: reviewTask.date,
+              taskTitle: reviewTask.task,
+              submissionNotes:
+                "The student has implemented a well-structured solution that addresses the core requirements. Code is organized, readable, and follows the patterns covered in class.",
+              attachments: ["submission.tsx","submission.tsx","submission.tsx","submission.tsx", "solution.test.ts", "README.md"],
+              status: "Pending Review",
+            }}
+          />
+        )}
+
         <div className="mb-4 flex items-start justify-between gap-3 lg:mb-3">
           <div>
             <h2 className="text-lg font-bold text-slate-800">Tasks for Review</h2>
@@ -208,6 +234,7 @@ function TasksForReview() {
                       variant="ghost"
                       className="h-8 w-8 rounded-full bg-purple-50 text-purple-600 hover:bg-purple-100"
                       aria-label={`Review ${task.name}`}
+                      onClick={() => setReviewTask(task)}
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
@@ -233,17 +260,62 @@ function TasksForReview() {
   );
 }
 
+const VIEW_TO_FILTER = {
+  Week: "WEEK",
+  Month: "MONTH",
+  All: "ALL",
+};
+
 function ClassSchedule() {
   const [scheduleView, setScheduleView] = useState("Week");
+  const [scheduleData, setScheduleData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [planningItem, setPlanningItem] = useState(null);
+
+  //const staffId = JSON.parse(sessionStorage.getItem("otpStaff") || "{}")?.staffId;
+  const staffId = JSON.parse(localStorage.getItem("staffId"));
+
+  const fetchSchedule = useCallback(async (view) => {
+    if (!staffId) return;
+    setLoading(true);
+    try {
+      const filter = VIEW_TO_FILTER[view];
+      const res = await cAdminControllerApi.getSchedulesByInstructor(staffId, filter);
+      setScheduleData(res.data || []);
+    } catch (err) {
+      console.error("Failed to fetch schedule", err);
+      setScheduleData([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [staffId]);
+
+  useEffect(() => {
+    fetchSchedule(scheduleView);
+  }, [scheduleView, fetchSchedule]);
+
+  const handleSavePlan = (selectedTopicIds) => {
+    console.log("Saved topics for", planningItem?.course, selectedTopicIds);
+  };
 
   return (
     <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-sm lg:col-span-5 lg:flex lg:min-h-0 lg:flex-col">
       <CardContent className="p-5 sm:p-6 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col lg:overflow-hidden lg:p-5">
+        {planningItem && (
+          <PlanClassModal
+            isOpen={!!planningItem}
+            onClose={() => setPlanningItem(null)}
+            onSave={handleSavePlan}
+            classNameTitle={planningItem.course}
+            dateTimeText={`${planningItem.date} • ${planningItem.time}`}
+          />
+        )}
+
         <div className="mb-4 flex items-start justify-between gap-3 lg:mb-3">
           <div>
             <h2 className="text-lg font-bold text-slate-800">Class Schedule</h2>
             <p className="mt-0.5 text-xs text-slate-400">
-              {scheduleData.length} upcoming classes
+              {loading ? "Loading..." : `${scheduleData.length} upcoming classes`}
             </p>
           </div>
 
@@ -302,6 +374,7 @@ function ClassSchedule() {
                         variant="ghost"
                         className="h-6 w-6 rounded-md bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
                         aria-label={`Materials for ${item.course}`}
+                        onClick={() => setPlanningItem(item)}
                       >
                         <FileText className="h-3.5 w-3.5" />
                       </Button>
@@ -333,6 +406,17 @@ function ClassSchedule() {
                   </TableCell>
                 </TableRow>
               ))}
+
+              {!loading && scheduleData.length === 0 && (
+                <TableRow>
+                  <TableCell
+                    colSpan={3}
+                    className="py-8 text-center text-sm text-slate-400"
+                  >
+                    No upcoming classes.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </div>
@@ -343,10 +427,10 @@ function ClassSchedule() {
 
 export default function Overview() {
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 md:gap-6 lg:gap-4">
+    <div className="flex flex-col gap-4 md:gap-6 lg:min-h-0 lg:flex-1 lg:gap-4">
       <MetricCards />
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 md:gap-6 lg:auto-rows-fr lg:grid-cols-12 lg:gap-4">
+      <div className="grid grid-cols-1 gap-4 md:gap-6 lg:min-h-0 lg:flex-1 lg:auto-rows-fr lg:grid-cols-12 lg:gap-4">
         <TasksForReview />
         <ClassSchedule />
       </div>

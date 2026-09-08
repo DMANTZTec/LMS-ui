@@ -115,7 +115,7 @@ export const scheduleData = [
   {
     id: 2,
     time: "11:00 AM",
-    date: "Tue, 02 Sep 2026",
+    date: "Tue, 02 oct 2026",
     course: "TypeScript Deep Dive",
   },
   {
@@ -133,3 +133,163 @@ export const scheduleData = [
 ];
 
 export const SCHEDULE_VIEWS = ["Week", "Month", "All"];
+
+export const instructorCourses = [
+  {
+    id: "CRS-1024",
+    title: "React Advanced Patterns",
+    subject: "Web Development",
+    description:
+      "Master advanced React patterns including compound components, render props, custom hooks, and performance optimization techniques for production-grade applications.",
+    level: "Advanced",
+    language: "English",
+    status: "ACTIVE",
+    progress: 68,
+    totalStudents: 86,
+    activeStudents: 78,
+    chaptersCompleted: 9,
+    totalChapters: 13,
+    upcomingClasses: 4,
+    lastClassDate: "2026-09-05",
+    nextClassDate: "2026-09-08",
+    batches: [
+      { name: "Batch A – Morning", students: 42, schedule: "Mon & Wed, 9:00 AM" },
+      { name: "Batch B – Evening", students: 36, schedule: "Tue & Thu, 6:00 PM" },
+    ],
+    skills: ["React", "TypeScript", "Performance", "Patterns"],
+    gradient: "from-blue-600 via-indigo-600 to-purple-700",
+  },
+  {
+    id: "CRS-1031",
+    title: "TypeScript Deep Dive",
+    subject: "Programming Languages",
+    description:
+      "Comprehensive TypeScript course covering generics, utility types, module augmentation, declaration files, and advanced type-level programming.",
+    level: "Intermediate",
+    language: "English",
+    status: "ACTIVE",
+    progress: 45,
+    totalStudents: 64,
+    activeStudents: 61,
+    chaptersCompleted: 5,
+    totalChapters: 11,
+    upcomingClasses: 3,
+    lastClassDate: "2026-09-04",
+    nextClassDate: "2026-09-09",
+    batches: [
+      { name: "Batch A – Morning", students: 34, schedule: "Tue & Thu, 10:00 AM" },
+      { name: "Batch C – Weekend", students: 30, schedule: "Sat, 11:00 AM" },
+    ],
+    skills: ["TypeScript", "Generics", "Type System", "OOP"],
+    gradient: "from-sky-500 via-blue-600 to-indigo-700",
+  },
+  {
+    id: "CRS-1018",
+    title: "Node.js Fundamentals",
+    subject: "Backend Development",
+    description:
+      "Build scalable server-side applications with Node.js, Express, middleware patterns, database integration, authentication, and RESTful API design.",
+    level: "Beginner",
+    language: "English",
+    status: "ACTIVE",
+    progress: 82,
+    totalStudents: 72,
+    activeStudents: 68,
+    chaptersCompleted: 10,
+    totalChapters: 12,
+    upcomingClasses: 2,
+    lastClassDate: "2026-09-06",
+    nextClassDate: "2026-09-08",
+    batches: [
+      { name: "Batch B – Evening", students: 38, schedule: "Mon & Wed, 7:00 PM" },
+      { name: "Batch D – Afternoon", students: 34, schedule: "Fri, 2:00 PM" },
+    ],
+    skills: ["Node.js", "Express", "REST APIs", "MongoDB"],
+    gradient: "from-emerald-500 via-teal-600 to-cyan-700",
+  },
+  {
+    id: "CRS-1042",
+    title: "CSS Grid & Flexbox Mastery",
+    subject: "Web Development",
+    description:
+      "Master modern CSS layout techniques with Grid and Flexbox. Build responsive, complex layouts without frameworks.",
+    level: "Beginner",
+    language: "English",
+    status: "COMPLETED",
+    progress: 100,
+    totalStudents: 58,
+    activeStudents: 0,
+    chaptersCompleted: 8,
+    totalChapters: 8,
+    upcomingClasses: 0,
+    lastClassDate: "2026-08-20",
+    nextClassDate: null,
+    batches: [
+      { name: "Batch A – Morning", students: 32, schedule: "Completed" },
+      { name: "Batch B – Evening", students: 26, schedule: "Completed" },
+    ],
+    skills: ["CSS Grid", "Flexbox", "Responsive Design", "Layout"],
+    gradient: "from-rose-500 via-pink-600 to-fuchsia-700",
+  },
+  {
+    id: "CRS-1055",
+    title: "Full-Stack Project Bootcamp",
+    subject: "Full Stack Development",
+    description:
+      "End-to-end project-based course covering React frontend, Node.js backend, database design, deployment, and CI/CD pipelines.",
+    level: "Advanced",
+    language: "English",
+    status: "PLANNED",
+    progress: 0,
+    totalStudents: 0,
+    activeStudents: 0,
+    chaptersCompleted: 0,
+    totalChapters: 16,
+    upcomingClasses: 0,
+    lastClassDate: null,
+    nextClassDate: "2026-09-20",
+    batches: [
+      { name: "Batch A – Morning", students: 0, schedule: "Starts Sep 20" },
+    ],
+    skills: ["React", "Node.js", "PostgreSQL", "Docker", "CI/CD"],
+    gradient: "from-amber-500 via-orange-600 to-red-600",
+  },
+  {
+    id: "CRS-1060",
+    title: "JavaScript ES6+ Essentials",
+    subject: "Programming Languages",
+    description:
+      "Modern JavaScript features including destructuring, async/await, modules, Proxy, generators, and iterator patterns.",
+    level: "Beginner",
+    language: "English",
+    status: "ACTIVE",
+    progress: 35,
+    totalStudents: 48,
+    activeStudents: 45,
+    chaptersCompleted: 3,
+    totalChapters: 9,
+    upcomingClasses: 5,
+    lastClassDate: "2026-09-03",
+    nextClassDate: "2026-09-08",
+    batches: [
+      { name: "Batch C – Weekend", students: 28, schedule: "Sat & Sun, 10:00 AM" },
+      { name: "Batch E – Weekday", students: 20, schedule: "Wed & Fri, 4:00 PM" },
+    ],
+    skills: ["ES6+", "Async/Await", "Modules", "Functional"],
+    gradient: "from-violet-500 via-purple-600 to-indigo-700",
+  },
+];
+
+export const COURSE_STATUS_FILTER = ["All", "Active", "Completed", "Planned"];
+
+export const COURSE_STATUS_STYLES = {
+  ACTIVE: "bg-blue-100 text-[#155DFC] border-0",
+  COMPLETED: "bg-emerald-100 text-emerald-700 border-0",
+  PLANNED: "bg-amber-100 text-amber-700 border-0",
+};
+
+export const COURSE_LEVEL_STYLES = {
+  Beginner: "bg-slate-100 text-slate-600 border-0",
+  Intermediate: "bg-violet-100 text-violet-600 border-0",
+  Advanced: "bg-rose-100 text-rose-600 border-0",
+};
