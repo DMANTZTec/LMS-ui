@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  BookOpen,
   Clock,
   Eye,
   FileText,
   MessageSquare,
+  Plus,
   RotateCw,
   Search,
+  Users,
   XCircle,
 } from "lucide-react";
 
@@ -15,6 +19,14 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -25,18 +37,109 @@ import {
 } from "@/components/ui/table";
 
 import { cAdminControllerApi } from "@/api/class-admin-controller";
+import { instructorDashboardApi } from "@/api/instructor-dashboard-controller";
+import { staskapi } from "@/api/student-task-controller";
+import toast from "react-hot-toast";
 import {
-  overviewMetrics,
-  tasksData,
   SCHEDULE_VIEWS,
 } from "../data";
 import PlanClassModal from "../components/PlanClassModal";
 import ReviewModal from "../components/ReviewModal";
 
 function MetricCards() {
+  const [metrics, setMetrics] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const staffId = JSON.parse(localStorage.getItem("staffId"));
+
+  useEffect(() => {
+    const fetchAllStats = async () => {
+      if (!staffId) {
+        setLoading(false);
+        return;
+      }
+
+      const [batchRes, classRes, studentRes] = await Promise.allSettled([
+        instructorDashboardApi.getBatchSummary(staffId),
+        instructorDashboardApi.getClassStats(staffId),
+        instructorDashboardApi.getStudentStats(staffId),
+      ]);
+
+      const batch =
+        batchRes.status === "fulfilled" ? batchRes.value.data : {};
+      const cls =
+        classRes.status === "fulfilled" ? classRes.value.data : {};
+      const student =
+        studentRes.status === "fulfilled" ? studentRes.value.data : {};
+
+      setMetrics([
+        {
+          id: "batches",
+          label: "Active Batches",
+          value: batch.activeBatchCount ?? 0,
+          secondaryLabel: "Completed",
+          secondaryValue: batch.completedBatchCount ?? 0,
+          icon: BookOpen,
+          iconChip: "bg-blue-50 text-blue-600",
+        },
+        {
+          id: "classes",
+          label: "Classes Taken",
+          value: cls.classesTaken ?? 0,
+          secondaryLabel: "Scheduled",
+          secondaryValue: cls.scheduled ?? 0,
+          icon: Clock,
+          iconChip: "bg-emerald-50 text-emerald-600",
+          footnote: cls.hoursSpent ? `${cls.hoursSpent}h` : null,
+        },
+        {
+          id: "students",
+          label: "Active Students",
+          value: student.activeStudents ?? 0,
+          secondaryLabel: "Total",
+          secondaryValue: student.totalStudents ?? 0,
+          icon: Users,
+          iconChip: "bg-blue-50 text-blue-600",
+        },
+      ]);
+
+      setLoading(false);
+    };
+
+    fetchAllStats();
+  }, [staffId]);
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
+        {[1, 2, 3].map((i) => (
+          <Card
+            key={i}
+            className="rounded-2xl border border-slate-200/80 bg-white shadow-sm"
+          >
+            <CardContent className="p-5 sm:p-6 lg:p-3">
+              <div className="flex items-center gap-4">
+                <div className="shrink-0 rounded-xl bg-slate-100 p-3 h-12 w-12 animate-pulse" />
+                <div className="flex min-w-0 items-center gap-5 sm:gap-8 lg:gap-6">
+                  <div>
+                    <div className="h-8 w-16 bg-slate-100 rounded animate-pulse" />
+                    <div className="h-3 w-20 bg-slate-100 rounded mt-1 animate-pulse" />
+                  </div>
+                  <div className="border-l border-slate-100 pl-5 sm:pl-8 lg:pl-6">
+                    <div className="h-8 w-16 bg-slate-100 rounded animate-pulse" />
+                    <div className="h-3 w-20 bg-slate-100 rounded mt-1 animate-pulse" />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
-      {overviewMetrics.map((metric) => {
+      {metrics.map((metric) => {
         const Icon = metric.icon;
 
         return (
@@ -93,24 +196,152 @@ function MetricCards() {
 }
 
 function TasksForReview() {
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [pendingReview, setPendingReview] = useState(true);
   const [myClassesOnly, setMyClassesOnly] = useState(false);
   const [reviewTask, setReviewTask] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState({
+    title: "",
+    description: "",
+    course: "",
+    chapter: "",
+    topic: "",
+  });
+  const staffId = JSON.parse(localStorage.getItem("staffId"));
 
-  const filtered = tasksData.filter((task) => {
+  const submissionsQuery = useQuery({
+    queryKey: ["instructorSubmissions", staffId, myClassesOnly],
+    queryFn: async () => {
+      if (!staffId) return { submissions: [], pendingReviewCount: 0, totalCount: 0 };
+      const filter = myClassesOnly ? "ASSIGNED_BY_ME" : "ALL_SUBMISSIONS";
+      const res = await instructorDashboardApi.getTaskSubmissions(staffId, filter);
+      const data = res?.data;
+      if (Array.isArray(data)) {
+        const submissions = data;
+        return {
+          submissions,
+          pendingReviewCount: submissions.filter(
+            (s) => s.reviewStatus === "PENDING_REVIEW"
+          ).length,
+          totalCount: submissions.length,
+        };
+      }
+      return {
+        submissions: data?.submissions ?? [],
+        pendingReviewCount: data?.pendingReviewCount ?? 0,
+        totalCount: data?.totalCount ?? 0,
+      };
+    },
+    enabled: Boolean(staffId),
+    staleTime: 30 * 1000,
+  });
+
+  const completeReviewMutation = useMutation({
+    mutationFn: (submissionId) =>
+      instructorDashboardApi.completeReview(submissionId),
+    onSuccess: () => {
+      toast.success("Review completed");
+      queryClient.invalidateQueries(["instructorSubmissions", staffId]);
+      setReviewTask(null);
+    },
+    onError: () => {
+      toast.error("Failed to complete review");
+    },
+  });
+
+  const { data: courses = [] } = useQuery({
+    queryKey: ["instructorMyCourses", staffId],
+    queryFn: async () => {
+      if (!staffId) return [];
+      const res = await instructorDashboardApi.getMyCourseSummaries(staffId);
+      return Array.isArray(res) ? res : res?.data || [];
+    },
+    enabled: Boolean(staffId),
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const { data: chapters = [] } = useQuery({
+    queryKey: ["instructorTaskChapters", draft.course],
+    queryFn: async () => {
+      if (!draft.course) return [];
+      const res = await staskapi.getChaptersByCourse(draft.course);
+      return Array.isArray(res) ? res : res?.data || [];
+    },
+    enabled: Boolean(draft.course),
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const { data: topics = [] } = useQuery({
+    queryKey: ["instructorTaskTopics", draft.chapter],
+    queryFn: async () => {
+      if (!draft.chapter) return [];
+      const res = await staskapi.getTopicsByChapter(Number(draft.chapter));
+      return Array.isArray(res) ? res : res?.data || [];
+    },
+    enabled: Boolean(draft.chapter),
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const createTaskMutation = useMutation({
+    mutationFn: (payload) => instructorDashboardApi.createTask(payload),
+    onSuccess: () => {
+      toast.success("Task created successfully");
+      queryClient.invalidateQueries(["instructorMyCourses", staffId]);
+      setDraft({
+        title: "",
+        description: "",
+        course: "",
+        chapter: "",
+        topic: "",
+      });
+      setOpen(false);
+    },
+    onError: () => {
+      toast.error("Failed to create task");
+    },
+  });
+
+  const handleCreate = () => {
+    if (!draft.title.trim()) {
+      toast.error("Task title is required");
+      return;
+    }
+
+    createTaskMutation.mutate({
+      title: draft.title,
+      description: draft.description,
+      courseId: draft.course,
+      chapterId: draft.chapter ? Number(draft.chapter) : undefined,
+      topicId: draft.topic ? Number(draft.topic) : undefined,
+      assignedBy: staffId,
+    });
+  };
+
+  const ownSubmissions = submissionsQuery.data?.submissions ?? [];
+
+  const filtered = ownSubmissions.filter((task) => {
     if (search) {
       const q = search.toLowerCase();
+      const submittedDate = task.submittedAt
+        ? new Date(task.submittedAt).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })
+        : "";
       if (
-        !task.name.toLowerCase().includes(q) &&
-        !task.topic.toLowerCase().includes(q) &&
-        !task.date.toLowerCase().includes(q)
+        !(task.studentName ?? "").toLowerCase().includes(q) &&
+        !(task.courseTitle ?? "").toLowerCase().includes(q) &&
+        !(task.topicName ?? "").toLowerCase().includes(q) &&
+        !(task.taskTitle ?? "").toLowerCase().includes(q) &&
+        !submittedDate.toLowerCase().includes(q)
       ) {
         return false;
       }
     }
-    if (pendingReview && task.status !== "pending") return false;
-    if (myClassesOnly && !task.inMyClass) return false;
+    if (pendingReview && task.reviewStatus !== "PENDING_REVIEW") return false;
     return true;
   });
 
@@ -122,20 +353,35 @@ function TasksForReview() {
             isOpen={!!reviewTask}
             onClose={() => setReviewTask(null)}
             onStartReview={() => {
-              console.log("Starting review for", reviewTask.name);
-              setReviewTask(null);
+              if (reviewTask?.id) {
+                completeReviewMutation.mutate(reviewTask.id);
+              }
             }}
+            submitting={completeReviewMutation.isPending}
             details={{
-              studentName: reviewTask.name,
-              studentInitials: reviewTask.initials,
-              courseTitle: "React Advanced Patterns",
-              topic: reviewTask.topic,
-              submittedDate: reviewTask.date,
-              taskTitle: reviewTask.task,
-              submissionNotes:
-                "The student has implemented a well-structured solution that addresses the core requirements. Code is organized, readable, and follows the patterns covered in class.",
-              attachments: ["submission.tsx","submission.tsx","submission.tsx","submission.tsx", "solution.test.ts", "README.md"],
-              status: "Pending Review",
+              studentName: reviewTask.studentName,
+              studentInitials: (reviewTask.studentName ?? "?")
+                .split(" ")
+                .map((p) => p?.[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase(),
+              courseTitle: reviewTask.courseTitle,
+              topic: reviewTask.topicName,
+              submittedDate: reviewTask.submittedAt
+                ? new Date(reviewTask.submittedAt).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })
+                : null,
+              taskTitle: reviewTask.taskTitle,
+              submissionNotes: reviewTask.submissionNotes || "No notes provided.",
+              attachments: reviewTask.attachments || [],
+              status:
+                reviewTask.reviewStatus === "COMPLETED"
+                  ? "Completed"
+                  : "Pending Review",
             }}
           />
         )}
@@ -147,13 +393,119 @@ function TasksForReview() {
               {filtered.length} submissions shown
             </p>
           </div>
-          <Badge
-            variant="secondary"
-            className="rounded-full border-none bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600"
-          >
-            4 pending
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              className="rounded-full bg-blue-600 hover:bg-blue-700"
+              onClick={() => setOpen((v) => !v)}
+            >
+              <Plus className="mr-1 h-4 w-4" />
+              New Task
+            </Button>
+            <Badge
+              variant="secondary"
+              className="rounded-full border-none bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600"
+            >
+              {submissionsQuery.data?.pendingReviewCount ?? 0} pending
+            </Badge>
+          </div>
         </div>
+
+        {open && (
+          <div className="mb-4 space-y-2 rounded-lg border border-slate-200 bg-slate-50 p-3 lg:mb-3">
+            <div className="text-sm font-semibold text-slate-800">
+              Create New Task
+            </div>
+
+            <Input
+              placeholder="Task title"
+              value={draft.title}
+              onChange={(e) => setDraft({ ...draft, title: e.target.value })}
+            />
+
+            <Textarea
+              placeholder="Description"
+              value={draft.description}
+              onChange={(e) =>
+                setDraft({ ...draft, description: e.target.value })
+              }
+            />
+
+            <div className="grid min-w-0 grid-cols-1 gap-1.5 sm:grid-cols-3">
+              <Select
+                value={draft.course}
+                onValueChange={(v) =>
+                  setDraft({ ...draft, course: v, chapter: "", topic: "" })
+                }
+              >
+                <SelectTrigger className="w-full min-w-0">
+                  <SelectValue placeholder="Course" />
+                </SelectTrigger>
+                <SelectContent>
+                  {courses.map((c) => (
+                    <SelectItem key={c.courseId} value={c.courseId}>
+                      {c.courseTitle}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select
+                value={draft.chapter}
+                onValueChange={(v) =>
+                  setDraft({ ...draft, chapter: v, topic: "" })
+                }
+                disabled={!draft.course}
+              >
+                <SelectTrigger className="w-full min-w-0">
+                  <SelectValue placeholder="Chapter" />
+                </SelectTrigger>
+                <SelectContent>
+                  {chapters.map((c) => (
+                    <SelectItem key={c.id} value={String(c.id)}>
+                      {c.chapterNm}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select
+                value={draft.topic}
+                onValueChange={(v) => setDraft({ ...draft, topic: v })}
+                disabled={!draft.chapter}
+              >
+                <SelectTrigger className="w-full min-w-0">
+                  <SelectValue placeholder="Topic" />
+                </SelectTrigger>
+                <SelectContent>
+                  {topics.map((c) => (
+                    <SelectItem key={c.id} value={String(c.id)}>
+                      {c.topicNm}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                onClick={handleCreate}
+                disabled={createTaskMutation.isPending}
+              >
+                {createTaskMutation.isPending ? "Creating..." : "Create"}
+              </Button>
+
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        )}
 
         <div className="mb-4 flex flex-wrap items-center justify-between gap-4 lg:mb-3">
           <div className="relative min-w-[200px] flex-1">
@@ -204,7 +556,31 @@ function TasksForReview() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((task) => (
+              {submissionsQuery.isLoading && (
+                <TableRow>
+                  <TableCell
+                    colSpan={5}
+                    className="py-8 text-center text-sm text-slate-400"
+                  >
+                    Loading submissions...
+                  </TableCell>
+                </TableRow>
+              )}
+
+              {!submissionsQuery.isLoading && submissionsQuery.isError && (
+                <TableRow>
+                  <TableCell
+                    colSpan={5}
+                    className="py-8 text-center text-sm text-red-500"
+                  >
+                    Failed to load submissions. Please try again.
+                  </TableCell>
+                </TableRow>
+              )}
+
+              {!submissionsQuery.isLoading &&
+                !submissionsQuery.isError &&
+                filtered.map((task) => (
                 <TableRow
                   key={task.id}
                   className="border-b border-slate-50 hover:bg-slate-50/50"
@@ -212,28 +588,41 @@ function TasksForReview() {
                   <TableCell className="py-3 font-medium text-slate-800 lg:py-2">
                     <div className="flex items-center gap-3">
                       <Avatar className="h-8 w-8 text-xs font-bold">
-                        <AvatarFallback className={task.avatarBg}>
-                          {task.initials}
+                        <AvatarFallback>
+                          {(task.studentName ?? "?")
+                            .split(" ")
+                            .map((p) => p?.[0])
+                            .join("")
+                            .slice(0, 2)
+                            .toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="text-xs font-semibold">{task.name}</span>
+                      <span className="text-xs font-semibold">
+                        {task.studentName}
+                      </span>
                     </div>
                   </TableCell>
                   <TableCell className="text-xs text-slate-500">
-                    {task.topic}
+                    {task.topicName}
                   </TableCell>
                   <TableCell className="text-xs text-slate-500">
-                    {task.task}
+                    {task.taskTitle}
                   </TableCell>
                   <TableCell className="text-xs text-slate-400">
-                    {task.date}
+                    {task.submittedAt
+                      ? new Date(task.submittedAt).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })
+                      : "-"}
                   </TableCell>
                   <TableCell className="text-center">
                     <Button
                       size="icon"
                       variant="ghost"
                       className="h-8 w-8 rounded-full bg-purple-50 text-purple-600 hover:bg-purple-100"
-                      aria-label={`Review ${task.name}`}
+                      aria-label={`Review ${task.studentName}`}
                       onClick={() => setReviewTask(task)}
                     >
                       <Eye className="h-4 w-4" />
@@ -242,7 +631,9 @@ function TasksForReview() {
                 </TableRow>
               ))}
 
-              {filtered.length === 0 && (
+              {!submissionsQuery.isLoading &&
+                !submissionsQuery.isError &&
+                filtered.length === 0 && (
                 <TableRow>
                   <TableCell
                     colSpan={5}

@@ -4,6 +4,7 @@ export const ReviewModal = ({
   isOpen,
   onClose,
   onStartReview,
+  submitting,
   details,
 }) => {
   if (!isOpen) return null;
@@ -89,13 +90,16 @@ export const ReviewModal = ({
               </label>
               <div className="space-y-2">
                 {details.attachments.map((file, idx) => (
-                  <div
+                  <a
                     key={idx}
+                    href={file?.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50"
                   >
                     <Paperclip className="h-4 w-4 shrink-0 text-slate-400" />
-                    <span className="truncate">{file}</span>
-                  </div>
+                    <span className="truncate">{file?.fileName}</span>
+                  </a>
                 ))}
               </div>
             </div>
@@ -124,9 +128,10 @@ export const ReviewModal = ({
           <button
             type="button"
             onClick={onStartReview}
-            className="rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
+            disabled={submitting}
+            className="rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Start Review
+            {submitting ? "Completing..." : "Start Review"}
           </button>
         </div>
       </div>

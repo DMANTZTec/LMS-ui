@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **submissionNotes** | **string** |  | [optional] [default to undefined]
 **attachments** | [**Array&lt;AttachmentResponse&gt;**](AttachmentResponse.md) |  | [optional] [default to undefined]
 **status** | **string** |  | [optional] [default to undefined]
+**reviewStatus** | **string** |  | [optional] [default to undefined]
 **submittedAt** | **string** |  | [optional] [default to undefined]
 **reviewFeedback** | **string** |  | [optional] [default to undefined]
 **pointsAwarded** | **number** |  | [optional] [default to undefined]
@@ -34,6 +35,7 @@ const instance: StudentTaskSubmissionResponse = {
     submissionNotes,
     attachments,
     status,
+    reviewStatus,
     submittedAt,
     reviewFeedback,
     pointsAwarded,
