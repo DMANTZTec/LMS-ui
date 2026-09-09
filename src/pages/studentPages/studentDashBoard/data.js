@@ -49,59 +49,7 @@ export const weeklyPerf = {
   ],
 };
 
-export const schedule = [
-  {
-    day: "Monday",
 
-    items: [
-      {
-        title: "Advanced Web Development",
-        time: "9:00 AM - 11:00 AM",
-        instructor: "Dr. Smith",
-        room: "Lab 101",
-      },
-
-      {
-        title: "Data Structures & Algorithms",
-        time: "2:00 PM - 4:00 PM",
-        instructor: "Prof. Johnson",
-        room: "Room 205",
-      },
-    ],
-  },
-
-  {
-    day: "Wednesday",
-
-    items: [
-      {
-        title: "Machine Learning Fundamentals",
-        time: "10:00 AM - 12:00 PM",
-        instructor: "Dr. Williams",
-        room: "Lab 302",
-      },
-      {
-        title: "Advanced Web Development",
-        time: "9:00 AM - 11:00 AM",
-        instructor: "Dr. Smith",
-        room: "Lab 101",
-      },
-    ],
-  },
-
-  {
-    day: "Friday",
-
-    items: [
-      {
-        title: "Database Systems",
-        time: "1:00 PM - 3:00 PM",
-        instructor: "Prof. Brown",
-        room: "Room 110",
-      },
-    ],
-  },
-];
 export const initialTasks = [
   {
     id: "t1",

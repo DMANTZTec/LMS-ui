@@ -1,4 +1,5 @@
 import { BookOpen, GraduationCap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 import CourseCard from "./statusCards/CourseCard";
@@ -14,6 +15,8 @@ import LoginIcon from "@/assets/images/loginicon.png";
 import NavbarAvatar from "@/features/Avatar/student/NavbarAvatar";
 
 export function StudentDashBoard() {
+  const navigate = useNavigate();
+
   return (
     // Lock the container to the viewport height
    <div className="lg:h-screen w-full overflow-hidden bg-muted/30 p-3 sm:p-4 md:p-5 lg:p-6">
@@ -39,7 +42,10 @@ export function StudentDashBoard() {
 
       <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3 md:gap-4 w-full md:w-auto">
         
-          <Button className="bg-[#0F172A] hover:bg-[#1E293B] text-white text-[10px] sm:text-xs md:text-xs lg:text-sm px-2 sm:px-3 md:px-3 lg:px-5 h-8 sm:h-8 md:h-9 lg:h-10 whitespace-nowrap">
+          <Button
+            onClick={() => navigate('/view-courses')}
+            className="bg-[#0F172A] hover:bg-[#1E293B] text-white text-[10px] sm:text-xs md:text-xs lg:text-sm px-2 sm:px-3 md:px-3 lg:px-5 h-8 sm:h-8 md:h-9 lg:h-10 whitespace-nowrap"
+          >
              <BookOpen className="mr-1 h-3 w-3 sm:h-3 sm:w-3 md:h-4 md:w-4 shrink-0" />
                  Explore More Courses
           </Button>

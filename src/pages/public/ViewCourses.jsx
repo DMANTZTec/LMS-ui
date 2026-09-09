@@ -5,7 +5,16 @@ import Header from '../main/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Clock, Loader2 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { ArrowLeft, Clock, Loader2, AlertCircle } from 'lucide-react';
+import { isAuthenticated, getUserRole } from '@/utils/tokenUtility';
 
 const levelColors = {
   BEGINNER: "bg-emerald-100 text-emerald-700 border-emerald-200",
@@ -22,10 +31,16 @@ export default function ViewCourses() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedSubject = searchParams.get('subject');
+
+  // Auth Checks
+  const authed = Boolean(isAuthenticated());
+  const role = getUserRole();
+  const dashboardPath = role === 'STUDENT' ? '/student-dashboard' : '/Staff-dashboard';
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -49,17 +64,26 @@ export default function ViewCourses() {
     setSearchParams(searchParams);
   };
 
+  const handleEnroll = () => {
+    if (authed) {
+      if (role === 'STUDENT') {
+        // Show self-enrollment alert modal for students
+        setShowModal(true);
+      } else {
+        // Redirect staff/admin back to their dashboard
+        navigate(dashboardPath);
+      }
+    } else {
+      // Unauthenticated users navigate to register
+      navigate('/student-register');
+    }
+  };
+
   // Filter courses based on URL search query
   const filteredCourses = selectedSubject
     ? courses.filter((course) => {
         const query = selectedSubject.toLowerCase();
-        const matchesSubject = course.subjectNm?.toLowerCase().includes(query);
-        // const matchesTitle = course.courseTitle?.toLowerCase().includes(query);
-        // const matchesSkills = course.skills?.some((skill) =>
-        //   skill?.toLowerCase().includes(query)
-        // );
-        // return matchesSubject || matchesTitle || matchesSkills;
-        return matchesSubject
+        return course.subjectNm?.toLowerCase().includes(query);
       })
     : courses;
 
@@ -72,14 +96,25 @@ export default function ViewCourses() {
           
           {/* Top Control Bar */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 md:mb-8">
-            <Button
-              onClick={() => navigate('/')}
-              variant="outline"
-              className="bg-white hover:bg-gray-50 border-gray-300 text-gray-700 flex items-center gap-2 shadow-sm"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Main Page
-            </Button>
+            {authed ? (
+              <Button
+                onClick={() => navigate(dashboardPath)}
+                variant="outline"
+                className="bg-white hover:bg-gray-50 border-gray-300 text-gray-700 flex items-center gap-2 shadow-sm"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Dashboard
+              </Button>
+            ) : (
+              <Button
+                onClick={() => navigate('/')}
+                variant="outline"
+                className="bg-white hover:bg-gray-50 border-gray-300 text-gray-700 flex items-center gap-2 shadow-sm"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Main Page
+              </Button>
+            )}
 
             {!loading && !error && (
               <span className="text-xs sm:text-sm text-gray-500 font-medium">
@@ -192,7 +227,8 @@ export default function ViewCourses() {
                       <Clock className="w-3.5 h-3.5" />
                       <span>{course.language}</span>
                     </div>
-                    <Button  onClick={() => navigate('/student-register')}
+                    <Button
+                      onClick={handleEnroll}
                       size="sm"
                       className="bg-[#0d9488] hover:bg-[#0f766e] text-white rounded-full px-4 text-xs font-semibold transition-colors"
                     >
@@ -205,6 +241,31 @@ export default function ViewCourses() {
           )}
         </main>
       </div>
+
+      {/* Small Popup Modal for Self-Enrollment Notice */}
+      <Dialog open={showModal} onOpenChange={setShowModal}>
+        <DialogContent className="max-w-sm rounded-2xl p-6 text-center">
+          <DialogHeader className="flex flex-col items-center gap-2">
+            <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mb-1">
+              <AlertCircle className="w-5 h-5" />
+            </div>
+            <DialogTitle className="text-base font-bold text-gray-900">
+              Notice
+            </DialogTitle>
+            <DialogDescription className="text-sm text-gray-600 mt-1">
+              Self enrollment service is not available right now. Please contact your administrator.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-4 sm:justify-center">
+            <Button
+              onClick={() => setShowModal(false)}
+              className="bg-[#0d9488] hover:bg-[#0f766e] text-white rounded-full px-6 text-xs font-semibold"
+            >
+              OK
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
