@@ -10,7 +10,6 @@ import {
   RotateCw,
   Search,
   Users,
-  XCircle,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -44,7 +43,9 @@ import {
   SCHEDULE_VIEWS,
 } from "../data";
 import PlanClassModal from "../components/PlanClassModal";
+import RescheduleModal from "../components/RescheduleModal";
 import ReviewModal from "../components/ReviewModal";
+import CancelScheduleDialog from "../components/CancelScheduleDialog"; 
 
 function MetricCards() {
   const [metrics, setMetrics] = useState([]);
@@ -621,6 +622,7 @@ function TasksForReview() {
                     <Button
                       size="icon"
                       variant="ghost"
+                      title="Review Submission"
                       className="h-8 w-8 rounded-full bg-purple-50 text-purple-600 hover:bg-purple-100"
                       aria-label={`Review ${task.studentName}`}
                       onClick={() => setReviewTask(task)}
@@ -662,6 +664,7 @@ function ClassSchedule() {
   const [scheduleData, setScheduleData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [planningItem, setPlanningItem] = useState(null);
+  const [rescheduleItem, setRescheduleItem] = useState(null);
 
   //const staffId = JSON.parse(sessionStorage.getItem("otpStaff") || "{}")?.staffId;
   const staffId = JSON.parse(localStorage.getItem("staffId"));
@@ -685,10 +688,6 @@ function ClassSchedule() {
     fetchSchedule(scheduleView);
   }, [scheduleView, fetchSchedule]);
 
-  const handleSavePlan = (selectedTopicIds) => {
-    console.log("Saved topics for", planningItem?.course, selectedTopicIds);
-  };
-
   return (
     <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-sm lg:col-span-5 lg:flex lg:min-h-0 lg:flex-col">
       <CardContent className="p-5 sm:p-6 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col lg:overflow-hidden lg:p-5">
@@ -696,9 +695,22 @@ function ClassSchedule() {
           <PlanClassModal
             isOpen={!!planningItem}
             onClose={() => setPlanningItem(null)}
-            onSave={handleSavePlan}
+            scheduleId={planningItem.id}
+            courseId={planningItem.courseId}
             classNameTitle={planningItem.course}
             dateTimeText={`${planningItem.date} • ${planningItem.time}`}
+          />
+        )}
+
+        {rescheduleItem && (
+          <RescheduleModal
+            isOpen={!!rescheduleItem}
+            onClose={() => setRescheduleItem(null)}
+            scheduleId={rescheduleItem.id}
+            className={rescheduleItem.className}
+            currentDate={rescheduleItem.date}
+            currentTime={rescheduleItem.time}
+            onRescheduled={() => fetchSchedule(scheduleView)}
           />
         )}
 
@@ -750,12 +762,12 @@ function ClassSchedule() {
                   className="border-b border-slate-50 hover:bg-slate-50/50"
                 >
                   <TableCell className="py-3 lg:py-2">
-                    <div className="text-xs font-bold text-slate-800">
+                    <div className={`text-xs font-bold ${item.status === "CANCELLED" ? "text-red-600" : "text-slate-800"}`}>
                       {item.time}
                     </div>
-                    <div className="text-[10px] text-slate-400">{item.date}</div>
+                    <div className={`text-[10px] ${item.status === "CANCELLED" ? "text-red-400" : "text-slate-400"}`}>{item.date}</div>
                   </TableCell>
-                  <TableCell className="text-xs font-medium text-slate-700">
+                  <TableCell className={`text-xs font-medium ${item.status === "CANCELLED" ? "text-red-600" : "text-slate-700"}`}>
                     {item.course}
                   </TableCell>
                   <TableCell className="py-3 lg:py-2">
@@ -763,31 +775,35 @@ function ClassSchedule() {
                       <Button
                         size="icon"
                         variant="ghost"
+                        title="Plan class topics"
                         className="h-6 w-6 rounded-md bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
                         aria-label={`Materials for ${item.course}`}
                         onClick={() => setPlanningItem(item)}
                       >
                         <FileText className="h-3.5 w-3.5" />
                       </Button>
+                      <CancelScheduleDialog
+                        scheduleId={item.id}
+                        course={item.course}
+                        date={item.date}
+                        time={item.time}
+                        batchName={item.batchName}
+                        onCancelled={() => fetchSchedule(scheduleView)}
+                      />
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="h-6 w-6 rounded-md bg-rose-50 text-rose-500 hover:bg-rose-100"
-                        aria-label={`Cancel ${item.course}`}
-                      >
-                        <XCircle className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
+                        title="Reschedule"
                         className="h-6 w-6 rounded-md bg-amber-50 text-amber-500 hover:bg-amber-100"
                         aria-label={`Reschedule ${item.course}`}
+                        onClick={() => setRescheduleItem(item)}
                       >
                         <RotateCw className="h-3.5 w-3.5" />
                       </Button>
                       <Button
                         size="icon"
                         variant="ghost"
+                        title="Message Students"
                         className="h-6 w-6 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100"
                         aria-label={`Message about ${item.course}`}
                       >

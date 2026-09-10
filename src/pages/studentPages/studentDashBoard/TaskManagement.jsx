@@ -73,6 +73,11 @@ function TaskItem({ task, onToggle, onDelete, onClick }) {
 
           <DropdownMenuContent align="end">
             <DropdownMenuItem
+             onClick={() => onClick && onClick(task)}
+            >
+             Submit Assignment
+            </DropdownMenuItem>
+            <DropdownMenuItem
               onClick={(e) => {
                 e.stopPropagation();
                 onToggle(task.id);

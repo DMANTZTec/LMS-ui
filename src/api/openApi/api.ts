@@ -156,6 +156,8 @@ export interface ClassResponse {
 }
 export interface ClassScheduleResponse {
     'scheduleId'?: number;
+    'updatedBy'?: number;
+    'updatedDt'?: string;
     'batchId'?: number;
     'batchName'?: string;
     'className'?: string;
@@ -409,8 +411,8 @@ export const EnrollmentResponseStatusEnum = {
 export type EnrollmentResponseStatusEnum = typeof EnrollmentResponseStatusEnum[keyof typeof EnrollmentResponseStatusEnum];
 
 export interface ForgotPasswordRequest {
-    'otpChannel'?: ForgotPasswordRequestOtpChannelEnum;
     'emailIdOrMobileNo'?: string;
+    'otpChannel'?: ForgotPasswordRequestOtpChannelEnum;
 }
 
 export const ForgotPasswordRequestOtpChannelEnum = {
@@ -473,10 +475,13 @@ export interface InstructorResponse {
 export interface InstructorScheduleResponse {
     'id'?: number;
     'time'?: string;
+    'endTime'?: string;
     'date'?: string;
     'batchName'?: string;
     'course'?: string;
+    'courseId'?: string;
     'className'?: string;
+    'status'?: string;
 }
 export interface InstructorStudentStatsResponse {
     'activeStudents'?: number;
@@ -557,17 +562,17 @@ export interface PageStaffResponse {
     'sort'?: SortObject;
     'first'?: boolean;
     'last'?: boolean;
-    'pageable'?: PageableObject;
     'numberOfElements'?: number;
+    'pageable'?: PageableObject;
     'empty'?: boolean;
 }
 export interface PageableObject {
     'offset'?: number;
     'sort'?: SortObject;
-    'paged'?: boolean;
-    'unpaged'?: boolean;
     'pageSize'?: number;
     'pageNumber'?: number;
+    'paged'?: boolean;
+    'unpaged'?: boolean;
 }
 export interface PlanClassTopicsRequest {
     'staffId': string;
@@ -697,6 +702,12 @@ export interface RemoveStudentRequest {
     'studentId'?: string;
     'studentIds'?: Array<string>;
 }
+export interface RescheduleClassRequest {
+    'className': string;
+    'classDate': string;
+    'startTime': LocalTime;
+    'endTime': LocalTime;
+}
 export interface ResendOtpRequest {
     'emailId'?: string;
     'mobileNum'?: string;
@@ -753,6 +764,7 @@ export interface ScheduleItemResponse {
     'title'?: string;
     'time'?: string;
     'instructor'?: string;
+    'status'?: string;
 }
 export interface SetStaffPasswordRequest {
     'token': string;
@@ -2011,48 +2023,6 @@ export const ClassAdminControllerApiAxiosParamCreator = function (configuration?
         },
         /**
          * 
-         * @param {number} scheduleId 
-         * @param {AddScheduleRequest} addScheduleRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        modifySchedule: async (scheduleId: number, addScheduleRequest: AddScheduleRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'scheduleId' is not null or undefined
-            assertParamExists('modifySchedule', 'scheduleId', scheduleId)
-            // verify required parameter 'addScheduleRequest' is not null or undefined
-            assertParamExists('modifySchedule', 'addScheduleRequest', addScheduleRequest)
-            const localVarPath = `/api/admin/courseschedule/{scheduleId}`
-                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            localVarHeaderParameter['Accept'] = '*/*';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(addScheduleRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @param {number} batchId 
          * @param {RemoveClassTopicRequest} removeClassTopicRequest 
          * @param {*} [options] Override http request option.
@@ -2087,6 +2057,48 @@ export const ClassAdminControllerApiAxiosParamCreator = function (configuration?
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(removeClassTopicRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} scheduleId 
+         * @param {RescheduleClassRequest} rescheduleClassRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        rescheduleClass: async (scheduleId: number, rescheduleClassRequest: RescheduleClassRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('rescheduleClass', 'scheduleId', scheduleId)
+            // verify required parameter 'rescheduleClassRequest' is not null or undefined
+            assertParamExists('rescheduleClass', 'rescheduleClassRequest', rescheduleClassRequest)
+            const localVarPath = `/api/admin/schedules/{scheduleId}/reschedule`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(rescheduleClassRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -2401,19 +2413,6 @@ export const ClassAdminControllerApiFp = function(configuration?: Configuration)
         },
         /**
          * 
-         * @param {number} scheduleId 
-         * @param {AddScheduleRequest} addScheduleRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async modifySchedule(scheduleId: number, addScheduleRequest: AddScheduleRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClassScheduleResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.modifySchedule(scheduleId, addScheduleRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ClassAdminControllerApi.modifySchedule']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @param {number} batchId 
          * @param {RemoveClassTopicRequest} removeClassTopicRequest 
          * @param {*} [options] Override http request option.
@@ -2423,6 +2422,19 @@ export const ClassAdminControllerApiFp = function(configuration?: Configuration)
             const localVarAxiosArgs = await localVarAxiosParamCreator.removeTopicsFromClass(batchId, removeClassTopicRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ClassAdminControllerApi.removeTopicsFromClass']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} scheduleId 
+         * @param {RescheduleClassRequest} rescheduleClassRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async rescheduleClass(scheduleId: number, rescheduleClassRequest: RescheduleClassRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClassScheduleResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.rescheduleClass(scheduleId, rescheduleClassRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ClassAdminControllerApi.rescheduleClass']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -2628,16 +2640,6 @@ export const ClassAdminControllerApiFactory = function (configuration?: Configur
         },
         /**
          * 
-         * @param {number} scheduleId 
-         * @param {AddScheduleRequest} addScheduleRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        modifySchedule(scheduleId: number, addScheduleRequest: AddScheduleRequest, options?: RawAxiosRequestConfig): AxiosPromise<ClassScheduleResponse> {
-            return localVarFp.modifySchedule(scheduleId, addScheduleRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {number} batchId 
          * @param {RemoveClassTopicRequest} removeClassTopicRequest 
          * @param {*} [options] Override http request option.
@@ -2645,6 +2647,16 @@ export const ClassAdminControllerApiFactory = function (configuration?: Configur
          */
         removeTopicsFromClass(batchId: number, removeClassTopicRequest: RemoveClassTopicRequest, options?: RawAxiosRequestConfig): AxiosPromise<string> {
             return localVarFp.removeTopicsFromClass(batchId, removeClassTopicRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} scheduleId 
+         * @param {RescheduleClassRequest} rescheduleClassRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        rescheduleClass(scheduleId: number, rescheduleClassRequest: RescheduleClassRequest, options?: RawAxiosRequestConfig): AxiosPromise<ClassScheduleResponse> {
+            return localVarFp.rescheduleClass(scheduleId, rescheduleClassRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2859,17 +2871,6 @@ export class ClassAdminControllerApi extends BaseAPI {
 
     /**
      * 
-     * @param {number} scheduleId 
-     * @param {AddScheduleRequest} addScheduleRequest 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    public modifySchedule(scheduleId: number, addScheduleRequest: AddScheduleRequest, options?: RawAxiosRequestConfig) {
-        return ClassAdminControllerApiFp(this.configuration).modifySchedule(scheduleId, addScheduleRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
      * @param {number} batchId 
      * @param {RemoveClassTopicRequest} removeClassTopicRequest 
      * @param {*} [options] Override http request option.
@@ -2877,6 +2878,17 @@ export class ClassAdminControllerApi extends BaseAPI {
      */
     public removeTopicsFromClass(batchId: number, removeClassTopicRequest: RemoveClassTopicRequest, options?: RawAxiosRequestConfig) {
         return ClassAdminControllerApiFp(this.configuration).removeTopicsFromClass(batchId, removeClassTopicRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} scheduleId 
+     * @param {RescheduleClassRequest} rescheduleClassRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public rescheduleClass(scheduleId: number, rescheduleClassRequest: RescheduleClassRequest, options?: RawAxiosRequestConfig) {
+        return ClassAdminControllerApiFp(this.configuration).rescheduleClass(scheduleId, rescheduleClassRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -4876,6 +4888,43 @@ export const CourseManagementControllerApiAxiosParamCreator = function (configur
         },
         /**
          * 
+         * @param {string} courseId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTopicsByCourseId: async (courseId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'courseId' is not null or undefined
+            assertParamExists('getTopicsByCourseId', 'courseId', courseId)
+            const localVarPath = `/api/course/{courseId}/topics`
+                .replace(`{${"courseId"}}`, encodeURIComponent(String(courseId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {number} topicId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -5956,6 +6005,18 @@ export const CourseManagementControllerApiFp = function(configuration?: Configur
         },
         /**
          * 
+         * @param {string} courseId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTopicsByCourseId(courseId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TopicResponseDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTopicsByCourseId(courseId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CourseManagementControllerApi.getTopicsByCourseId']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} topicId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6448,6 +6509,15 @@ export const CourseManagementControllerApiFactory = function (configuration?: Co
         },
         /**
          * 
+         * @param {string} courseId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTopicsByCourseId(courseId: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<TopicResponseDto>> {
+            return localVarFp.getTopicsByCourseId(courseId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {number} topicId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6914,6 +6984,16 @@ export class CourseManagementControllerApi extends BaseAPI {
      */
     public getTopicsByChapterId(chapterId: number, options?: RawAxiosRequestConfig) {
         return CourseManagementControllerApiFp(this.configuration).getTopicsByChapterId(chapterId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} courseId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getTopicsByCourseId(courseId: string, options?: RawAxiosRequestConfig) {
+        return CourseManagementControllerApiFp(this.configuration).getTopicsByCourseId(courseId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 **title** | **string** |  | [optional] [default to undefined]
 **time** | **string** |  | [optional] [default to undefined]
 **instructor** | **string** |  | [optional] [default to undefined]
+**status** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -18,6 +19,7 @@ const instance: ScheduleItemResponse = {
     title,
     time,
     instructor,
+    status,
 };
 ```
 

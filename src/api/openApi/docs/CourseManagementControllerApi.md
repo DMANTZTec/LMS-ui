@@ -32,6 +32,7 @@ All URIs are relative to *http://localhost:9090/lms*
 |[**getProgramById**](#getprogrambyid) | **GET** /api/getById/program/{id} | |
 |[**getTopicByIdAndChapterId**](#gettopicbyidandchapterid) | **GET** /api/topics/{topicId} | |
 |[**getTopicsByChapterId**](#gettopicsbychapterid) | **GET** /api/topics | |
+|[**getTopicsByCourseId**](#gettopicsbycourseid) | **GET** /api/course/{courseId}/topics | |
 |[**getUrlsByTopicId**](#geturlsbytopicid) | **GET** /api/topics/{topicId}/references/url | |
 |[**getVideos**](#getvideos) | **GET** /api/topics/{topicId}/references/videos | |
 |[**moveChapter**](#movechapter) | **PUT** /api/{chapterId}/movechapter | |
@@ -1494,6 +1495,56 @@ const { status, data } = await apiInstance.getTopicsByChapterId(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **chapterId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**Array<TopicResponseDto>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getTopicsByCourseId**
+> Array<TopicResponseDto> getTopicsByCourseId()
+
+
+### Example
+
+```typescript
+import {
+    CourseManagementControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new CourseManagementControllerApi(configuration);
+
+let courseId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.getTopicsByCourseId(
+    courseId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **courseId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type

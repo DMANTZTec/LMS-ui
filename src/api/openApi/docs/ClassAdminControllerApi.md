@@ -22,8 +22,8 @@ All URIs are relative to *http://localhost:9090/lms*
 |[**getStudentDetails**](#getstudentdetails) | **GET** /api/admin/student-details/{studentId} | |
 |[**getTopicsByBatchId**](#gettopicsbybatchid) | **GET** /api/admin/classes/{batchId}/topics | |
 |[**modifyClass**](#modifyclass) | **PUT** /api/admin/modify/courseschedule/classes/{batchId} | |
-|[**modifySchedule**](#modifyschedule) | **PUT** /api/admin/courseschedule/{scheduleId} | |
 |[**removeTopicsFromClass**](#removetopicsfromclass) | **DELETE** /api/admin/classes/{batchId}/topics | |
+|[**rescheduleClass**](#rescheduleclass) | **PUT** /api/admin/schedules/{scheduleId}/reschedule | |
 |[**updateInstructorsForBatch**](#updateinstructorsforbatch) | **PUT** /api/admin/courseschedule/classes/{batchId}/instructors | |
 |[**viewStudents**](#viewstudents) | **GET** /api/admin/view-students | |
 
@@ -947,60 +947,6 @@ const { status, data } = await apiInstance.modifyClass(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **modifySchedule**
-> ClassScheduleResponse modifySchedule(addScheduleRequest)
-
-
-### Example
-
-```typescript
-import {
-    ClassAdminControllerApi,
-    Configuration,
-    AddScheduleRequest
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new ClassAdminControllerApi(configuration);
-
-let scheduleId: number; // (default to undefined)
-let addScheduleRequest: AddScheduleRequest; //
-
-const { status, data } = await apiInstance.modifySchedule(
-    scheduleId,
-    addScheduleRequest
-);
-```
-
-### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **addScheduleRequest** | **AddScheduleRequest**|  | |
-| **scheduleId** | [**number**] |  | defaults to undefined|
-
-
-### Return type
-
-**ClassScheduleResponse**
-
-### Authorization
-
-[BearerAuth](../README.md#BearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: */*
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
 # **removeTopicsFromClass**
 > string removeTopicsFromClass(removeClassTopicRequest)
 
@@ -1037,6 +983,60 @@ const { status, data } = await apiInstance.removeTopicsFromClass(
 ### Return type
 
 **string**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **rescheduleClass**
+> ClassScheduleResponse rescheduleClass(rescheduleClassRequest)
+
+
+### Example
+
+```typescript
+import {
+    ClassAdminControllerApi,
+    Configuration,
+    RescheduleClassRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ClassAdminControllerApi(configuration);
+
+let scheduleId: number; // (default to undefined)
+let rescheduleClassRequest: RescheduleClassRequest; //
+
+const { status, data } = await apiInstance.rescheduleClass(
+    scheduleId,
+    rescheduleClassRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **rescheduleClassRequest** | **RescheduleClassRequest**|  | |
+| **scheduleId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**ClassScheduleResponse**
 
 ### Authorization
 

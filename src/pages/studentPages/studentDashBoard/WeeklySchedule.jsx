@@ -53,7 +53,11 @@ export function WeeklySchedule() {
                 {(day.items || []).map((item, idx) => (
                   <div
                     key={`${item.title}-${idx}`}
-                    className="rounded-xl border border-[#BEDBFF] bg-[#EFF6FF] p-3"
+                    className={`rounded-xl border p-3 ${
+                      item.status === "CANCELLED"
+                        ? "border-red-500 bg-red-50"
+                        : "border-[#BEDBFF] bg-[#EFF6FF]"
+                    }`}
                   >
 
                     <div className="text-sm font-semibold">
@@ -68,6 +72,12 @@ export function WeeklySchedule() {
                     <div className="mt-1 text-xs text-muted-foreground">
                       {item.instructor}
                     </div>
+
+                    {item.status === "CANCELLED" && (
+                      <span className="mt-2 inline-block rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-semibold text-red-700">
+                        {item.status}
+                      </span>
+                    )}
 
                   </div>
                 ))}

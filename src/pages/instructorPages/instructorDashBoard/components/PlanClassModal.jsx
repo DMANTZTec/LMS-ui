@@ -1,28 +1,48 @@
 import { useState } from "react";
 import { X } from "lucide-react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { api } from "@/api/CourseMgtController";
+import { instructorDashboardApi } from "@/api/instructor-dashboard-controller";
 import { TopicOption } from "./TopicOption";
-
-const DEFAULT_TOPICS = [
-  { id: "1", label: "Higher-Order Components" },
-  { id: "2", label: "Render Props pattern" },
-  { id: "3", label: "Custom Hooks deep dive" },
-  { id: "4", label: "Context API & performance" },
-  { id: "5", label: "Compound components" },
-   { id: "5", label: "Compound components" },
-    { id: "5", label: "Compound components" },
-     { id: "5", label: "Compound components" },
-      { id: "5", label: "Compound components" },
-];
+import toast from "react-hot-toast";
 
 export const PlanClassModal = ({
   isOpen = true,
   onClose,
-  onSave,
-  classNameTitle = "React Advanced Patterns",
-  dateTimeText = "Mon, 01 Sep 2026 • 09:00 AM",
-  topics = DEFAULT_TOPICS,
+  scheduleId,
+  courseId,
+  classNameTitle,
+  dateTimeText,
 }) => {
   const [selectedTopicIds, setSelectedTopicIds] = useState([]);
+
+  const staffId = JSON.parse(localStorage.getItem("staffId"));
+
+  const { data: topics = [], isLoading } = useQuery({
+    queryKey: ["topicsByCourse", courseId],
+    queryFn: async () => {
+      const res = await api.getTopicsByCourseId(courseId);
+      return Array.isArray(res) ? res : res?.data || [];
+    },
+    enabled: Boolean(courseId) && isOpen,
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: (topicIds) =>
+      instructorDashboardApi.planClassTopics(scheduleId, {
+        staffId,
+        topicIds,
+      }),
+    onSuccess: () => {
+      toast.success("Class plan saved successfully");
+      setSelectedTopicIds([]);
+      onClose();
+    },
+    onError: () => {
+      toast.error("Failed to save class plan");
+    },
+  });
 
   if (!isOpen) return null;
 
@@ -33,10 +53,11 @@ export const PlanClassModal = ({
   };
 
   const handleSave = () => {
-    if (onSave) {
-      onSave(selectedTopicIds);
+    if (selectedTopicIds.length === 0) {
+      toast.error("Please select at least one topic");
+      return;
     }
-    onClose();
+    saveMutation.mutate(selectedTopicIds.map(Number));
   };
 
   const selectedCount = selectedTopicIds.length;
@@ -72,15 +93,25 @@ export const PlanClassModal = ({
             Select topics to cover
           </label>
           <div className="max-h-[320px] space-y-2.5 overflow-y-auto pr-1">
-            {topics.map((topic) => (
-              <TopicOption
-                key={topic.id}
-                id={topic.id}
-                label={topic.label}
-                isSelected={selectedTopicIds.includes(topic.id)}
-                onToggle={handleToggle}
-              />
-            ))}
+            {isLoading ? (
+              <div className="py-8 text-center text-sm text-slate-400">
+                Loading topics...
+              </div>
+            ) : topics.length === 0 ? (
+              <div className="py-8 text-center text-sm text-slate-400">
+                No topics available for this course
+              </div>
+            ) : (
+              topics.map((topic) => (
+                <TopicOption
+                  key={topic.id}
+                  id={topic.id}
+                  label={topic.topicName}
+                  isSelected={selectedTopicIds.includes(topic.id)}
+                  onToggle={handleToggle}
+                />
+              ))
+            )}
           </div>
         </div>
 
@@ -103,9 +134,10 @@ export const PlanClassModal = ({
             <button
               type="button"
               onClick={handleSave}
-              className="rounded-xl bg-indigo-400 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-500"
+              disabled={saveMutation.isPending}
+              className="rounded-xl bg-indigo-400 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-500 disabled:opacity-50"
             >
-              Save Plan
+              {saveMutation.isPending ? "Saving..." : "Save Plan"}
             </button>
           </div>
         </div>
