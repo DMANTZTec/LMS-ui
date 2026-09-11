@@ -45,7 +45,8 @@ import {
 import PlanClassModal from "../components/PlanClassModal";
 import RescheduleModal from "../components/RescheduleModal";
 import ReviewModal from "../components/ReviewModal";
-import CancelScheduleDialog from "../components/CancelScheduleDialog"; 
+import ScheduleMessageModal from "../components/ScheduleMessageModal";
+import CancelScheduleDialog from "../components/CancelScheduleDialog";
 
 function MetricCards() {
   const [metrics, setMetrics] = useState([]);
@@ -379,6 +380,7 @@ function TasksForReview() {
               taskTitle: reviewTask.taskTitle,
               submissionNotes: reviewTask.submissionNotes || "No notes provided.",
               attachments: reviewTask.attachments || [],
+              git: reviewTask.git || [],
               status:
                 reviewTask.reviewStatus === "COMPLETED"
                   ? "Completed"
@@ -665,6 +667,7 @@ function ClassSchedule() {
   const [loading, setLoading] = useState(true);
   const [planningItem, setPlanningItem] = useState(null);
   const [rescheduleItem, setRescheduleItem] = useState(null);
+  const [messageItem, setMessageItem] = useState(null);
 
   //const staffId = JSON.parse(sessionStorage.getItem("otpStaff") || "{}")?.staffId;
   const staffId = JSON.parse(localStorage.getItem("staffId"));
@@ -711,6 +714,17 @@ function ClassSchedule() {
             currentDate={rescheduleItem.date}
             currentTime={rescheduleItem.time}
             onRescheduled={() => fetchSchedule(scheduleView)}
+          />
+        )}
+
+        {messageItem && (
+          <ScheduleMessageModal
+            isOpen={!!messageItem}
+            onClose={() => setMessageItem(null)}
+            scheduleId={messageItem.id}
+            course={messageItem.course}
+            date={messageItem.date}
+            time={messageItem.time}
           />
         )}
 
@@ -806,6 +820,7 @@ function ClassSchedule() {
                         title="Message Students"
                         className="h-6 w-6 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100"
                         aria-label={`Message about ${item.course}`}
+                        onClick={() => setMessageItem(item)}
                       >
                         <MessageSquare className="h-3.5 w-3.5" />
                       </Button>

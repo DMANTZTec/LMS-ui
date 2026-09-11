@@ -15,6 +15,9 @@ Name | Type | Description | Notes
 **completedReferences** | **number** |  | [optional] [default to undefined]
 **coursePercentage** | **number** |  | [optional] [default to undefined]
 **completed** | **boolean** |  | [optional] [default to undefined]
+**courseStatus** | **string** |  | [optional] [default to undefined]
+**startDate** | **string** |  | [optional] [default to undefined]
+**endDate** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -32,6 +35,9 @@ const instance: CourseProgressSummaryResponse = {
     completedReferences,
     coursePercentage,
     completed,
+    courseStatus,
+    startDate,
+    endDate,
 };
 ```
 

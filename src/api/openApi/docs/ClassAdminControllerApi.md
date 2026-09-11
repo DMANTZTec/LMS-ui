@@ -6,6 +6,7 @@ All URIs are relative to *http://localhost:9090/lms*
 |------------- | ------------- | -------------|
 |[**addClass**](#addclass) | **POST** /api/admin/courseschedule/{courseId}/classes | |
 |[**addInstructorsToBatch**](#addinstructorstobatch) | **POST** /api/admin/courseschedule/classes/{batchId}/instructors | |
+|[**addScheduleMessage**](#addschedulemessage) | **POST** /api/admin/schedules/{scheduleId}/message | |
 |[**addScheduleToClass**](#addscheduletoclass) | **POST** /api/admin/addschedule-to-class | |
 |[**addTopicsToClass**](#addtopicstoclass) | **POST** /api/admin/classes/{batchId}/topics | |
 |[**assignInstructor**](#assigninstructor) | **POST** /api/admin/{scheduleId}/assign-instructor | |
@@ -16,6 +17,7 @@ All URIs are relative to *http://localhost:9090/lms*
 |[**getClassesByCourse**](#getclassesbycourse) | **GET** /api/admin/courseschedule/{courseId}/classes | |
 |[**getInstructorsByBatchId**](#getinstructorsbybatchid) | **GET** /api/admin/courseschedule/classes/{batchId}/instructors | |
 |[**getScheduleById**](#getschedulebyid) | **GET** /api/admin/schedules/{scheduleId} | |
+|[**getScheduleMessage**](#getschedulemessage) | **GET** /api/admin/schedules/{scheduleId}/message | |
 |[**getSchedulesByBatch**](#getschedulesbybatch) | **GET** /api/admin/courseschedule/{batchId}/schedules | |
 |[**getSchedulesByInstructor**](#getschedulesbyinstructor) | **GET** /api/admin/instructor/{staffId} | |
 |[**getStaffDailySchedule**](#getstaffdailyschedule) | **GET** /api/admin/staff/{staffId}/dailySchedules | |
@@ -117,6 +119,60 @@ const { status, data } = await apiInstance.addInstructorsToBatch(
 ### Return type
 
 **Array<BatchInstructorResponse>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **addScheduleMessage**
+> ScheduleMessageResponse addScheduleMessage(scheduleMessageRequest)
+
+
+### Example
+
+```typescript
+import {
+    ClassAdminControllerApi,
+    Configuration,
+    ScheduleMessageRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ClassAdminControllerApi(configuration);
+
+let scheduleId: number; // (default to undefined)
+let scheduleMessageRequest: ScheduleMessageRequest; //
+
+const { status, data } = await apiInstance.addScheduleMessage(
+    scheduleId,
+    scheduleMessageRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **scheduleMessageRequest** | **ScheduleMessageRequest**|  | |
+| **scheduleId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**ScheduleMessageResponse**
 
 ### Authorization
 
@@ -619,6 +675,56 @@ const { status, data } = await apiInstance.getScheduleById(
 ### Return type
 
 **ClassScheduleResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getScheduleMessage**
+> ScheduleMessageResponse getScheduleMessage()
+
+
+### Example
+
+```typescript
+import {
+    ClassAdminControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ClassAdminControllerApi(configuration);
+
+let scheduleId: number; // (default to undefined)
+
+const { status, data } = await apiInstance.getScheduleMessage(
+    scheduleId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **scheduleId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**ScheduleMessageResponse**
 
 ### Authorization
 

@@ -97,6 +97,8 @@ docs/RoleControllerApi.md
 docs/RoleRequest.md
 docs/RoleResponse.md
 docs/ScheduleItemResponse.md
+docs/ScheduleMessageRequest.md
+docs/ScheduleMessageResponse.md
 docs/SetStaffPasswordRequest.md
 docs/SocialMediaControllerApi.md
 docs/SocialMediaRequest.md

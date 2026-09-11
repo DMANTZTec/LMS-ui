@@ -1,10 +1,12 @@
-import { CalendarDays, Clock } from "lucide-react";
+import { useState } from "react";
+import { CalendarDays, Clock, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { decodeToken } from "@/utils/tokenUtility";
 import { enrollmentBatchApi } from "@/api/enrollment-batch-controller";
 
 export function WeeklySchedule() {
+  const [expandedMessages, setExpandedMessages] = useState({});
   const studentId = decodeToken()?.userId || null;
 
   const { data: schedule = [], isLoading } = useQuery({
@@ -16,6 +18,13 @@ export function WeeklySchedule() {
     enabled: Boolean(studentId),
     staleTime: 5 * 60 * 1000,
   });
+
+  const toggleMessage = (day, idx) => {
+    setExpandedMessages((prev) => ({
+      ...prev,
+      [`${day}:${idx}`]: !prev[`${day}:${idx}`],
+    }));
+  };
 
   return (
     <Card className="flex h-full min-h-0 flex-col rounded-2xl shadow-sm">
@@ -78,6 +87,34 @@ export function WeeklySchedule() {
                         {item.status}
                       </span>
                     )}
+
+                    {item.message ? (
+                      <div className="mt-2">
+                        <button
+                          type="button"
+                          onClick={() => toggleMessage(day.day, idx)}
+                          aria-expanded={!!expandedMessages[`${day.day}:${idx}`]}
+                          className="flex items-center gap-1 text-[11px] font-semibold text-[#155DFC] transition-colors hover:underline"
+                        >
+                          <ChevronRight
+                            className={`h-3.5 w-3.5 transition-transform ${
+                              expandedMessages[`${day.day}:${idx}`]
+                                ? "rotate-90"
+                                : ""
+                            }`}
+                          />
+                          {expandedMessages[`${day.day}:${idx}`]
+                            ? "Hide Instructor Message"
+                            : "Show Instructor Message"}
+                        </button>
+
+                        {expandedMessages[`${day.day}:${idx}`] && (
+                          <div className="mt-2 whitespace-pre-line rounded-lg border border-[#BEDBFF] bg-white/70 px-3 py-2 text-xs text-slate-700">
+                            {item.message}
+                          </div>
+                        )}
+                      </div>
+                    ) : null}
 
                   </div>
                 ))}

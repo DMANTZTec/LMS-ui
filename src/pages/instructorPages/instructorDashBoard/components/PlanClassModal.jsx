@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api/CourseMgtController";
 import { instructorDashboardApi } from "@/api/instructor-dashboard-controller";
 import { TopicOption } from "./TopicOption";
@@ -14,10 +14,12 @@ export const PlanClassModal = ({
   classNameTitle,
   dateTimeText,
 }) => {
+  const queryClient = useQueryClient();
   const [selectedTopicIds, setSelectedTopicIds] = useState([]);
 
   const staffId = JSON.parse(localStorage.getItem("staffId"));
 
+  // Fetch available topics for course
   const { data: topics = [], isLoading } = useQuery({
     queryKey: ["topicsByCourse", courseId],
     queryFn: async () => {
@@ -28,6 +30,27 @@ export const PlanClassModal = ({
     staleTime: 10 * 60 * 1000,
   });
 
+  // Fetch planned topics for this class/schedule
+  const { data: plannedTopics = [] } = useQuery({
+    queryKey: ["plannedTopics", scheduleId, staffId],
+    queryFn: async () => {
+      const res = await instructorDashboardApi.getPlannedTopics(
+        scheduleId,
+        staffId
+      );
+      return Array.isArray(res) ? res : res?.data || [];
+    },
+    enabled: Boolean(scheduleId) && Boolean(staffId) && isOpen,
+  });
+
+  // Sync state whenever plannedTopics updates from the GET API
+  useEffect(() => {
+    if (plannedTopics.length > 0) {
+      setSelectedTopicIds(plannedTopics.map((pt) => pt.topicId));
+    }
+  }, [plannedTopics]);
+
+  // Save Mutation
   const saveMutation = useMutation({
     mutationFn: (topicIds) =>
       instructorDashboardApi.planClassTopics(scheduleId, {
@@ -36,7 +59,12 @@ export const PlanClassModal = ({
       }),
     onSuccess: () => {
       toast.success("Class plan saved successfully");
-      setSelectedTopicIds([]);
+      
+      // Force Refetch/Get API on Success
+      queryClient.invalidateQueries({
+        queryKey: ["plannedTopics", scheduleId, staffId],
+      });
+
       onClose();
     },
     onError: () => {
@@ -46,6 +74,7 @@ export const PlanClassModal = ({
 
   if (!isOpen) return null;
 
+  // Toggle selection locally without calling mutation on every click
   const handleToggle = (id) => {
     setSelectedTopicIds((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
@@ -53,10 +82,6 @@ export const PlanClassModal = ({
   };
 
   const handleSave = () => {
-    if (selectedTopicIds.length === 0) {
-      toast.error("Please select at least one topic");
-      return;
-    }
     saveMutation.mutate(selectedTopicIds.map(Number));
   };
 
@@ -64,9 +89,7 @@ export const PlanClassModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/20 p-4 backdrop-blur-xs">
-      {/* Modal Container */}
       <div className="w-full max-w-md overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-2xl animate-in fade-in zoom-in-95 duration-150">
-        {/* Header */}
         <div className="relative p-6 pb-4">
           <button
             onClick={onClose}
@@ -87,7 +110,6 @@ export const PlanClassModal = ({
           </div>
         </div>
 
-        {/* Content Body */}
         <div className="px-6 py-2">
           <label className="mb-3 block text-xs font-semibold uppercase tracking-wider text-slate-400">
             Select topics to cover
@@ -115,7 +137,6 @@ export const PlanClassModal = ({
           </div>
         </div>
 
-        {/* Footer */}
         <div className="mt-2 flex items-center justify-between p-6 pt-4">
           <span className="text-sm font-medium text-slate-400">
             {selectedCount === 0
