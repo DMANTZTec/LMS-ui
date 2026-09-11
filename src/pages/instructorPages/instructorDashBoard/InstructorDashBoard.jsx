@@ -14,7 +14,7 @@ export function InstructorDashBoard() {
   const [activeNav, setActiveNav] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  if (getUserRole() !== "INSTRUCTOR") {
+  if (getUserRole().toUpperCase() !== "INSTRUCTOR") {
     return <Navigate to="/Staff-dashboard" replace />;
   }
 

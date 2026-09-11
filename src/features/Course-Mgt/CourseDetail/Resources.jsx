@@ -41,7 +41,8 @@ console.log("value of topic is: ", topic);
 
                         </div>
                     
-                    <div className="bg-white rounded shrink-0"><ExternalLink className="text-gray-400 w-5 h-5" /></div>
+                    {/* OpenCode generated code */}
+                    <div className="bg-white rounded shrink-0 cursor-pointer" onClick={() => window.open(document.refValue.fileUrl, '_blank', 'noopener,noreferrer')}><ExternalLink className="text-gray-400 w-5 h-5" /></div>
                 
                 </div>
                 </div>
@@ -64,7 +65,8 @@ console.log("value of topic is: ", topic);
 
                         </div>
                     
-                    <div className="bg-white rounded shrink-0"><ExternalLink className="text-gray-400 w-5 h-5" /></div>
+                    {/* OpenCode generated code */}
+                    <div className="bg-white rounded shrink-0 cursor-pointer" onClick={() => window.open(video.refValue.fileUrl, '_blank', 'noopener,noreferrer')}><ExternalLink className="text-gray-400 w-5 h-5" /></div>
             
                 </div>
                 </div>
@@ -87,7 +89,8 @@ console.log("value of topic is: ", topic);
 
                         </div>
                     
-                    <div className="bg-white rounded shrink-0"><ExternalLink className="text-gray-400 w-5 h-5" /></div>
+                    {/* OpenCode generated code */}
+                    <div className="bg-white rounded shrink-0 cursor-pointer" onClick={() => window.open(url.refValue.url, '_blank', 'noopener,noreferrer')}><ExternalLink className="text-gray-400 w-5 h-5" /></div>
                 
                 </div>
                 </div>
