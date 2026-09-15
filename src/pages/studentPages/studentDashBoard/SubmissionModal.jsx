@@ -7,6 +7,7 @@ import {
   Upload,
   X,
   Loader2,
+  Plus,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ export default function SubmissionModal({ task, open, onClose, onSubmitSuccess }
 
   const [notes, setNotes] = useState(task.submissionNotes || "");
   const [files, setFiles] = useState([]);
+  const [gitCommits, setGitCommits] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -44,6 +46,22 @@ export default function SubmissionModal({ task, open, onClose, onSubmitSuccess }
     setFiles((prev) => prev.filter((_, index) => index !== indexToRemove));
   };
 
+  const addGitCommit = () => {
+    setGitCommits((prev) => [...prev, { githubUrl: "", commitMessage: "" }]);
+  };
+
+  const updateGitCommit = (indexToUpdate, field, value) => {
+    setGitCommits((prev) =>
+      prev.map((commit, index) =>
+        index === indexToUpdate ? { ...commit, [field]: value } : commit
+      )
+    );
+  };
+
+  const removeGitCommit = (indexToRemove) => {
+    setGitCommits((prev) => prev.filter((_, index) => index !== indexToRemove));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (submitting) return;
@@ -61,12 +79,25 @@ export default function SubmissionModal({ task, open, onClose, onSubmitSuccess }
 
     setSubmitting(true);
     try {
-      const res = await stasksubapi.submitTask(
-        task.id,
-        studentId,
-        files,
-        notes
-      );
+      // Change this block inside handleSubmit in SubmissionModal.jsx:
+
+const git = gitCommits
+  .filter((commit) => commit.githubUrl.trim() !== "")
+  .map((commit) => 
+    // Serialize each object to a JSON string here
+    JSON.stringify({
+      githubUrl: commit.githubUrl.trim(),
+      commitMessage: commit.commitMessage.trim(),
+    })
+  );
+
+const res = await stasksubapi.submitTask(
+  task.id,
+  studentId,
+  files,
+  notes,
+  git.length > 0 ? git : undefined
+);
 
       if (onSubmitSuccess) {
         onSubmitSuccess({
@@ -74,6 +105,7 @@ export default function SubmissionModal({ task, open, onClose, onSubmitSuccess }
           taskId: task.id,
           notes,
           attachments: files.map((f) => f.name),
+          git,
         });
       }
 
@@ -91,17 +123,17 @@ export default function SubmissionModal({ task, open, onClose, onSubmitSuccess }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md rounded-2xl p-0 border border-border overflow-auto bg-background">
+      <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-md md:max-w-lg lg:max-w-xl max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-4rem)] rounded-2xl p-0 border border-border overflow-y-auto bg-background">
         <form onSubmit={handleSubmit}>
-          <div className="p-6 pb-4">
+          <div className="p-4 pb-3 sm:p-5 sm:pb-4 md:p-6 md:pb-4">
             {/* Header info */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Avatar className="h-12 w-12 bg-blue-100 text-blue-600 font-semibold text-base">
+                <Avatar className="h-10 w-10 sm:h-11 sm:w-11 md:h-12 md:w-12 bg-blue-100 text-blue-600 font-semibold text-base">
                   <AvatarFallback>{student.initials}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="text-lg font-bold text-foreground">
+                  <h3 className="text-sm sm:text-base md:text-lg font-bold text-foreground">
                     {student.name}
                   </h3>
                   <p className="text-xs text-muted-foreground font-medium">
@@ -112,7 +144,7 @@ export default function SubmissionModal({ task, open, onClose, onSubmitSuccess }
             </div>
 
             {/* Info Cards Grid */}
-            <div className="mt-6 grid grid-cols-2 gap-3">
+            <div className="mt-5 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
               <div className="rounded-xl border border-border/60 bg-muted/30 p-3">
                 <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-muted-foreground">
                   <Tag className="h-3.5 w-3.5" />
@@ -135,18 +167,18 @@ export default function SubmissionModal({ task, open, onClose, onSubmitSuccess }
             </div>
 
             {/* Task Title */}
-            <div className="mt-6">
+            <div className="mt-5 sm:mt-6">
               <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-muted-foreground">
                 <FileText className="h-3.5 w-3.5" />
                 <span>TASK</span>
               </div>
-              <h4 className="mt-1 text-base font-bold text-foreground">
+              <h4 className="mt-1 text-sm sm:text-base font-bold text-foreground">
                 {task.title}
               </h4>
             </div>
 
             {/* Student's Input Field for Submission Notes */}
-            <div className="mt-5 space-y-1.5">
+            <div className="mt-4 sm:mt-5 space-y-1.5">
               <label className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
                 Student's Submission Notes
               </label>
@@ -160,7 +192,7 @@ export default function SubmissionModal({ task, open, onClose, onSubmitSuccess }
             </div>
 
             {/* Attachments File Upload */}
-            <div className="mt-5 space-y-2">
+            <div className="mt-4 sm:mt-5 space-y-2">
               <label className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
                 Attachments
               </label>
@@ -208,10 +240,77 @@ export default function SubmissionModal({ task, open, onClose, onSubmitSuccess }
                 </div>
               )}
             </div>
+
+            {/* Git Commits Section */}
+            <div className="mt-4 sm:mt-5 space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
+                  Git Commits
+                </label>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  disabled={submitting}
+                  onClick={addGitCommit}
+                  className="h-7 gap-1 px-2 text-[11px] font-semibold text-blue-600 hover:text-blue-700"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  Add Commit
+                </Button>
+              </div>
+
+              {gitCommits.length === 0 ? (
+                <p className="text-[11px] text-muted-foreground">
+                  Optionally add GitHub commit URLs to show your work.
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {gitCommits.map((commit, idx) => (
+                    <div
+                      key={idx}
+                      className="space-y-2 rounded-xl border border-border/60 bg-muted/20 p-3"
+                    >
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="url"
+                          placeholder="https://github.com/your-repo/commit/..."
+                          value={commit.githubUrl}
+                          onChange={(e) =>
+                            updateGitCommit(idx, "githubUrl", e.target.value)
+                          }
+                          disabled={submitting}
+                          className="h-8 w-full rounded-lg border border-border/60 bg-background px-2.5 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
+                          onClick={() => removeGitCommit(idx)}
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Commit message (e.g. 'feat: add form validation')"
+                        value={commit.commitMessage}
+                        onChange={(e) =>
+                          updateGitCommit(idx, "commitMessage", e.target.value)
+                        }
+                        disabled={submitting}
+                        className="h-8 w-full rounded-lg border border-border/60 bg-background px-2.5 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Footer Actions: Submit Button */}
-          <div className="flex flex-col gap-2 border-t border-border/60 bg-muted/10 p-4">
+          <div className="flex flex-col gap-2 border-t border-border/60 bg-muted/10 p-3 sm:p-4">
             {error && (
               <p className="text-xs font-medium text-destructive">{error}</p>
             )}

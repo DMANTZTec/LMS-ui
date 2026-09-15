@@ -434,6 +434,10 @@ export const ForgotPasswordRequestOtpChannelEnum = {
 
 export type ForgotPasswordRequestOtpChannelEnum = typeof ForgotPasswordRequestOtpChannelEnum[keyof typeof ForgotPasswordRequestOtpChannelEnum];
 
+export interface GitDetail {
+    'githubUrl'?: string;
+    'commitMessage'?: string;
+}
 export interface InstructorBatchResponse {
     'batchId'?: number;
     'className'?: string;
@@ -566,14 +570,14 @@ export interface OverallProgressResponse {
     'completed'?: boolean;
 }
 export interface PageStaffResponse {
-    'totalElements'?: number;
     'totalPages'?: number;
-    'first'?: boolean;
-    'last'?: boolean;
+    'totalElements'?: number;
     'size'?: number;
     'content'?: Array<StaffResponse>;
     'number'?: number;
     'sort'?: SortObject;
+    'first'?: boolean;
+    'last'?: boolean;
     'numberOfElements'?: number;
     'pageable'?: PageableObject;
     'empty'?: boolean;
@@ -1151,6 +1155,7 @@ export interface StudentTaskSubmissionResponse {
     'taskTitle'?: string;
     'submissionNotes'?: string;
     'attachments'?: Array<AttachmentResponse>;
+    'git'?: Array<GitDetail>;
     'status'?: string;
     'reviewStatus'?: string;
     'submittedAt'?: string;
@@ -15768,10 +15773,11 @@ export const StudentTaskSubmissionControllerApiAxiosParamCreator = function (con
          * @param {string} studentId 
          * @param {Array<File>} attachments 
          * @param {string} [submissionNotes] 
+         * @param {Array<GitDetail>} [git] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        submitTask: async (studentTaskId: number, studentId: string, attachments: Array<File>, submissionNotes?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        submitTask: async (studentTaskId: number, studentId: string, attachments: Array<File>, submissionNotes?: string, git?: Array<GitDetail>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'studentTaskId' is not null or undefined
             assertParamExists('submitTask', 'studentTaskId', studentTaskId)
             // verify required parameter 'studentId' is not null or undefined
@@ -15813,6 +15819,10 @@ export const StudentTaskSubmissionControllerApiAxiosParamCreator = function (con
                 })
             }
 
+            if (git) {
+                localVarFormParams.append('git', git.join(COLLECTION_FORMATS.csv));
+            }
+
             localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
             localVarHeaderParameter['Accept'] = '*/*';
 
@@ -15841,11 +15851,12 @@ export const StudentTaskSubmissionControllerApiFp = function(configuration?: Con
          * @param {string} studentId 
          * @param {Array<File>} attachments 
          * @param {string} [submissionNotes] 
+         * @param {Array<GitDetail>} [git] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async submitTask(studentTaskId: number, studentId: string, attachments: Array<File>, submissionNotes?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentTaskSubmissionResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.submitTask(studentTaskId, studentId, attachments, submissionNotes, options);
+        async submitTask(studentTaskId: number, studentId: string, attachments: Array<File>, submissionNotes?: string, git?: Array<GitDetail>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentTaskSubmissionResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.submitTask(studentTaskId, studentId, attachments, submissionNotes, git, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['StudentTaskSubmissionControllerApi.submitTask']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -15865,11 +15876,12 @@ export const StudentTaskSubmissionControllerApiFactory = function (configuration
          * @param {string} studentId 
          * @param {Array<File>} attachments 
          * @param {string} [submissionNotes] 
+         * @param {Array<GitDetail>} [git] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        submitTask(studentTaskId: number, studentId: string, attachments: Array<File>, submissionNotes?: string, options?: RawAxiosRequestConfig): AxiosPromise<StudentTaskSubmissionResponse> {
-            return localVarFp.submitTask(studentTaskId, studentId, attachments, submissionNotes, options).then((request) => request(axios, basePath));
+        submitTask(studentTaskId: number, studentId: string, attachments: Array<File>, submissionNotes?: string, git?: Array<GitDetail>, options?: RawAxiosRequestConfig): AxiosPromise<StudentTaskSubmissionResponse> {
+            return localVarFp.submitTask(studentTaskId, studentId, attachments, submissionNotes, git, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -15884,11 +15896,12 @@ export class StudentTaskSubmissionControllerApi extends BaseAPI {
      * @param {string} studentId 
      * @param {Array<File>} attachments 
      * @param {string} [submissionNotes] 
+     * @param {Array<GitDetail>} [git] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public submitTask(studentTaskId: number, studentId: string, attachments: Array<File>, submissionNotes?: string, options?: RawAxiosRequestConfig) {
-        return StudentTaskSubmissionControllerApiFp(this.configuration).submitTask(studentTaskId, studentId, attachments, submissionNotes, options).then((request) => request(this.axios, this.basePath));
+    public submitTask(studentTaskId: number, studentId: string, attachments: Array<File>, submissionNotes?: string, git?: Array<GitDetail>, options?: RawAxiosRequestConfig) {
+        return StudentTaskSubmissionControllerApiFp(this.configuration).submitTask(studentTaskId, studentId, attachments, submissionNotes, git, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

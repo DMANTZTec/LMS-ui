@@ -52,6 +52,7 @@ docs/EnrollmentControllerApi.md
 docs/EnrollmentRequest.md
 docs/EnrollmentResponse.md
 docs/ForgotPasswordRequest.md
+docs/GitDetail.md
 docs/InstructorBatchResponse.md
 docs/InstructorBatchSummaryResponse.md
 docs/InstructorClassStatsResponse.md

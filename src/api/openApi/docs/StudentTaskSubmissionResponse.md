@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **taskTitle** | **string** |  | [optional] [default to undefined]
 **submissionNotes** | **string** |  | [optional] [default to undefined]
 **attachments** | [**Array&lt;AttachmentResponse&gt;**](AttachmentResponse.md) |  | [optional] [default to undefined]
+**git** | [**Array&lt;GitDetail&gt;**](GitDetail.md) |  | [optional] [default to undefined]
 **status** | **string** |  | [optional] [default to undefined]
 **reviewStatus** | **string** |  | [optional] [default to undefined]
 **submittedAt** | **string** |  | [optional] [default to undefined]
@@ -34,6 +35,7 @@ const instance: StudentTaskSubmissionResponse = {
     taskTitle,
     submissionNotes,
     attachments,
+    git,
     status,
     reviewStatus,
     submittedAt,

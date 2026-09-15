@@ -25,12 +25,14 @@ let studentTaskId: number; // (default to undefined)
 let studentId: string; // (default to undefined)
 let attachments: Array<File>; // (default to undefined)
 let submissionNotes: string; // (optional) (default to undefined)
+let git: Array<GitDetail>; // (optional) (default to undefined)
 
 const { status, data } = await apiInstance.submitTask(
     studentTaskId,
     studentId,
     attachments,
-    submissionNotes
+    submissionNotes,
+    git
 );
 ```
 
@@ -42,6 +44,7 @@ const { status, data } = await apiInstance.submitTask(
 | **studentId** | [**string**] |  | defaults to undefined|
 | **attachments** | **Array&lt;File&gt;** |  | defaults to undefined|
 | **submissionNotes** | [**string**] |  | (optional) defaults to undefined|
+| **git** | **Array&lt;GitDetail&gt;** |  | (optional) defaults to undefined|
 
 
 ### Return type
