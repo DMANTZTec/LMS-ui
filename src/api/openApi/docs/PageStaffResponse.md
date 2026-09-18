@@ -5,8 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**totalPages** | **number** |  | [optional] [default to undefined]
 **totalElements** | **number** |  | [optional] [default to undefined]
+**totalPages** | **number** |  | [optional] [default to undefined]
 **size** | **number** |  | [optional] [default to undefined]
 **content** | [**Array&lt;StaffResponse&gt;**](StaffResponse.md) |  | [optional] [default to undefined]
 **number** | **number** |  | [optional] [default to undefined]
@@ -23,8 +23,8 @@ Name | Type | Description | Notes
 import { PageStaffResponse } from './api';
 
 const instance: PageStaffResponse = {
-    totalPages,
     totalElements,
+    totalPages,
     size,
     content,
     number,

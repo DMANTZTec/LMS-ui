@@ -1,10 +1,11 @@
 # StudentDashboardControllerApi
 
-All URIs are relative to *http://localhost:9090/lms*
+All URIs are relative to *{VITE_API_URL}*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
 |[**getChapterProgress**](#getchapterprogress) | **GET** /api/student-dashboard/{courseId}/chapters-progress | |
+|[**getCompletedTasksPerWeek**](#getcompletedtasksperweek) | **GET** /api/student-dashboard/completed-tasks-per-week/{studentId} | |
 |[**getCourseProgress**](#getcourseprogress) | **GET** /api/student-dashboard/dashboard/course/{courseId}/progress | |
 |[**getDashboardSummary**](#getdashboardsummary) | **GET** /api/student-dashboard/summary/{studentId} | |
 |[**getMyClasses**](#getmyclasses) | **GET** /api/student-dashboard/classes/{studentId} | |
@@ -47,6 +48,59 @@ const { status, data } = await apiInstance.getChapterProgress(
 ### Return type
 
 **Array<ChapterProgressResponse>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getCompletedTasksPerWeek**
+> Array<WeeklyTaskCompletionResponse> getCompletedTasksPerWeek()
+
+
+### Example
+
+```typescript
+import {
+    StudentDashboardControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StudentDashboardControllerApi(configuration);
+
+let studentId: string; // (default to undefined)
+let weeks: number; // (optional) (default to 4)
+
+const { status, data } = await apiInstance.getCompletedTasksPerWeek(
+    studentId,
+    weeks
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **studentId** | [**string**] |  | defaults to undefined|
+| **weeks** | [**number**] |  | (optional) defaults to 4|
+
+
+### Return type
+
+**Array<WeeklyTaskCompletionResponse>**
 
 ### Authorization
 

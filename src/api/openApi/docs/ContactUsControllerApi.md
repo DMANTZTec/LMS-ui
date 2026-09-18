@@ -1,6 +1,6 @@
 # ContactUsControllerApi
 
-All URIs are relative to *http://localhost:9090/lms*
+All URIs are relative to *{VITE_API_URL}*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|

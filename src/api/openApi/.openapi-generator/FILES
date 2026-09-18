@@ -162,5 +162,6 @@ docs/UpdateClassRequest.md
 docs/UpdateCourseRequest.md
 docs/UpdateMentorMinutesRequest.md
 docs/WeeklyScheduleResponse.md
+docs/WeeklyTaskCompletionResponse.md
 git_push.sh
 index.ts

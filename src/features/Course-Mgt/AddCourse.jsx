@@ -6,7 +6,6 @@ import { X, Upload, Image as ImageIcon, BookOpen, Loader2 } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-//import { useCloudinaryUpload } from "@/components/useCloudinaryUpload";
 import { api } from "@/api/CourseMgtController";
 import { providerApi } from "@/api/provider-controller.api";
 import toast from "react-hot-toast";
