@@ -1,18 +1,14 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { BarChart3, LineChart as LineIcon } from "lucide-react";
 
-import {
-  Line,
-  LineChart,
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  XAxis,
-  Tooltip,
-} from "recharts";
+import {Line,LineChart,Bar,BarChart,ResponsiveContainer,XAxis,Tooltip,} from "recharts";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+
+import { decodeToken } from "@/utils/tokenUtility";
+import { dashboardApi } from "@/api/student-dashboard-controller";
 
 import { weeklyPerf } from "./data";
 
@@ -151,6 +147,21 @@ function Section({ title, data, mode }) {
 
 export function WeeklyPerformance() {
   const [mode, setMode] = useState("line");
+  const studentId = decodeToken()?.userId || null;
+
+  const { data: tasksCompleted = [], isLoading } = useQuery({
+    queryKey: ["completedTasksPerWeek", studentId],
+    queryFn: async () => {
+      const res = await dashboardApi.getCompletedTasksPerWeek(studentId, 4);
+      const weeks = Array.isArray(res) ? res : Array.isArray(res?.data) ? res.data : [];
+      return weeks.map((week) => ({
+        d: week.weekEnd?.slice(5).replace("-", "/"),
+        v: week.completedTaskCount ?? 0,
+      }));
+    },
+    enabled: Boolean(studentId),
+    staleTime: 5 * 60 * 1000,
+  });
 
   return (
     <Card className="flex h-full min-h-0 flex-col shadow-none">
@@ -199,9 +210,15 @@ export function WeeklyPerformance() {
 
           <Section
             title="Tasks Completed"
-            data={weeklyPerf.tasksCompleted}
+            data={isLoading ? [] : tasksCompleted}
             mode={mode}
           />
+
+          {!isLoading && tasksCompleted.length === 0 && (
+            <div className="pb-2 text-center text-xs text-muted-foreground">
+              No completed tasks recorded yet
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
