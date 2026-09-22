@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ContactUsMain from '@/pages/public/contactUs/contactUsMain';
 import { GraduationCap, Phone, MessageCircle, MapPin } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
 import { useNavigate } from "react-router-dom";
+import { socialmApi } from '@/api/social-media-controller';
 
 // Leaflet Imports
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -23,13 +24,40 @@ L.Icon.Default.mergeOptions({
 import { FacebookIcon, YoutubeIcon } from './SocialIcons';
 import instituteVideo from "@/assets/videos/institute-intro.mp4";
 
+
+
+const SOCIAL_PLATFORMS = [
+    { platform: 'WHATSAPP', icon: MessageCircle, bg: 'bg-[#00C950]' },
+    { platform: 'FACEBOOK', icon: FacebookIcon, bg: 'bg-[#155DFC]' },
+    { platform: 'YOUTUBE', icon: YoutubeIcon, bg: 'bg-[#E7000B]' },
+];
+
 const ActionSidebar = () => {
-    const googleMapsUrl = "https://maps.app.goo.gl/Dj9hYQEXuJyGjLsp7";
+    const googleMapsUrl = import.meta.env.VITE_GOOGLE_MAPS_URL || "https://maps.app.goo.gl/Dj9hYQEXuJyGjLsp7" ;
     const navigate = useNavigate();
     const [isContactUsModalOpen, setIsContactUsModalOpen] = useState(false);
+    const [socialLinks, setSocialLinks] = useState([]);
 
     // Nalgonda IT Tower Coordinates
-    const nalgondaITPos = [17.0834404, 79.2576912];
+    const nalgondaITPos = [Number(import.meta.env.VITE_NALGONDA_LAT), Number(import.meta.env.VITE_NALGONDA_LNG)] ||[17.0834404, 79.2576912];
+
+    const getSocialUrl = (platform) => {
+        const link = socialLinks.find((l) => l.platform === platform && l.url);
+        return link ? link.url : (import.meta.env?.[`VITE_${platform}_URL`]);
+    };
+
+    useEffect(() => {
+        const fetchSocialLinks = async () => {
+            try {
+                const response = await socialmApi.getAllLinks();
+                setSocialLinks(response.data || []);
+            } catch (error) {
+                console.error("Failed to load social media links:", error);
+            }
+        };
+
+        fetchSocialLinks();
+    }, []);
 
     return (
         <div className="flex flex-col gap-6">
@@ -54,33 +82,18 @@ const ActionSidebar = () => {
                 <div className="border-t border-gray-200 pt-4 flex flex-col items-center gap-3">
                     <p className="text-[#4A5565] text-sm font-semibold">Connect with Us</p>
                     <div className="flex items-center justify-center gap-4">
-                        <a 
-                            href="https://wa.me/919550107676?text=Hello%20I%20would%20like%20to%20know%20about%20your%20courses." 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            aria-label="WhatsApp" 
-                            className="bg-[#00C950] rounded-full p-3 flex items-center justify-center"
-                        >
-                            <MessageCircle className="size-6 text-white" />
-                        </a>
-                        <a 
-                            href="https://www.facebook.com/" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            aria-label="Facebook" 
-                            className="bg-[#155DFC] rounded-full p-3 flex items-center justify-center"
-                        >
-                            <FacebookIcon className="size-6 text-white" />
-                        </a>
-                        <a 
-                            href="https://www.youtube.com/" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            aria-label="YouTube" 
-                            className="bg-[#E7000B] rounded-full p-3 flex items-center justify-center"
-                        >
-                            <YoutubeIcon className="size-6 text-white" />
-                        </a>
+                        {SOCIAL_PLATFORMS.filter(({ platform }) => getSocialUrl(platform)).map(({ platform, icon: Icon, bg }) => (
+                            <a
+                                key={platform}
+                                href={getSocialUrl(platform)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={platform.charAt(0) + platform.slice(1).toLowerCase()}
+                                className={`${bg} rounded-full p-3 flex items-center justify-center`}
+                            >
+                                <Icon className="size-6 text-white" />
+                            </a>
+                        ))}
                     </div>
                 </div>
             </div>
