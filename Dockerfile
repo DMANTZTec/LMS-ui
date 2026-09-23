@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 
 # Install dependencies (separate layer for cache efficiency)
 COPY package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copy source and build with the chosen Vite mode
 # Loads the matching .env.<BUILD_ENV> file automatically
