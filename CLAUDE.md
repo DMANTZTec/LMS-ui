@@ -33,6 +33,7 @@ All Vite env vars must be prefixed `VITE_` to be accessible in browser code via 
 **`Jenkinsfile`** — parametrized pipeline with a `BUILD_ENV` choice (`uat` | `production`).
 
 - Checkout → Docker Build → Push to Nexus → Deployment Approval → Deploy
+- Checks out branch `uat`; uses Jenkins credential ID `github-lms` for GitHub access.
 - `BUILD_ENV` is forwarded to Docker as `--build-arg BUILD_ENV=<value>`, which drives `vite build --mode <value>` inside the container, loading the matching `.env.<value>` file.
 - Images are tagged by environment: `lms-webui-docker-container:uat` / `:production`.
 - Containers are named `lms-webui-docker-container-<env>` so UAT and production can run side-by-side on the same host.
