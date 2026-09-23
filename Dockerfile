@@ -1,5 +1,5 @@
 # ── Stage 1: Build ──────────────────────────────────────────────────────────
-FROM node:20.18-alpine AS build
+FROM node:22.23.2-alpine3.24 AS build
 
 # Passed from Jenkins --build-arg BUILD_ENV=<uat|production>
 ARG BUILD_ENV=uat
