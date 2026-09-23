@@ -17,7 +17,7 @@ import StaffProfile from '@/features/Avatar/staff/profile/StaffProfile';
 const StaffDashBoard = lazy(() => import('@/pages/staffPages/StaffDashBoard'));
 
 //const StudentDashBoard = lazy(() => import('@/pages/studentPages/StudentDashBoard'));
-const CourseMgtMain = lazy(() => import('../features/Course-Mgt/main'));
+const CourseMgtMain = lazy(() => import('../features/Course-Mgt/Main'));
 const AddCourse = lazy(() => import('@/features/Course-Mgt/AddCourse'));
 const CourseStructureBuilder = lazy(() => import('@/features/courseBuilder/CourseStructureBuilder'));
 const InstructorDashBoard = lazy(() => import('@/pages/instructorPages/instructorDashBoard/InstructorDashBoard').then(m => ({ default: m.InstructorDashBoard })));
