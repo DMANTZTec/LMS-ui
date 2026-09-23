@@ -16,7 +16,7 @@ pipeline {
         NEXUS_CREDS_ID = "nexus-admin"
         GIT_CREDS_ID   = "shanti-bitbucket"
         GIT_URL        = "https://github.com/DMANTZTec/LMS-ui.git"
-        GIT_BRANCH     = "main"
+        GIT_BRANCH     = "uat"
         NOTIFY_TO      = "shanti.mobdev@gmail.com"
         NOTIFY_CC      = "shanti@dmantz.com"
     }
