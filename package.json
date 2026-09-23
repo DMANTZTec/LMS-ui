@@ -6,9 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:uat": "vite build --mode uat",
+    "build:prod": "vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview",
-   "gen:api": "node scripts/gen-api.mjs"
+    "preview:uat": "vite preview --mode uat",
+    "preview:prod": "vite preview --mode production",
+    "gen:api": "node scripts/gen-api.mjs"
   },
   "dependencies": {
     "@cyntler/react-doc-viewer": "^1.17.1",
