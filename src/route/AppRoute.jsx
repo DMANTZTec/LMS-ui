@@ -11,7 +11,7 @@ import StudentProfile from '@/features/Avatar/student/profile/StudentProfile';
 import StudentForgotPwd from '@/pages/Auth/student_forgot_password/StuForgotPwd';
 import StudentResetPwd from '@/pages/Auth/student_forgot_password/StuResetPwd';
 import ContactUs from '@/pages/public/contactUs/contactUsMain';
-import CreateStaffPwd from '@/features/Course-Mgt/addStaff/createStaffPwd';
+import CreateStaffPwd from '@/features/Course-Mgt/addStaff/CreateStaffPwd';
 import ResetStaffPwd from '@/features/Course-Mgt/addStaff/ResetStaffPwd';
 import StaffProfile from '@/features/Avatar/staff/profile/StaffProfile'; 
 const StaffDashBoard = lazy(() => import('@/pages/staffPages/StaffDashBoard'));
