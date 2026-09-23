@@ -4,7 +4,8 @@ import { Badge } from '@/components/ui/badge';
 const ChapterItem = ({ chapter, isOpen, onToggle }) => {
 
   const noOfTopics = chapter.topics.reduce((acc, topic) => acc + 1, 0);
-  console.log(`number of topics in chapter${chapter.chapterNumber} is: `,noOfTopics);
+  // claude code generated
+  // console.log(`number of topics in chapter${chapter.chapterNumber} is: `,noOfTopics);
 
   return (
     <div

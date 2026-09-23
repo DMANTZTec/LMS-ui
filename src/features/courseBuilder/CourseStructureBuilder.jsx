@@ -11,12 +11,16 @@ import { api } from "@/api/CourseMgtController";
 import {List, arrayMove, } from "react-movable";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+// claude code generated
+import { getOtpStaff } from "@/utils/tokenUtility";
 
 const CourseStructureBuilder = () => {
 
   const navigate = useNavigate();
   const { courseId } = useParams();
-  const savedUser = JSON.parse( sessionStorage.getItem("otpStaff"));
+  // const savedUser = JSON.parse( sessionStorage.getItem("otpStaff"));
+  // claude code generated
+  const savedUser = getOtpStaff();
   const staffId = savedUser?.staffId;
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -871,10 +875,11 @@ else if (
     // ==========================================
 
     if (error?.response) {
-      console.log(
-        "API ERROR:",
-        error.response.data
-      );
+      // claude code generated
+      // console.log(
+        // "API ERROR:",
+        // error.response.data
+      // );
     }
 
     toast.error(

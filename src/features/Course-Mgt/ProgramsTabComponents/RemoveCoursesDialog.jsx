@@ -16,9 +16,10 @@ const RemoveCoursesDialog = ({ programId, courseId, courseTitle, onRemoveSuccess
 
     await api.deleteProgramCourse(payload);
 
-    console.log(
-      `Removed Course ${courseId} from Program ${programId}`
-    );
+    // claude code generated
+    // console.log(
+      // `Removed Course ${courseId} from Program ${programId}`
+    // );
 
     if (onRemoveSuccess) {
       await onRemoveSuccess(); // React Query refetch

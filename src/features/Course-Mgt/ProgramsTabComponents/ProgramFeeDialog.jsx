@@ -9,6 +9,8 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { IndianRupee, History } from 'lucide-react';
 import { programFeeApi } from '@/api/program-fee-controller';
 import toast from "react-hot-toast";
+// claude code generated
+import { getStaffId } from "@/utils/tokenUtility";
 
 export const DURATION_OPTIONS = [
     { value: "ONE_MONTH", label: "1 Month" },
@@ -41,7 +43,9 @@ const ProgramFeeDialog = ({ program, onViewProgram, onSaveSuccess }) => {
 
     const [formValues, setFormValues] = useState(emptyForm);
     // const staffId = "SF00003";
-    const staffId = JSON.parse(localStorage.getItem("staffId"));
+    // const staffId = JSON.parse(localStorage.getItem("staffId"));
+    // claude code generated
+    const staffId = getStaffId();
 
     const { data: feeData, isLoading, refetch } = useQuery({
         queryKey: ['programFee', program.programId],

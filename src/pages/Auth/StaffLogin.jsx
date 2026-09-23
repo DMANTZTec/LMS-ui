@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import LoginForm from '@/components/LoginForm';
 import LoginIcon from '@/assets/images/loginicon.png'
 import { staffApi } from '@/api/staff-controller.api';
 //import { authapi } from '@/api/auth-controller.api';
+// claude code generated
+import { saveStaffId, saveOtpStaff, getToken, getUserRole } from '@/utils/tokenUtility';
 
 const StaffLogin = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -11,7 +13,17 @@ const navigate= useNavigate();
 const location = useLocation();
 
 const from = location.state?.from?.pathname || "/mainPage"; // fallbaack
-   
+
+  // If a valid JWT already exists, skip the login form and go straight to the role's dashboard
+  // claude code generated
+  // useEffect(() => {
+  //   if (getToken()) {
+  //     const role = getUserRole()?.toUpperCase();
+  //     if (role === "INSTRUCTOR") navigate("/Instructor-dashboard");
+  //     else if (role === "ADMIN" || role === "STAFF") navigate("/Staff-dashboard");
+  //   }
+  // }, []);
+
   const handleStaffLogin = async (data) => {
     setIsSubmitting(true);
     try {
@@ -23,7 +35,8 @@ const from = location.state?.from?.pathname || "/mainPage"; // fallbaack
       
       const res = await staffApi.staffLogin(payload);
 
-      console.log(`value of res is: ${res.data.message}`);
+      // claude code generated
+      // console.log(`value of res is: ${res.data.message}`);
 
       // if(res.data.message?.includes("Login successfully Completed. OTP sent to your email.")) {
       //    localStorage.setItem('user', JSON.stringify(res.data));
@@ -33,8 +46,11 @@ const from = location.state?.from?.pathname || "/mainPage"; // fallbaack
       const { staffId, email, role } = res.data;
 
 if (staffId) {
-  localStorage.setItem('staffId', JSON.stringify(staffId));
-  sessionStorage.setItem("otpStaff",JSON.stringify({staffId,email,role,}));
+  // localStorage.setItem('staffId', JSON.stringify(staffId));
+  // sessionStorage.setItem("otpStaff",JSON.stringify({staffId,email,role,}));
+  // claude code generated
+  saveStaffId(staffId);
+  saveOtpStaff({ staffId, email, role });
 
   navigate("/verify-staff-otp");
   return;

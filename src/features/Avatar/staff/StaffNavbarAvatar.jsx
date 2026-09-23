@@ -13,15 +13,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+// claude code generated
+import { getOtpStaff, clearAllStorage } from "@/utils/tokenUtility";
 
 export default function StaffNavbarAvatar() {
 
   const navigate = useNavigate();
 
   // Read from the correct "otpStaff" session key
-  const stfData = JSON.parse(
-    sessionStorage.getItem("otpStaff") || "{}"
-  );
+  // const stfData = JSON.parse(
+  //   sessionStorage.getItem("otpStaff") || "{}"
+  // );
+  // claude code generated
+  const stfData = getOtpStaff() || {};
   
   // Extract avatar initials safely from the email prefix
   const getInitials = () => {
@@ -32,11 +36,13 @@ export default function StaffNavbarAvatar() {
 
   const handleLogout = () => {
     // Targeted removal of authentication credentials
-    localStorage.removeItem('LmsJwTtoken');
-    sessionStorage.removeItem('otpStaff');
-    
+    // localStorage.removeItem('LmsJwTtoken');
+    // sessionStorage.removeItem('otpStaff');
+    // claude code generated
+    clearAllStorage();
+
     // Redirect back to staff login screen
-    window.location.href = "/"; 
+    window.location.href = "/";
   };
 
   return (

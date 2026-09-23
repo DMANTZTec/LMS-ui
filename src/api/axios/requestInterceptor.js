@@ -1,8 +1,13 @@
-const requestInterceptor = (config) => {
-  console.log("Request Interceptor");
+// claude generated code
+import { getToken } from "@/utils/tokenUtility";
 
-  // Get token from localStorage
-  const token = localStorage.getItem("LmsJwTtoken");
+const requestInterceptor = (config) => {
+  // claude code generated
+  // console.log("Request Interceptor");
+
+  // Get token from the LmsJwTtokenAtom (jotai store)
+  // claude generated code
+  const token = getToken();
 
 
   // Attach token to Authorization header

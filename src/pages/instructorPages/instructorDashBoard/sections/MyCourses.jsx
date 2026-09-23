@@ -49,6 +49,8 @@ import {
   COURSE_LEVEL_STYLES,
 } from "../data";
 import { instructorDashboardApi } from "@/api/instructor-dashboard-controller";
+// claude code generated
+import { getStaffId } from "@/utils/tokenUtility";
 
 const COURSE_GRADIENTS = [
   "from-blue-600 via-indigo-600 to-purple-700",
@@ -505,7 +507,9 @@ export default function MyCourses() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const staffId = JSON.parse(localStorage.getItem("staffId"));
+  // const staffId = JSON.parse(localStorage.getItem("staffId"));
+  // claude code generated
+  const staffId = getStaffId();
 
   const fetchCourses = useCallback(async () => {
     if (!staffId) {

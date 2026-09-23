@@ -91,7 +91,8 @@ const ProgramsTab = () => {
 
     const fetchProgamsData = async () => {
 const result = await api.getAllPrograms();
-console.log("result.data is: ", result.data);
+// claude code generated
+// console.log("result.data is: ", result.data);
 return result.data
 }
 

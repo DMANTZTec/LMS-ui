@@ -70,7 +70,8 @@ const ReferenceList = ({ topic, onChange, onDeleteReference }) => {
                           fileName: file.name,
                         };
                         onChange({ documents });
-                        console.log("UPLOADED FILE:", file);
+                        // claude code generated
+                        // console.log("UPLOADED FILE:", file);
                       }}
                     />
                   </label>
@@ -178,7 +179,8 @@ const ReferenceList = ({ topic, onChange, onDeleteReference }) => {
                           fileName: file.name,
                         };
                         onChange({ videos });
-                        console.log("VIDEO FILE:", file);
+                        // claude code generated
+                        // console.log("VIDEO FILE:", file);
                       }}
                     />
                   </label>

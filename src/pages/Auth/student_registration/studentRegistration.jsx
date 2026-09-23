@@ -12,6 +12,8 @@ import Field from "@/components/common/Field";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { studentDataAtom, student_registrationStatusAtom, student_registrationServerErrorAtom } from "@/store/atoms/authAtoms";
+// claude code generated
+import { saveStuRegData } from "@/utils/tokenUtility";
 
 // ─── Shared input styling ─────────────────────────────────────────────────────
 const inputCls = (hasError) =>
@@ -122,7 +124,9 @@ const StudentRegistration = () => {
     try {
       const response = await studentApi.register(testingData);
       if (response && response.data) {
-        sessionStorage.setItem("stuRegData", JSON.stringify(response.data));
+        // sessionStorage.setItem("stuRegData", JSON.stringify(response.data));
+        // claude code generated
+        saveStuRegData(response.data);
         setStudentData(response.data);
         setStatus("success");
         reset();

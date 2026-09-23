@@ -13,11 +13,15 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { api } from "@/api/CourseMgtController";
+// claude code generated
+import { getOtpStaff } from "@/utils/tokenUtility";
 
 const DeleteCourseDialog = ({ courseId, id, courseTitle, onDeleteSuccess }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const savedUser = JSON.parse(sessionStorage.getItem("otpStaff"));
+  // const savedUser = JSON.parse(sessionStorage.getItem("otpStaff"));
+  // claude code generated
+  const savedUser = getOtpStaff();
   const staffId = savedUser?.staffId;
 
 

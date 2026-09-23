@@ -72,7 +72,8 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
     
 
     const onSubmit = async (data) => {
-      console.log("entered into onSubmit function and form data is ", data);
+      // claude code generated
+      // console.log("entered into onSubmit function and form data is ", data);
       setIsSubmitting(true);
       setIsSubmitted(false);
       setGlobalError(null);
@@ -85,7 +86,8 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
           currentPosition: data.currentPosition,
           location: data.location || "Not Provided"
         });
-  console.log("response is: ",response);
+  // claude code generated
+  // console.log("response is: ",response);
   //setIsSubmitted(true);
   
   // toast.success("submitted successfully ! Our team will reach out to you shortly. 🎉",{
@@ -94,7 +96,8 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
   // });
   reset();
   setIsSubmitted(true);
-  console.log("isSubmitted value is: ", isSubmitted);
+  // claude code generated
+  // console.log("isSubmitted value is: ", isSubmitted);
       } catch (error) {
         console.error("Contact request submission failure:", error);
         

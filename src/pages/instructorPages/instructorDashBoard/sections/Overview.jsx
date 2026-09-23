@@ -37,6 +37,8 @@ import {
 
 import { cAdminControllerApi } from "@/api/class-admin-controller";
 import { instructorDashboardApi } from "@/api/instructor-dashboard-controller";
+// claude code generated
+import { getStaffId } from "@/utils/tokenUtility";
 import { staskapi } from "@/api/student-task-controller";
 import toast from "react-hot-toast";
 import {
@@ -51,7 +53,9 @@ import CancelScheduleDialog from "../components/CancelScheduleDialog";
 function MetricCards() {
   const [metrics, setMetrics] = useState([]);
   const [loading, setLoading] = useState(true);
-  const staffId = JSON.parse(localStorage.getItem("staffId"));
+  // const staffId = JSON.parse(localStorage.getItem("staffId"));
+  // claude code generated
+  const staffId = getStaffId();
 
   useEffect(() => {
     const fetchAllStats = async () => {
@@ -211,7 +215,9 @@ function TasksForReview() {
     chapter: "",
     topic: "",
   });
-  const staffId = JSON.parse(localStorage.getItem("staffId"));
+  // const staffId = JSON.parse(localStorage.getItem("staffId"));
+  // claude code generated
+  const staffId = getStaffId();
 
   const submissionsQuery = useQuery({
     queryKey: ["instructorSubmissions", staffId, myClassesOnly],
@@ -670,7 +676,9 @@ function ClassSchedule() {
   const [messageItem, setMessageItem] = useState(null);
 
   //const staffId = JSON.parse(sessionStorage.getItem("otpStaff") || "{}")?.staffId;
-  const staffId = JSON.parse(localStorage.getItem("staffId"));
+  // const staffId = JSON.parse(localStorage.getItem("staffId"));
+  // claude code generated
+  const staffId = getStaffId();
 
   const fetchSchedule = useCallback(async (view) => {
     if (!staffId) return;

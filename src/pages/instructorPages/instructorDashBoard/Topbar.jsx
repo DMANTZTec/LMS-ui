@@ -3,11 +3,15 @@ import { Menu, Search, Bell } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import StaffNavbarAvatar from "@/features/Avatar/staff/StaffNavbarAvatar";
+// claude code generated
+import { getOtpStaff } from "@/utils/tokenUtility";
 
 function getStaffFromSession() {
   try {
-    return JSON.parse(sessionStorage.getItem("otpStaff") || "{}");
+    // return JSON.parse(sessionStorage.getItem("otpStaff") || "{}");
     //const staffId = JSON.parse(localStorage.getItem("staffId"));
+    // claude code generated
+    return getOtpStaff() || {};
   } catch {
     return {};
   }

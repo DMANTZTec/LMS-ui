@@ -9,18 +9,22 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { studentApi } from '@/api/student-controller.api';
 import { useAtom } from 'jotai';
 import { studentDataAtom } from "@/store/atoms/authAtoms";
+// claude code generated
+import { getOtpUser, saveStuRegData, saveToken } from "@/utils/tokenUtility";
 
 export default function StudentOtp() {
   const [value, setValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
-  const [timer, setTimer] = useState(120); 
-const [studentDetail, setStudentDetail] = useAtom(studentDataAtom);  
+  const [timer, setTimer] = useState(120);
+const [studentDetail, setStudentDetail] = useAtom(studentDataAtom);
   const navigate = useNavigate();
 
-  const savedUser = JSON.parse(
-    sessionStorage.getItem("otpUser") || "{}"
-  );
+  // const savedUser = JSON.parse(
+  //   sessionStorage.getItem("otpUser") || "{}"
+  // );
+  // claude code generated
+  const savedUser = getOtpUser() || {};
 
   const studentId = savedUser?.studentId;
   const emailIdOrMobileNo = savedUser?.email;
@@ -84,14 +88,20 @@ const [studentDetail, setStudentDetail] = useAtom(studentDataAtom);
 
 let studentId = res.data.studentId;
      const studentDetailsRes = await studentApi.getStudentById(studentId);
-     console.log("studentDetailsRes is: ",studentDetailsRes);
+     // claude code generated
+     // console.log("studentDetailsRes is: ",studentDetailsRes);
      setStudentDetail(studentDetailsRes.data);
-     console.log("studentDetail in jotai atom is: ",studentDetail);
-     sessionStorage.setItem("stuRegData",JSON.stringify(studentDetailsRes.data));
+     // claude code generated
+     // console.log("studentDetail in jotai atom is: ",studentDetail);
+     // sessionStorage.setItem("stuRegData",JSON.stringify(studentDetailsRes.data));
+     // claude code generated
+     saveStuRegData(studentDetailsRes.data);
 
       const { token } = res.data;
       if (token) {
-        localStorage.setItem("LmsJwTtoken", token);
+        // localStorage.setItem("LmsJwTtoken", token);
+        // claude code generated
+        saveToken(token);
       }
 
       // Small delay so user can see the success toast animation before routing away

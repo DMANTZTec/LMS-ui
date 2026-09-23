@@ -15,6 +15,8 @@ import { api } from "@/api/CourseMgtController";
 // Assuming providerApi comes from your project imports structure:
 import { providerApi } from "@/api/provider-controller.api";
 import toast from "react-hot-toast";
+// claude code generated
+import { getStaffId } from "@/utils/tokenUtility";
 
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
 const MAX_VIDEO_SIZE = 100 * 1024 * 1024; // 100MB
@@ -187,7 +189,9 @@ const EditCourse = ({ course, onUpdateSuccess }) => {
     try {
       // const savedUser = JSON.parse(localStorage.getItem("user"));
       // const staffId = savedUser?.staffId || "SF00001";
-      const staffId = JSON.parse(localStorage.getItem("staffId"));
+      // const staffId = JSON.parse(localStorage.getItem("staffId"));
+      // claude code generated
+      const staffId = getStaffId();
       const targetCourseId = Number(course.id || course.courseId);
 
       const updateCourseRequest = {

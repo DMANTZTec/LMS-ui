@@ -11,6 +11,8 @@ import { CheckCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 import Field from '@/components/common/Field';
 import { studentApi } from '@/api/student-controller.api';
+// claude code generated
+import { getStuRegData } from '@/utils/tokenUtility';
 
 const changePWDScheema = z.object({
     currentPWD: z
@@ -62,7 +64,8 @@ const ChangePassword = ({ open, onOpenChange }) => {
     const [currentPWD, newPWD, confirmPWD] = watch(["currentPWD", "newPWD", "confirmPWD"]);
     
     useEffect(() => {
-    console.log("entered into useEffect hook. ");
+    // claude code generated
+    // console.log("entered into useEffect hook. ");
     setSubmitted(false);
     setGlobalError(null);
     },[currentPWD,newPWD,confirmPWD]); 
@@ -85,10 +88,15 @@ const ChangePassword = ({ open, onOpenChange }) => {
 
         setGlobalError(null);
         setSubmitted(false);
-        console.log("entered into save() function and the data is: ", data);
-        console.log("new password is: ", data.newPWD);
-        const studentData_ss = JSON.parse(sessionStorage.getItem("stuRegData"));
-        console.log("studentData_ss.studentId is: ", studentData_ss.studentId);
+        // claude code generated
+        // console.log("entered into save() function and the data is: ", data);
+        // claude code generated
+        // console.log("new password is: ", data.newPWD);
+        // const studentData_ss = JSON.parse(sessionStorage.getItem("stuRegData"));
+        // claude code generated
+        const studentData_ss = getStuRegData();
+        // claude code generated
+        // console.log("studentData_ss.studentId is: ", studentData_ss.studentId);
         const student_id = studentData_jotai?.studentId || studentData_ss?.studentId;
 
         const payload = {
@@ -100,8 +108,10 @@ const ChangePassword = ({ open, onOpenChange }) => {
 
         try {
             const response = await studentApi.changePassword(payload);
-            console.log("response?.data is: ", response?.data);
-            console.log("response is: ", response);
+            // claude code generated
+            // console.log("response?.data is: ", response?.data);
+            // claude code generated
+            // console.log("response is: ", response);
             
             setSubmitted(true);
 

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import { decodeToken } from "@/utils/tokenUtility";
+import { decodeToken, getOtpStaff, saveToken } from "@/utils/tokenUtility";
 
 import { staffApi } from "@/api/staff-controller.api";
 
@@ -17,7 +17,9 @@ export default function StaffOtp() {
   const [timer, setTimer] = useState(120);
   const navigate = useNavigate();
 
-  const savedUser = JSON.parse(sessionStorage.getItem("otpStaff") || "{}");
+  // const savedUser = JSON.parse(sessionStorage.getItem("otpStaff") || "{}");
+  // claude code generated
+  const savedUser = getOtpStaff() || {};
 
   const staffId = savedUser?.staffId;
   const email = savedUser?.email;
@@ -83,13 +85,18 @@ export default function StaffOtp() {
 
       const { token } = res.data;
       if (token) {
-        localStorage.setItem("LmsJwTtoken", token);
+        // localStorage.setItem("LmsJwTtoken", token);
+        // claude code generated
+        saveToken(token);
       }
 
       setTimeout(() => {
-        const roleInfo = JSON.parse(sessionStorage.getItem("otpStaff") ).role;
-        console.log("roleInfo and roleInfo.toUpperCase() === 'ADMIN'and roleInfo.toUpperCase() === 'INSTRUCTOR'is: ",roleInfo,roleInfo.toUpperCase() === "ADMIN",roleInfo.toUpperCase() === "INSTRUCTOR");
-        if(roleInfo.toUpperCase() === "ADMIN")
+        // const roleInfo = JSON.parse(sessionStorage.getItem("otpStaff") ).role;
+        // claude code generated
+        const roleInfo = getOtpStaff().role;
+        // claude code generated
+        // console.log("roleInfo and roleInfo.toUpperCase() === 'ADMIN'and roleInfo.toUpperCase() === 'INSTRUCTOR'is: ",roleInfo,roleInfo.toUpperCase() === "ADMIN",roleInfo.toUpperCase() === "INSTRUCTOR");
+        if(roleInfo.toUpperCase() === "ADMIN" || roleInfo.toUpperCase() === "STAFF")
         navigate("/Staff-dashboard");
         if(roleInfo.toUpperCase() === "INSTRUCTOR")
         navigate("/Instructor-dashboard");

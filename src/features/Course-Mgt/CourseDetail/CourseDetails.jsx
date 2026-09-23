@@ -53,12 +53,14 @@ const navigate = useNavigate();
   const fetchCourse = async () => {
     const courseRes = await api.getCourseDetails(courseId);
     setCourse(courseRes.data);
-    console.log("courseId,courseRes.data,course is: ", courseId, courseRes.data, course);
+    // claude code generated
+    // console.log("courseId,courseRes.data,course is: ", courseId, courseRes.data, course);
   }
 
   useEffect(() => {
     fetchCourse();
-    console.log("value of course is: ", course);
+    // claude code generated
+    // console.log("value of course is: ", course);
 
   }, [courseId]);
   const noOfChapters = course.chapters?.length;
