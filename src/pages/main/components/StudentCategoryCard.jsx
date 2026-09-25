@@ -1,7 +1,7 @@
 import React from 'react';
 import { Check } from 'lucide-react';
 
-const StudentCategoryCard = ({ Icon, title, description, items }) => {
+const StudentCategoryCard = ({ Icon, title, description, items = [] }) => {
     return (
         <div className="bg-white rounded-lg shadow-md p-6 md:p-8 flex flex-col h-full">
             <div className="flex items-center gap-4 mb-4">

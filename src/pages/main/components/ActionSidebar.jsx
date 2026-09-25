@@ -50,7 +50,8 @@ const ActionSidebar = () => {
         const fetchSocialLinks = async () => {
             try {
                 const response = await socialmApi.getAllLinks();
-                setSocialLinks(response.data || []);
+                const raw = response.data;
+                setSocialLinks(Array.isArray(raw) ? raw : (Array.isArray(raw?.content) ? raw.content : []));
             } catch (error) {
                 console.error("Failed to load social media links:", error);
             }

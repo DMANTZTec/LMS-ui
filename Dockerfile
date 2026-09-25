@@ -1,5 +1,5 @@
 # ── Stage 1: Build ──────────────────────────────────────────────────────────
-FROM node:20.18-alpine AS build
+FROM node:22.23.2-alpine3.24 AS build
 
 # Passed from Jenkins --build-arg BUILD_ENV=<uat|production>
 ARG BUILD_ENV=uat
@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 
 # Install dependencies (separate layer for cache efficiency)
 COPY package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copy source and build with the chosen Vite mode
 # Loads the matching .env.<BUILD_ENV> file automatically

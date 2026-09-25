@@ -29,7 +29,8 @@ useEffect(()=>{
   const fetchsubjects= async()=>{
     try{
       const response = await api.viewAllSubjects();
-      setcourses(response.data);
+      const raw = response.data;
+      setcourses(Array.isArray(raw) ? raw : (Array.isArray(raw?.content) ? raw.content : []));
     }
    catch(error){
       console.error("Failed to load subjects", error);

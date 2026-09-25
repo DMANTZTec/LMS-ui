@@ -14,9 +14,9 @@ pipeline {
         NEXUS_REGISTRY = "nexus.local:8443"
         NEXUS_REPO     = "lms-webui-docker-private-repo"
         NEXUS_CREDS_ID = "nexus-admin"
-        GIT_CREDS_ID   = "shanti-bitbucket"
+        GIT_CREDS_ID   = "github-lms"
         GIT_URL        = "https://github.com/DMANTZTec/LMS-ui.git"
-        GIT_BRANCH     = "main"
+        GIT_BRANCH     = "uat"
         NOTIFY_TO      = "shanti.mobdev@gmail.com"
         NOTIFY_CC      = "shanti@dmantz.com"
     }
