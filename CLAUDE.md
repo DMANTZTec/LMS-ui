@@ -5,39 +5,86 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm run dev       # start Vite dev server
-npm run build     # production build
-npm run preview   # preview production build
-npm run lint      # eslint .
-npm run gen:api   # regenerate src/api/openApi from the live backend's OpenAPI spec
+npm run dev              # Start dev server (Vite HMR)
+npm run build            # Build (production mode, loads .env.production)
+npm run build:uat        # Build for UAT (loads .env.uat)
+npm run build:prod       # Build for production (loads .env.production)
+npm run lint             # ESLint
+npm run preview          # Preview last build locally
+npm run preview:uat      # Preview UAT build
+npm run preview:prod     # Preview production build
+npm run gen:api          # Regenerate OpenAPI client from running backend
 ```
 
-There is no test runner configured in this project.
+`gen:api` reads `VITE_API_URL` from `.env` / `.env.development`, fetches `/v3/api-docs` from the backend, and writes generated TypeScript-Axios code to `src/api/openApi/`. Run this whenever the backend API changes.
 
-`gen:api` requires a running backend at `http://localhost:9090/lms/v3/api-docs` (see `openapitools.json`); it regenerates the `typescript-axios` client under `src/api/openApi`. Treat `src/api/openApi/**` as generated code — don't hand-edit it, regenerate it instead.
+## Environment files
+
+| File | Purpose |
+|------|---------|
+| `.env` | Local development defaults (committed) |
+| `.env.uat` | UAT overrides — set `VITE_API_URL` to the UAT backend (gitignored) |
+| `.env.production` | Production overrides — set `VITE_API_URL` to the production backend (gitignored) |
+
+All Vite env vars must be prefixed `VITE_` to be accessible in browser code via `import.meta.env.VITE_*`.
+
+## CI/CD
+
+**`Jenkinsfile`** — parametrized pipeline with a `BUILD_ENV` choice (`uat` | `production`).
+
+- Checkout → Docker Build → Push to Nexus → Deployment Approval → Deploy
+- Checks out branch `uat`; uses Jenkins credential ID `github-lms` for GitHub access.
+- `BUILD_ENV` is forwarded to Docker as `--build-arg BUILD_ENV=<value>`, which drives `vite build --mode <value>` inside the container, loading the matching `.env.<value>` file.
+- Images are tagged by environment: `lms-webui-docker-container:uat` / `:production`.
+- Containers are named `lms-webui-docker-container-<env>` so UAT and production can run side-by-side on the same host.
+- External port: `30280:80`.
+
+**`Dockerfile`** — two-stage build:
+1. `node:20.18-alpine` — runs `npm install` then `npm run build -- --mode ${BUILD_ENV}`; output lands in `dist/`.
+2. `nginx:alpine` — copies `dist/` to `/usr/share/nginx/html/lms` and uses `nginx/default.conf`.
+
+**`nginx/default.conf`** — serves the SPA at root `/` with `try_files $uri $uri/ /index.html` so React Router client-side routes work correctly.
 
 ## Architecture
 
-React 19 + Vite SPA (JSX, not TypeScript — despite `tsconfig.json`/`tsconfig.app.json` existing, the app code is `.jsx`). Styling is Tailwind CSS v4 (via `@tailwindcss/vite`) with shadcn/ui components (`components.json`: style `radix-nova`, base color `neutral`, icons from `lucide-react`). The `@/*` import alias maps to `src/*` (configured in both `vite.config.js` and `jsconfig.json`).
+### User roles and routing
 
-### Directory layout (`src/`)
+Three roles drive the entire app: **STAFF**, **INSTRUCTOR**, **STUDENT**. `src/route/AppRoute.jsx` defines all routes. Role-protected sections are wrapped in `<AuthGuard allowedRole="...">` which reads the JWT from `localStorage` (`LmsJwTtoken`), decodes it via `jwt-decode`, and checks expiry. On 401 responses the Axios response interceptor clears the token and redirects to `/`.
 
-- `api/` — API layer. Most files (`*-controller*.js`) are thin wrappers that instantiate a generated OpenAPI client class from `api/openApi/` bound to the shared `axiosInstance` from `api/axios/setupInterceptors.js`, e.g. `export const studentApi = new StudentControllerApi(undefined, undefined, axiosInstance)`. `api/openApi/` is the openapi-generator output (typescript-axios) — regenerate via `npm run gen:api`, don't edit by hand.
-- `api/axios/` — `axiosInstance.js` creates the base axios instance (`baseURL` from `VITE_API_URL`); `requestInterceptor.js` attaches the JWT from `localStorage["LmsJwTtoken"]` as a Bearer token; `responseInterceptor.js` clears the token and hard-redirects to `/` on a 401; `setupInterceptors.js` wires both interceptors onto the instance and is the import used everywhere else.
-- `route/AppRoute.jsx` — single source of truth for all routes (`react-router-dom`, `BrowserRouter`). Role-gated route groups (STAFF / INSTRUCTOR / STUDENT) are wrapped in `<Route element={<AuthGuard allowedRole="...">}>`. Most dashboard-level pages are `React.lazy`-loaded inside one top-level `<Suspense>`.
-- `components/protectedRoutes/AuthGuard.jsx` — route guard: reads the JWT via `utils/tokenUtility.js`, redirects to the role-appropriate login page if missing/expired, otherwise renders `<Outlet />`.
-- `utils/tokenUtility.js` — all JWT/localStorage logic (`getToken`, `saveToken`, `decodeToken` via `jwt-decode`, `isTokenExpired`, `isAuthenticated`, `getUserRole`). Role and auth state are derived from the decoded token, not from separate stored fields.
-- `store/` — global client state via Jotai. `appStore.js` creates the store instance, provided at the root in `main.jsx`. Atoms live under `store/atoms/` (e.g. `authAtoms.js`, `courseAtoms.js`), re-exported from `store/atoms/index.js`.
-- `features/` — feature-scoped component modules organized by domain (`Course-Mgt`, `courseBuilder`, `Avatar`, etc.), each with its own subcomponents, and sometimes local `validation.js`/`types.js` files.
-- `pages/` — route-level page components, organized by audience (`Auth/`, `staffPages/`, `studentPages/`, `instructorPages/`, `public/`, `main/`).
-- `components/ui/` — shadcn/ui primitives (generated; extend via `shadcn` CLI/registry rather than restructuring by hand).
-- `components/common/` — shared non-generated components used across features.
-- `lib/utils.js` — `cn()` helper (`clsx` + `tailwind-merge`) used throughout for conditional Tailwind classes.
+| Role | Dashboard route |
+|------|----------------|
+| STAFF | `/Staff-dashboard` → `StaffDashBoard`, `/courseMgt` → Course-Mgt feature |
+| INSTRUCTOR | `/Instructor-dashboard` |
+| STUDENT | `/student-dashboard` |
 
-### Data fetching & app-wide providers
+Heavy pages use `React.lazy` + `<Suspense>` for code splitting.
 
-`App.jsx` wraps the app in `QueryClientProvider` (`@tanstack/react-query`) and a global `react-hot-toast` `<Toaster>`. Server state (fetching/mutating LMS data) should go through TanStack Query calling the `api/*` controller wrappers; local/cross-component client state goes through Jotai atoms in `store/`.
+### Path alias
 
-### Auth model
+`@/` maps to `src/` (configured in `jsconfig.json` and Vite). Always use `@/` for imports from `src/`.
 
-JWT (`LmsJwTtoken`) is stored in `localStorage`, decoded client-side for role (`STAFF` / `INSTRUCTOR` / `STUDENT`) and expiry — there is no separate session/user endpoint on the client. Route protection, role checks, and token attachment (axios request interceptor) all read from this single token, so changes to the token's shape or claims need to be reflected in `utils/tokenUtility.js`, `AuthGuard.jsx`, and `requestInterceptor.js` together.
+### API layer
+
+Two parallel API layers exist:
+- **`src/api/*.js`** — hand-written modules using the configured `axiosInstance` (`src/api/axios/`). Interceptors automatically attach the Bearer token on every request.
+- **`src/api/openApi/`** — auto-generated TypeScript-Axios client. Prefer regenerating this rather than editing it manually.
+
+`axiosInstance` base URL comes from `import.meta.env.VITE_API_URL`.
+
+### State management
+
+- **Jotai** (`src/store/`) for lightweight global state (atoms). The single `appStore` instance lives in `src/store/appStore.js`. Atoms are defined per-domain in `src/store/atoms/`.
+- **TanStack React Query** for all server-state fetching, caching, and mutation.
+
+### UI components
+
+shadcn/ui components live in `src/components/ui/`. The project uses Tailwind CSS v4 (config-free, CSS-first). Icons come from `lucide-react`. Notifications use `react-hot-toast` and `sweetalert2`.
+
+### Feature structure
+
+Large features are self-contained under `src/features/`:
+- **`Course-Mgt/`** — STAFF course management with tabs: Courses, Programs, Classes, Students, Staff, Reports, Providers. Each tab has a matching `*Tab.jsx` entry and a `*TabComponents/` sub-folder for dialogs and sub-views.
+- **`courseBuilder/`** — drag-and-drop course structure editor (`react-movable`).
+- **`Avatar/`** — profile/avatar components split by role (`staff/`, `student/`).
+
+Public-facing pages live in `src/pages/main/` (landing page with React Leaflet map) and `src/pages/public/`.

@@ -11,13 +11,13 @@ import StudentProfile from '@/features/Avatar/student/profile/StudentProfile';
 import StudentForgotPwd from '@/pages/Auth/student_forgot_password/StuForgotPwd';
 import StudentResetPwd from '@/pages/Auth/student_forgot_password/StuResetPwd';
 import ContactUs from '@/pages/public/contactUs/contactUsMain';
-import CreateStaffPwd from '@/features/Course-Mgt/addStaff/createStaffPwd';
+import CreateStaffPwd from '@/features/Course-Mgt/addStaff/CreateStaffPwd';
 import ResetStaffPwd from '@/features/Course-Mgt/addStaff/ResetStaffPwd';
 import StaffProfile from '@/features/Avatar/staff/profile/StaffProfile'; 
 const StaffDashBoard = lazy(() => import('@/pages/staffPages/StaffDashBoard'));
 
 //const StudentDashBoard = lazy(() => import('@/pages/studentPages/StudentDashBoard'));
-const CourseMgtMain = lazy(() => import('../features/Course-Mgt/main'));
+const CourseMgtMain = lazy(() => import('../features/Course-Mgt/Main'));
 const AddCourse = lazy(() => import('@/features/Course-Mgt/AddCourse'));
 const CourseStructureBuilder = lazy(() => import('@/features/courseBuilder/CourseStructureBuilder'));
 const InstructorDashBoard = lazy(() => import('@/pages/instructorPages/instructorDashBoard/InstructorDashBoard').then(m => ({ default: m.InstructorDashBoard })));
@@ -28,6 +28,7 @@ import AuthGuard from '../components/protectedRoutes/AuthGuard';
 import { StudentDashBoard } from '@/pages/studentPages/studentDashBoard/StudentDashBoard';
 import ForgotPassword from '@/pages/Auth/StaffForgotPassword';
 import ViewCourses from '@/pages/public/ViewCourses';
+import StudentCoursesPage from '@/pages/studentPages/studentDashBoard/StudentCoursesPage';
 
 const AppRoute = () => {
 
@@ -72,6 +73,8 @@ const AppRoute = () => {
                     {/* STUDENT Routes */}
                     <Route element={<AuthGuard allowedRole="STUDENT" />}>
                         <Route path="/student-dashboard" element={<StudentDashBoard />} />
+                        <Route path="/student-dashboard/courses/:status" element={<StudentCoursesPage />} />
+                        <Route path="/student-course/:courseId" element={<CourseDetails />} />
                         <Route path="/studentProfile" element={<StudentProfile /> } />    
                     </Route>
 

@@ -6,7 +6,7 @@ import IoT from './IoT.jpeg';
 import JAVA from './java.jpeg';
 import Linux from './linux.jpeg';
 import MCP from './MCP.png';
-import MobileApps from './mobileApps.jpeg';
+import MobileApps from './MobileApps.jpeg';
 import MCPText from './MyCodePlace.jpg';
 import NODE from './node.jpeg';
 import PYTHON from './python.jpeg';

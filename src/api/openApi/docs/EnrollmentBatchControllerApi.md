@@ -10,6 +10,7 @@ All URIs are relative to *{VITE_API_URL}*
 |[**getStudentWeeklySchedule**](#getstudentweeklyschedule) | **GET** /api/enrollment-batches/students/{studentId}/weekly-schedule | |
 |[**getStudentsByBatch**](#getstudentsbybatch) | **GET** /api/enrollment-batches/batches/{batchId}/students | |
 |[**removeStudentFromBatch**](#removestudentfrombatch) | **DELETE** /api/enrollment-batches/{id} | |
+|[**switchStudentBatch**](#switchstudentbatch) | **PUT** /api/enrollment-batches/switch | |
 
 # **assignStudentToBatch**
 > EnrollmentBatchResponse assignStudentToBatch(assignStudentToBatchRequest)
@@ -303,6 +304,57 @@ void (empty response body)
 
  - **Content-Type**: Not defined
  - **Accept**: Not defined
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **switchStudentBatch**
+> EnrollmentBatchResponse switchStudentBatch(switchStudentBatchRequest)
+
+
+### Example
+
+```typescript
+import {
+    EnrollmentBatchControllerApi,
+    Configuration,
+    SwitchStudentBatchRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new EnrollmentBatchControllerApi(configuration);
+
+let switchStudentBatchRequest: SwitchStudentBatchRequest; //
+
+const { status, data } = await apiInstance.switchStudentBatch(
+    switchStudentBatchRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **switchStudentBatchRequest** | **SwitchStudentBatchRequest**|  | |
+
+
+### Return type
+
+**EnrollmentBatchResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
 
 
 ### HTTP response details

@@ -10,7 +10,8 @@ const TestimonialsSection = () => {
         const fetchStories = async () => {
             try {
                 const response = await SuccessApi.getAllStories();
-                const data = response.data || [];
+                const raw = response.data;
+                const data = Array.isArray(raw) ? raw : (Array.isArray(raw?.content) ? raw.content : []);
                 const formattedData = data.map((item) => ({
                     id: item.id,
                     profileImg: item.profileImg,

@@ -247,12 +247,25 @@ function TasksForReview() {
   });
 
   const completeReviewMutation = useMutation({
-    mutationFn: (submissionId) =>
-      instructorDashboardApi.completeReview(submissionId),
-    onSuccess: () => {
+    mutationFn: ({ submissionId, overallRating, feedbackMessage }) =>
+      instructorDashboardApi.reviewSubmission(submissionId, staffId, {
+        overallRating,
+        feedbackMessage,
+      }),
+    onSuccess: (data, variables) => {
       toast.success("Review completed");
       queryClient.invalidateQueries(["instructorSubmissions", staffId]);
-      setReviewTask(null);
+      setReviewTask((prev) =>
+        prev
+          ? {
+              ...prev,
+              reviewStatus: "COMPLETED",
+              reviewFeedback: variables?.feedbackMessage,
+              reviewRating: variables?.overallRating,
+              reviewCriteria: variables?.criteria,
+            }
+          : prev
+      );
     },
     onError: () => {
       toast.error("Failed to complete review");
@@ -358,11 +371,17 @@ function TasksForReview() {
       <CardContent className="p-5 sm:p-6 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col lg:overflow-hidden lg:p-5">
         {reviewTask && (
           <ReviewModal
+            key={reviewTask.id ?? "review"}
             isOpen={!!reviewTask}
             onClose={() => setReviewTask(null)}
-            onStartReview={() => {
+            onStartReview={(payload) => {
               if (reviewTask?.id) {
-                completeReviewMutation.mutate(reviewTask.id);
+                completeReviewMutation.mutate({
+                  submissionId: reviewTask.id,
+                  overallRating: payload?.rating,
+                  feedbackMessage: payload?.feedback,
+                  criteria: payload?.criteria,
+                });
               }
             }}
             submitting={completeReviewMutation.isPending}
@@ -387,8 +406,12 @@ function TasksForReview() {
               submissionNotes: reviewTask.submissionNotes || "No notes provided.",
               attachments: reviewTask.attachments || [],
               git: reviewTask.git || [],
+              reviewFeedback: reviewTask.reviewFeedback,
+rating: reviewTask.reviewRating || reviewTask.overallRating || 0,
+              criteria: reviewTask.reviewCriteria || [],
               status:
-                reviewTask.reviewStatus === "COMPLETED"
+                reviewTask.reviewStatus === "COMPLETED" ||
+                reviewTask.reviewStatus === "REVIEWED"
                   ? "Completed"
                   : "Pending Review",
             }}

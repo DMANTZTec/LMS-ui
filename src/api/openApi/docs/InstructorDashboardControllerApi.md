@@ -14,6 +14,7 @@ All URIs are relative to *{VITE_API_URL}*
 |[**getStudentStats**](#getstudentstats) | **GET** /api/instructor/student-stats | |
 |[**getTaskSubmissions**](#gettasksubmissions) | **GET** /api/instructor/submissions | |
 |[**planClassTopics**](#planclasstopics) | **PUT** /api/instructor/schedule/{scheduleId}/topics | |
+|[**reviewSubmission**](#reviewsubmission) | **POST** /api/instructor/submissions/{submissionId}/review | |
 
 # **createTask**
 > InstructorTaskResponse createTask(instructorTaskRequest)
@@ -508,6 +509,63 @@ const { status, data } = await apiInstance.planClassTopics(
 ### Return type
 
 **Array<ClassTopicResponse>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **reviewSubmission**
+> StudentTaskSubmissionResponse reviewSubmission(reviewSubmissionRequest)
+
+
+### Example
+
+```typescript
+import {
+    InstructorDashboardControllerApi,
+    Configuration,
+    ReviewSubmissionRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new InstructorDashboardControllerApi(configuration);
+
+let submissionId: number; // (default to undefined)
+let instructorId: string; // (default to undefined)
+let reviewSubmissionRequest: ReviewSubmissionRequest; //
+
+const { status, data } = await apiInstance.reviewSubmission(
+    submissionId,
+    instructorId,
+    reviewSubmissionRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **reviewSubmissionRequest** | **ReviewSubmissionRequest**|  | |
+| **submissionId** | [**number**] |  | defaults to undefined|
+| **instructorId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**StudentTaskSubmissionResponse**
 
 ### Authorization
 

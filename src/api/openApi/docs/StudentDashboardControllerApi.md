@@ -8,6 +8,7 @@ All URIs are relative to *{VITE_API_URL}*
 |[**getCompletedTasksPerWeek**](#getcompletedtasksperweek) | **GET** /api/student-dashboard/completed-tasks-per-week/{studentId} | |
 |[**getCourseProgress**](#getcourseprogress) | **GET** /api/student-dashboard/dashboard/course/{courseId}/progress | |
 |[**getDashboardSummary**](#getdashboardsummary) | **GET** /api/student-dashboard/summary/{studentId} | |
+|[**getInstructorRatingPerWeek**](#getinstructorratingperweek) | **GET** /api/student-dashboard/instructor-rating-per-week/{studentId} | |
 |[**getMyClasses**](#getmyclasses) | **GET** /api/student-dashboard/classes/{studentId} | |
 |[**getMyCourses**](#getmycourses) | **GET** /api/student-dashboard/my-coursesprogress | |
 |[**getTopicProgress**](#gettopicprogress) | **GET** /api/student-dashboard/{courseId}/topics-progress | |
@@ -204,6 +205,59 @@ const { status, data } = await apiInstance.getDashboardSummary(
 ### Return type
 
 **StudentDashboardSummaryResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getInstructorRatingPerWeek**
+> Array<WeeklyInstructorRatingResponse> getInstructorRatingPerWeek()
+
+
+### Example
+
+```typescript
+import {
+    StudentDashboardControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StudentDashboardControllerApi(configuration);
+
+let studentId: string; // (default to undefined)
+let weeks: number; // (optional) (default to 4)
+
+const { status, data } = await apiInstance.getInstructorRatingPerWeek(
+    studentId,
+    weeks
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **studentId** | [**string**] |  | defaults to undefined|
+| **weeks** | [**number**] |  | (optional) defaults to 4|
+
+
+### Return type
+
+**Array<WeeklyInstructorRatingResponse>**
 
 ### Authorization
 

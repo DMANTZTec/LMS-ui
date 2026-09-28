@@ -94,6 +94,7 @@ docs/ResendOtpRequest.md
 docs/ResendOtpResponse.md
 docs/ResendStaffOtpRequest.md
 docs/ResetPasswordRequest.md
+docs/ReviewSubmissionRequest.md
 docs/RoleControllerApi.md
 docs/RoleRequest.md
 docs/RoleResponse.md
@@ -148,6 +149,7 @@ docs/SubjectResponse.md
 docs/SuccessStoryControllerApi.md
 docs/SuccessStoryRequest.md
 docs/SuccessStoryResponse.md
+docs/SwitchStudentBatchRequest.md
 docs/TopicDetailResponse.md
 docs/TopicDropdownResponse.md
 docs/TopicItem.md
@@ -161,6 +163,7 @@ docs/TopicUrlReferenceRequestDto.md
 docs/UpdateClassRequest.md
 docs/UpdateCourseRequest.md
 docs/UpdateMentorMinutesRequest.md
+docs/WeeklyInstructorRatingResponse.md
 docs/WeeklyScheduleResponse.md
 docs/WeeklyTaskCompletionResponse.md
 git_push.sh
