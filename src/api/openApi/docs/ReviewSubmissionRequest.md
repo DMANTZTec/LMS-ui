@@ -1,21 +1,21 @@
-# ForgotPasswordRequest
+# ReviewSubmissionRequest
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**otpChannel** | **string** |  | [optional] [default to undefined]
-**emailIdOrMobileNo** | **string** |  | [optional] [default to undefined]
+**overallRating** | **number** |  | [default to undefined]
+**feedbackMessage** | **string** |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { ForgotPasswordRequest } from './api';
+import { ReviewSubmissionRequest } from './api';
 
-const instance: ForgotPasswordRequest = {
-    otpChannel,
-    emailIdOrMobileNo,
+const instance: ReviewSubmissionRequest = {
+    overallRating,
+    feedbackMessage,
 };
 ```
 
