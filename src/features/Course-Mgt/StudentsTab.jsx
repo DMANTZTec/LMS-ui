@@ -15,11 +15,13 @@ import {
   ChevronRight,
   CheckCircle2,
   UserMinus,
+  ArrowLeftRight,
 } from "lucide-react";
 
 import { studentApi } from "@/api/student-controller.api";
 import { enrollmentApi } from "@/api/enrollment-controller";
 import EnrollStudentDialog from "./studentsTabComponents/EnrollStudentDialog";
+import SwitchBatchDialog from "./studentsTabComponents/SwitchBatchDialog";
 //import UnrollStudentDialog from "./studentsTabComponents/UnrollStudentDialog";
 
 function getInitials(firstNm, lastNm) {
@@ -66,6 +68,7 @@ export default function StudentsTab() {
   const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedEnrollStudent, setSelectedEnrollStudent] = useState(null);
+  const [selectedSwitchStudent, setSelectedSwitchStudent] = useState(null);
   const [selectedUnrollStudent, setSelectedUnrollStudent] = useState(null);
   const [enrollmentMap, setEnrollmentMap] = useState({});
   const [refreshKey, setRefreshKey] = useState(0);
@@ -148,6 +151,11 @@ export default function StudentsTab() {
     refetch();
   };
 
+  const handleSwitched = () => {
+    setRefreshKey((k) => k + 1);
+    refetch();
+  };
+
   const handleSearchChange = (e) => {
     setQuery(e.target.value);
     setCurrentPage(1);
@@ -162,6 +170,13 @@ export default function StudentsTab() {
           open={!!selectedEnrollStudent}
           onOpenChange={(isOpen) => !isOpen && setSelectedEnrollStudent(null)}
           onEnrolled={() => selectedEnrollStudent && handleEnrolled(selectedEnrollStudent.studentId)}
+        />
+        <SwitchBatchDialog
+          key={selectedSwitchStudent?.studentId ?? "none"}
+          student={selectedSwitchStudent}
+          open={!!selectedSwitchStudent}
+          onOpenChange={(isOpen) => !isOpen && setSelectedSwitchStudent(null)}
+          onSwitched={() => selectedSwitchStudent && handleSwitched(selectedSwitchStudent.studentId)}
         />
 {/* 
         <UnrollStudentDialog
@@ -287,7 +302,8 @@ export default function StudentsTab() {
                             {formatJoinDate(student.createdDt)}
                           </td>
                           <td className="px-4 py-4 align-middle">
-                            <EnrolledBadge isEnrolled={isEnrolled} />
+                            {/* <EnrolledBadge isEnrolled={isEnrolled} /> */}
+                             <ActiveBadge isActive={student.enabled}/>
                           </td>
                           <td className="px-4 py-4 align-middle">
                             <div className="flex items-center gap-2">
@@ -298,6 +314,15 @@ export default function StudentsTab() {
                               >
                                 <GraduationCap className="h-4 w-4" />
                               </ActionIconButton>
+                              {isEnrolled && (
+                                <ActionIconButton
+                                  title="Switch student to another batch"
+                                  onClick={() => setSelectedSwitchStudent(student)}
+                                  className="border-violet-100 bg-violet-50 text-violet-600 hover:bg-violet-100"
+                                >
+                                  <ArrowLeftRight className="h-4 w-4" />
+                                </ActionIconButton>
+                              )}
                               {/* {isEnrolled && (
                                 <ActionIconButton
                                   title="Unroll student"
@@ -388,14 +413,35 @@ export default function StudentsTab() {
   );
 }
 
-function EnrolledBadge({ isEnrolled }) {
-  if (isEnrolled) {
+// function EnrolledBadge({ isEnrolled }) {
+//   if (isEnrolled) {
+//     return (
+//       <Badge
+//         variant="outline"
+//         className="rounded-full px-3 py-1 font-medium border bg-emerald-50 text-emerald-600 border-emerald-200"
+//       >
+//         <CheckCircle2 className="mr-1 h-3 w-3" /> Enrolled
+//       </Badge>
+//     );
+//   }
+//   return (
+//     <Badge
+//       variant="outline"
+//       className="rounded-full px-3 py-1 font-medium border bg-slate-100 text-slate-500 border-slate-200"
+//     >
+//       Not Enrolled
+//     </Badge>
+//   );
+// }
+
+function ActiveBadge({ isActive}) {
+  if (isActive=== "Y") {
     return (
       <Badge
         variant="outline"
         className="rounded-full px-3 py-1 font-medium border bg-emerald-50 text-emerald-600 border-emerald-200"
       >
-        <CheckCircle2 className="mr-1 h-3 w-3" /> Enrolled
+        <CheckCircle2 className="mr-1 h-3 w-3" /> Active
       </Badge>
     );
   }
@@ -404,11 +450,10 @@ function EnrolledBadge({ isEnrolled }) {
       variant="outline"
       className="rounded-full px-3 py-1 font-medium border bg-slate-100 text-slate-500 border-slate-200"
     >
-      Not Enrolled
+     Inactive
     </Badge>
   );
 }
-
 function StatCard({ icon, iconBg, value, label }) {
   return (
     <Card className="border-slate-200 shadow-sm">
