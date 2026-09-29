@@ -19,21 +19,26 @@ import { Button } from "@/components/ui/button";
 
 // Jotai Atom (Reading the student data you saved during registration/login)
 import { studentDataAtom } from "@/store/atoms/authAtoms";
+// claude code generated
+import { getStuRegData, clearAllStorage } from "@/utils/tokenUtility";
 
 export default function NavbarAvatar() {
   const navigate = useNavigate();
   // Read-only access to student global state
   const studentData = useAtomValue(studentDataAtom);
-  const stuData = JSON.parse(
-     sessionStorage.getItem("stuRegData") || "{}"
- );
+  // const stuData = JSON.parse(
+  //    sessionStorage.getItem("stuRegData") || "{}"
+  // );
+  // claude code generated
+  const stuData = getStuRegData() || {};
   
   // Fallback fallback styling helpers (Extract initials like "John Doe" -> "JD")
   const getInitials = () => {
     if (!studentData?.firstNm && !stuData?.firstNm) return "ST";
     const first = studentData?.firstNm?.charAt(0)?.toUpperCase() || stuData?.firstNm?.charAt(0)?.toUpperCase();
     const last = studentData?.lastNm?.charAt(0)?.toUpperCase() || stuData?.lastNm?.charAt(0)?.toUpperCase();
-    console.log("values of first and last are: ",first,last);
+    // claude code generated
+    // console.log("values of first and last are: ",first,last);
     return `${first}${last}`;
   };
 
@@ -45,9 +50,11 @@ export default function NavbarAvatar() {
   const handleLogout = () => {
     // Clear your session storage and redirect
     //localStorage.removeItem('LmsJwTtoken');
-    localStorage.clear();
-    sessionStorage.clear();
-    window.location.href = "/"; 
+    // localStorage.clear();
+    // sessionStorage.clear();
+    // claude code generated
+    clearAllStorage();
+    window.location.href = "/";
   };
 
   return (

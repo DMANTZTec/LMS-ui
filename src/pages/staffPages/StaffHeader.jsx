@@ -1,29 +1,40 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { email } from "zod";
+// claude code generated
+import { getOtpStaff, clearAllStorage } from "@/utils/tokenUtility";
 
 const StaffHeader = () => {
   const navigate = useNavigate();
 
   // Get user from localStorage
-  const savedUser = JSON.parse(sessionStorage.getItem("otpStaff"));
+  // const savedUser = JSON.parse(sessionStorage.getItem("otpStaff"));
+  // claude code generated
+  const savedUser = getOtpStaff();
   const email = savedUser?.email;
 
-  // First letter of name 
+  // First letter of name
   const firstLetter = email ? email.charAt(0).toUpperCase() : "";
 
   const handleLogout = () => {
     // localStorage.removeItem("otpStaff");
     // localStorage.removeItem("tempAuth");
 
-    try {
-    localStorage.clear();
-    sessionStorage.clear();
+    // try {
+    // localStorage.clear();
+    // sessionStorage.clear();
 
-    navigate("/");
-  } catch (error) {
-    console.error("Logout error:", error);
-  }
+    // navigate("/");
+    // } catch (error) {
+    //   console.error("Logout error:", error);
+    // }
+    // claude code generated
+    try {
+      clearAllStorage();
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (

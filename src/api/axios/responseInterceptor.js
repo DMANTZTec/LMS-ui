@@ -1,5 +1,9 @@
+// claude code generated
+import { clearAllStorage } from "@/utils/tokenUtility";
+
 const responseInterceptor = (response) => {
-  console.log("Response Interceptor");
+  // claude code generated
+  // console.log("Response Interceptor");
 
   return response;
 };
@@ -9,7 +13,9 @@ const responseError = (error) => {
     console.error("Unauthorized - Token Expired");
 
     // Remove invalid token
-    localStorage.removeItem("LmsJwTtoken");
+    // localStorage.removeItem("LmsJwTtoken");
+    // claude code generated
+    clearAllStorage();
 
     // Redirect to login
     window.location.href = "/";

@@ -7,7 +7,8 @@ const Resources = ({ topic, topicResource, openResource }) => {
     const openRes = (topicId, resource) => {
         openResource(topicId, resource);
     };
-console.log("value of topic is: ", topic);
+// claude code generated
+// console.log("value of topic is: ", topic);
 
     return (
         <>

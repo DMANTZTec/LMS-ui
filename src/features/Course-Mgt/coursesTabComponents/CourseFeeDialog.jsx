@@ -9,6 +9,8 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { IndianRupee, BookOpen, History } from 'lucide-react';
 import { feeApi } from '@/api/course-fee-controller';
 import toast from "react-hot-toast";
+// claude code generated
+import { getStaffId } from "@/utils/tokenUtility";
 
 
 const DURATION_OPTIONS = [
@@ -40,7 +42,9 @@ const CourseFeeDialog = ({ course }) => {
 
     // const savedUser = JSON.parse(localStorage.getItem("user"));
     // const staffId = savedUser?.staffId || "SF00003";
-    const staffId = JSON.parse(localStorage.getItem("staffId"));
+    // const staffId = JSON.parse(localStorage.getItem("staffId"));
+    // claude code generated
+    const staffId = getStaffId();
 
   
     const { data: feeData, isLoading, refetch } = useQuery({

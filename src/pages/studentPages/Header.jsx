@@ -1,11 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+// claude code generated
+import { getOtpUser, clearAllStorage } from "@/utils/tokenUtility";
 
 const Header = () => {
   const navigate = useNavigate();
 
   // Get user from localStorage
-  const savedUser = JSON.parse(sessionStorage.getItem("otpUser"));
+  // const savedUser = JSON.parse(sessionStorage.getItem("otpUser"));
+  // claude code generated
+  const savedUser = getOtpUser();
   const email = savedUser?.email;
 
   // Get first letter of email (capital)
@@ -14,14 +18,22 @@ const Header = () => {
   const handleLogout = () => {
     // sessionStorage.removeItem("otpUser");
     // sessionStorage.removeItem("tempAuth");
-    try{
-    localStorage.clear();
-    sessionStorage.clear();
-    navigate("/"); // change if your login route is different
+    // try{
+    // localStorage.clear();
+    // sessionStorage.clear();
+    // navigate("/"); // change if your login route is different
+    // }
+    // catch(error){
+    //    console.error("Logout error:", error);
+    // }
+    // claude code generated
+    try {
+      clearAllStorage();
+      navigate("/"); // change if your login route is different
+    } catch (error) {
+      console.error("Logout error:", error);
     }
-    catch(error){
-       console.error("Logout error:", error);
-    }} 
+  }
 
   return (
     <div className="flex justify-between items-center px-6 py-4 shadow-md bg-white">

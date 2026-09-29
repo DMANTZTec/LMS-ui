@@ -126,7 +126,8 @@ const StuResetPwd = () => {
 
         try {
             const response = await studentApi.resetPassword(payload);
-            console.log("response is: ", response);
+            // claude code generated
+            // console.log("response is: ", response);
             toast.success("Password changed successfully. 🎉", { className: '!bg-green-800 !text-white',
                 duration:3000
              });

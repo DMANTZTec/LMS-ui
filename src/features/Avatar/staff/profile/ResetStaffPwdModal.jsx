@@ -20,7 +20,8 @@ const payload = {
   "emailIdOrMobileNo": staffData?.email,
   "otpChannel": "EMAIL"
 }
-console.log("payload is: ",payload);
+// claude code generated
+// console.log("payload is: ",payload);
     setIsLoading(true);
     try {
     

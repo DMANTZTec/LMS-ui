@@ -109,10 +109,11 @@ const [providersLoading, setProvidersLoading] = useState(false);
         ),
       };
 
-      console.log(
-        "UPDATE PAYLOAD",
-        payload
-      );
+      // claude code generated
+      // console.log(
+        // "UPDATE PAYLOAD",
+        // payload
+      // );
 
       await api.updateProgram(
         program.id,

@@ -40,6 +40,8 @@ import { StaffProfileSchema } from "./StaffProfileSchema";
 import Field from "@/components/common/Field";
 
 import { staffApi } from "@/api/staff-controller.api";
+// claude code generated
+import { getOtpStaff } from "@/utils/tokenUtility";
 
 
 
@@ -80,12 +82,14 @@ export default function StaffProfileScreen() {
     const fetchAddNewStaffData = async () => {
       setIsLoading(true);
       try {
-        const otpData = sessionStorage.getItem("otpStaff");
-        let staffId = null;
-
-        if (otpData) {
-          staffId = JSON.parse(otpData).staffId;
-        }
+        // const otpData = sessionStorage.getItem("otpStaff");
+        // let staffId = null;
+        // if (otpData) {
+        //   staffId = JSON.parse(otpData).staffId;
+        // }
+        // claude code generated
+        const otpData = getOtpStaff();
+        const staffId = otpData?.staffId || null;
 
         if (!staffId) {
           console.error("No staff ID found in session storage.");
@@ -138,7 +142,8 @@ export default function StaffProfileScreen() {
 
   // Called when validation fails on submit
   const onError = (formErrors) => {
-    console.log("formErrors is: ", formErrors);
+    // claude code generated
+    // console.log("formErrors is: ", formErrors);
     // Auto-switch to the first tab containing an error
     if (errors.firstName || errors.lastName || errors.email) {
       setActiveTab("personal");
@@ -213,12 +218,14 @@ const TAB_FIELDS = {
 
     // calling again api to new data from database table.
     
-        const otpData = sessionStorage.getItem("otpStaff");
-        let staffId = null;
-
-        if (otpData) {
-          staffId = JSON.parse(otpData).staffId;
-        }
+        // const otpData = sessionStorage.getItem("otpStaff");
+        // let staffId = null;
+        // if (otpData) {
+        //   staffId = JSON.parse(otpData).staffId;
+        // }
+        // claude code generated
+        const otpData = getOtpStaff();
+        const staffId = otpData?.staffId || null;
 
         if (!staffId) {
           setIsLoading(false);

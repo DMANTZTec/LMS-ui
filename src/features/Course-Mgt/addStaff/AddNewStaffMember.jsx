@@ -171,9 +171,11 @@ const fetchRoles = async () => {
 useEffect(() => {
     const getRoles = async () => {
         const response = await fetchRoles();
-        console.log("response is: ", response);
+        // claude code generated
+        // console.log("response is: ", response);
         setRoleOptions(response.data);
-        console.log("response.data is: ",response.data);
+        // claude code generated
+        // console.log("response.data is: ",response.data);
         
     }
 getRoles();
@@ -233,7 +235,8 @@ getRoles();
             const formattedDateOfJoining = data.dateOfJoining instanceof Date
                 ? data.dateOfJoining.toISOString().split('T')[0]
                 : data.dateOfJoining;
-console.log("data is: ",data);
+// claude code generated
+// console.log("data is: ",data);
                 const payload = {
                 'firstNm':data.firstName,
                 'lastNm': data.lastName,
@@ -299,13 +302,18 @@ console.log("data is: ",data);
     };
 
     const handlePhotoChange = (e) => {
-        console.log("value of e is: ",e);
-        console.log("value of e.target is: ", e.target);
-        console.log("value of e.target.files?.[0]", e.target.files?.[0]);
+        // claude code generated
+        // console.log("value of e is: ",e);
+        // claude code generated
+        // console.log("value of e.target is: ", e.target);
+        // claude code generated
+        // console.log("value of e.target.files?.[0]", e.target.files?.[0]);
 
         const file = e.target.files?.[0];
-        console.log("in hadlePhotoChange function and file.type is: ",file.type);
-       console.log("line1 in handlePhotoChange and getValues('photo') is: ",getValues("photo"));
+        // claude code generated
+        // console.log("in hadlePhotoChange function and file.type is: ",file.type);
+       // claude code generated
+       // console.log("line1 in handlePhotoChange and getValues('photo') is: ",getValues("photo"));
         if (file) {
             if (photoPreview) URL.revokeObjectURL(photoPreview);
                 setValue("photo", file, {
@@ -313,7 +321,8 @@ console.log("data is: ",data);
                 shouldDirty: true,
                 shouldTouch: true,
             });
-            console.log("line2 in handlePhotoChange and getValues('photo') is: ",getValues("photo"));
+            // claude code generated
+            // console.log("line2 in handlePhotoChange and getValues('photo') is: ",getValues("photo"));
             setPhotoPreview(URL.createObjectURL(file));
         }
     };
@@ -347,8 +356,12 @@ console.log("data is: ",data);
                     </p>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit(onSubmit,(errors) => {console.log("validation failed");
-                console.log("errors is: ",errors);})} className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+                <form onSubmit={handleSubmit(onSubmit,(errors) => {
+                // claude code generated
+                // console.log("validation failed");
+                // claude code generated
+                // console.log("errors is: ",errors);
+                })} className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
                     
                     {/* Status Banners */}
                     {globalError && (
