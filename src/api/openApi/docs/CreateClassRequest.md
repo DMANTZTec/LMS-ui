@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **selectedDays** | **Array&lt;string&gt;** |  | [default to undefined]
 **dayTimes** | [**{ [key: string]: DayTimeSlot; }**](DayTimeSlot.md) |  | [default to undefined]
 **selectedInstructors** | **Array&lt;string&gt;** |  | [default to undefined]
+**capacity** | **number** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -24,6 +25,7 @@ const instance: CreateClassRequest = {
     selectedDays,
     dayTimes,
     selectedInstructors,
+    capacity,
 };
 ```
 

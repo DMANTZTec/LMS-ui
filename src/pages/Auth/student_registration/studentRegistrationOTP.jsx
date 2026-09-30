@@ -9,6 +9,8 @@ import { studentApi } from '@/api/student-controller.api';
 import { useAtom } from 'jotai';
 import {studentDataAtom} from '@/store/atoms/authAtoms';
 import { toast } from "react-hot-toast";
+// claude code generated
+import { getStuRegData, saveStuRegData, getToken, saveToken } from "@/utils/tokenUtility";
 
 export default function StudentRegistrationOTP() {
    const [value, setValue] = useState("");
@@ -16,17 +18,25 @@ export default function StudentRegistrationOTP() {
    const navigate = useNavigate();
 
  const [studentData,setStudentData] = useAtom(studentDataAtom);
- console.log("student data in automs is: ",studentData);
- const savedUser = JSON.parse(
-     sessionStorage.getItem("stuRegData") || "{}"
- );
+ // claude code generated
+ // console.log("student data in automs is: ",studentData);
+ // const savedUser = JSON.parse(
+ //     sessionStorage.getItem("stuRegData") || "{}"
+ // );
+ // claude code generated
+ const savedUser = getStuRegData() || {};
 
 useEffect(() => {
-  if(!studentData && !sessionStorage.getItem("stuRegData"))
+  // if(!studentData && !sessionStorage.getItem("stuRegData"))
+  //   navigate("/studentLogin");
+  // if(localStorage.getItem("LmsJwTtoken"))
+  //   navigate("/student-dashboard")
+  // claude code generated
+  if(!studentData && !getStuRegData())
     navigate("/studentLogin");
-  if(localStorage.getItem("LmsJwTtoken"))
+  if(getToken())
     navigate("/student-dashboard")
-},[]); 
+},[]);
 
  //const studentId = savedUser?.studentId || studentData?.studentId;
    const emailIdOrMobileNo = (savedUser?.emailId || studentData?.emailId) || (savedUser?.mobileNum || studentData?.mobileNum);
@@ -52,10 +62,14 @@ useEffect(() => {
     const { token } = res.data;
 
     if (token) {
-      localStorage.setItem("LmsJwTtoken", token);
+      // localStorage.setItem("LmsJwTtoken", token);
+      // claude code generated
+      saveToken(token);
     }
 
-    sessionStorage.setItem("stuRegData", JSON.stringify(res.data));
+    // sessionStorage.setItem("stuRegData", JSON.stringify(res.data));
+    // claude code generated
+    saveStuRegData(res.data);
 
     // Success Toast
     toast.success(
@@ -95,7 +109,9 @@ setTimeout(() => {
         <CardDescription>
           Enter the code sent to:{" "}
           <span className="font-medium text-black">
-            {(JSON.parse(sessionStorage.getItem("stuRegData"))?.emailId|| studentData?.emailId) || "your email"}
+            {/* {(JSON.parse(sessionStorage.getItem("stuRegData"))?.emailId|| studentData?.emailId) || "your email"} */}
+            {/* claude code generated */}
+            {(getStuRegData()?.emailId|| studentData?.emailId) || "your email"}
           {/* {"your entered email"}  */}
           </span>
         </CardDescription>

@@ -9,7 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { api } from "@/api/CourseMgtController";
 import { providerApi } from "@/api/provider-controller.api";
 import toast from "react-hot-toast";
-
+// claude code generated
+import { getStaffId } from "@/utils/tokenUtility";
 
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -115,7 +116,9 @@ const AddCourse = () => {
     try {
       // const savedUser = JSON.parse(localStorage.getItem("user"));
       // const staffId = savedUser?.staffId ;
-      const staffId = JSON.parse(localStorage.getItem("staffId"));
+      // const staffId = JSON.parse(localStorage.getItem("staffId"));
+      // claude code generated
+      const staffId = getStaffId();
 
       const response = await api.createCourse(
         staffId,

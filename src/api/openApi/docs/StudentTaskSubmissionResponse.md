@@ -19,6 +19,7 @@ Name | Type | Description | Notes
 **submittedAt** | **string** |  | [optional] [default to undefined]
 **reviewFeedback** | **string** |  | [optional] [default to undefined]
 **pointsAwarded** | **number** |  | [optional] [default to undefined]
+**overallRating** | **number** |  | [optional] [default to undefined]
 **reviewedAt** | **string** |  | [optional] [default to undefined]
 
 ## Example
@@ -41,6 +42,7 @@ const instance: StudentTaskSubmissionResponse = {
     submittedAt,
     reviewFeedback,
     pointsAwarded,
+    overallRating,
     reviewedAt,
 };
 ```

@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "
 import { StudentProfileSchema } from './StudentProfileSchema';
 import { studentApi } from '@/api/student-controller.api';
 import { studentDataAtom } from '@/store/atoms/authAtoms';
+// claude code generated
+import { getStuRegData, saveStuRegData } from '@/utils/tokenUtility';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -38,7 +40,9 @@ const StudentProfile = () => {
   const [imageRemoved, setImageRemoved] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
-  const cachedRegData = JSON.parse(sessionStorage.getItem("stuRegData") || "{}");
+  // const cachedRegData = JSON.parse(sessionStorage.getItem("stuRegData") || "{}");
+  // claude code generated
+  const cachedRegData = getStuRegData() || {};
   const profilePictureRef = useRef(null);
 
 
@@ -91,21 +95,26 @@ const StudentProfile = () => {
   ]);
 
   useEffect(() => {
-    console.log("entered into useEffect.");
+    // claude code generated
+    // console.log("entered into useEffect.");
 
     setGlobalError(null);
   }, [JSON.stringify(watchedValues)]);
 
   const onSubmit = async (data) => {
-    console.log("entered into onSubmit function.");
-    console.log("typeof data.profilePicture === 'string', data.profilePicture === null, data.profilePicture === undefined, data.profilePicture instanceof File are: ", typeof data.profilePicture === "string", data.profilePicture === null, data.profilePicture === undefined, data.profilePicture instanceof File);
-    console.log("value in data.profilePicture is: ", data.profilePicture);
+    // claude code generated
+    // console.log("entered into onSubmit function.");
+    // claude code generated
+    // console.log("typeof data.profilePicture === 'string', data.profilePicture === null, data.profilePicture === undefined, data.profilePicture instanceof File are: ", typeof data.profilePicture === "string", data.profilePicture === null, data.profilePicture === undefined, data.profilePicture instanceof File);
+    // claude code generated
+    // console.log("value in data.profilePicture is: ", data.profilePicture);
 
     setIsSubmitting(true);
     setGlobalError(null);
     try {
 
-      console.log("value of data.profilePicture is: ", data.profilePicture);
+      // claude code generated
+      // console.log("value of data.profilePicture is: ", data.profilePicture);
       // because Zod converted it into a full JS Date Object.
       // 1. Safely extract and format the date back into a string YYYY-MM-DD
       const formattedDob = data.dob instanceof Date
@@ -136,47 +145,61 @@ const StudentProfile = () => {
         studentId,
         payload_body
       );
-      console.log("typeof initialValues.profilePicture is: ",typeof initialValues.profilePicture);
-      console.log("initialValues.profilePicture and data.profilePicure and imageRemoved are: ",initialValues.profilePicture,data.profilePicture,imageRemoved);
-      console.log("data.profilePictue instanceof File is: ", data.profilePicture instanceof File);
+      // claude code generated
+      // console.log("typeof initialValues.profilePicture is: ",typeof initialValues.profilePicture);
+      // claude code generated
+      // console.log("initialValues.profilePicture and data.profilePicure and imageRemoved are: ",initialValues.profilePicture,data.profilePicture,imageRemoved);
+      // claude code generated
+      // console.log("data.profilePictue instanceof File is: ", data.profilePicture instanceof File);
 
       if (data.profilePicture instanceof File) {
-        console.log("entered into if block and data.profilePicture instanceof File is: ", data.profilePicture instanceof File);
+        // claude code generated
+        // console.log("entered into if block and data.profilePicture instanceof File is: ", data.profilePicture instanceof File);
         const res2 = await studentApi.updateProfileImage(studentId, data.profilePicture);
       }
       else if(initialValues.profilePicture === "" && data.profilePicture === null && imageRemoved === true) {
-console.log("entered into else if block and (typeof initialValue.profilePicture === 'string' && data.profilePicture == null && imageRemoved === true) is: ",(typeof initialValues.profilePicture === "string" && data.profilePicture === null && imageRemoved === true));
+// claude code generated
+// console.log("entered into else if block and (typeof initialValue.profilePicture === 'string' && data.profilePicture == null && imageRemoved === true) is: ",(typeof initialValues.profilePicture === "string" && data.profilePicture === null && imageRemoved === true));
       }
       else if (data.profilePicture === null && imageRemoved === true) {
-        console.log("entered into else if block.");
-        console.log("data.profilePicture and typeof data.profilePicture and data.profilePicture === null are: ", data.profilePicture, typeof data.profilePicture, data.profilePicture === null);
+        // claude code generated
+        // console.log("entered into else if block.");
+        // claude code generated
+        // console.log("data.profilePicture and typeof data.profilePicture and data.profilePicture === null are: ", data.profilePicture, typeof data.profilePicture, data.profilePicture === null);
         await studentApi.deleteProfileImage(studentId);
       }
       else if ((data.profilePicture === null && imageRemoved === false) || typeof data.profilePicture === "string") {
-        console.log("entered into else if block and (data.profilePicture === null && imageRemoved === false) || typeof data.profileImageg === 'string' is: ", (data.profilePicture === null && imageRemoved === false) || typeof data.profileImageg === "string");
+        // claude code generated
+        // console.log("entered into else if block and (data.profilePicture === null && imageRemoved === false) || typeof data.profileImageg === 'string' is: ", (data.profilePicture === null && imageRemoved === false) || typeof data.profileImageg === "string");
 
       }
        else {
-        console.log("entered into else block: ");
+        // claude code generated
+        // console.log("entered into else block: ");
       }
 
       const result = await studentApi.getStudentById(studentId);
 
       const newUpdatedData = result.data;
-      console.log("newUpdatedData is: ", newUpdatedData);
+      // claude code generated
+      // console.log("newUpdatedData is: ", newUpdatedData);
       setStudentData(newUpdatedData);
-      sessionStorage.setItem("stuRegData", JSON.stringify(newUpdatedData));
+      // sessionStorage.setItem("stuRegData", JSON.stringify(newUpdatedData));
+      // claude code generated
+      saveStuRegData(newUpdatedData);
 
       toast.success("Profile saved successfully! 🎉", {
         duration: 5000,
         className: '!bg-green-800 !text-white'
       });
-      console.log("newUpdatedData is: ",newUpdatedData);
+      // claude code generated
+      // console.log("newUpdatedData is: ",newUpdatedData);
       reset(newUpdatedData);
 
 
     } catch (error) {
-      console.log("entered into catch block and error is: ", error);
+      // claude code generated
+      // console.log("entered into catch block and error is: ", error);
       const backendErrors = error.response?.data?.fieldErrors;
       if (backendErrors) {
         Object.keys(backendErrors).forEach((field) => {
@@ -196,7 +219,8 @@ console.log("entered into else if block and (typeof initialValue.profilePicture 
   };
 
   const handlePicture = (e) => {
-    console.log("entered into handlePicture function.");
+    // claude code generated
+    // console.log("entered into handlePicture function.");
 
     const file = e.target?.files[0];
     if (file) {
@@ -214,7 +238,8 @@ console.log("entered into else if block and (typeof initialValue.profilePicture 
     }
   }
   const removePhoto = () => {
-    console.log("entered into remoePhoto function.");
+    // claude code generated
+    // console.log("entered into remoePhoto function.");
     if (previewProfilePicture)
       URL.revokeObjectURL(previewProfilePicture);
     setPreviewProfilePicture(null);
@@ -244,8 +269,10 @@ console.log("entered into else if block and (typeof initialValue.profilePicture 
         )}
 
         <form onSubmit={handleSubmit(onSubmit, (errors) => {
-          console.log("validation failed");
-          console.log("errors is: ", errors);
+          // claude code generated
+          // console.log("validation failed");
+          // claude code generated
+          // console.log("errors is: ", errors);
         })} noValidate className="space-y-6">
 
           {/* ────────────────────────────────────────────────────────────── */}

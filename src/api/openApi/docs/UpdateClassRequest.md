@@ -6,6 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **batchName** | **string** |  | [optional] [default to undefined]
+**capacity** | **number** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -14,6 +15,7 @@ import { UpdateClassRequest } from './api';
 
 const instance: UpdateClassRequest = {
     batchName,
+    capacity,
 };
 ```
 

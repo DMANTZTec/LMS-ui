@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **batchName** | **string** |  | [optional] [default to undefined]
 **startDate** | **string** |  | [optional] [default to undefined]
 **endDate** | **string** |  | [optional] [default to undefined]
+**capacity** | **number** |  | [optional] [default to undefined]
 **totalSchedulesGenerated** | **number** |  | [optional] [default to undefined]
 **schedules** | [**Array&lt;ClassScheduleResponse&gt;**](ClassScheduleResponse.md) |  | [optional] [default to undefined]
 
@@ -28,6 +29,7 @@ const instance: ClassResponse = {
     batchName,
     startDate,
     endDate,
+    capacity,
     totalSchedulesGenerated,
     schedules,
 };

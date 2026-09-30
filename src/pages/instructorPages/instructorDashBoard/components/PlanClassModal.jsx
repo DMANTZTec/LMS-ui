@@ -5,6 +5,8 @@ import { api } from "@/api/CourseMgtController";
 import { instructorDashboardApi } from "@/api/instructor-dashboard-controller";
 import { TopicOption } from "./TopicOption";
 import toast from "react-hot-toast";
+// claude code generated
+import { getStaffId } from "@/utils/tokenUtility";
 
 export const PlanClassModal = ({
   isOpen = true,
@@ -17,7 +19,9 @@ export const PlanClassModal = ({
   const queryClient = useQueryClient();
   const [selectedTopicIds, setSelectedTopicIds] = useState([]);
 
-  const staffId = JSON.parse(localStorage.getItem("staffId"));
+  // const staffId = JSON.parse(localStorage.getItem("staffId"));
+  // claude code generated
+  const staffId = getStaffId();
 
   // Fetch available topics for course
   const { data: topics = [], isLoading } = useQuery({

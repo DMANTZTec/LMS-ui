@@ -163,6 +163,20 @@ export function WeeklyPerformance() {
     staleTime: 5 * 60 * 1000,
   });
 
+  const { data: instructorRatings = [], isLoading: ratingsLoading } = useQuery({
+    queryKey: ["instructorRatingPerWeek", studentId],
+    queryFn: async () => {
+      const res = await dashboardApi.getInstructorRatingPerWeek(studentId, 4);
+      const weeks = Array.isArray(res) ? res : Array.isArray(res?.data) ? res.data : [];
+      return weeks.map((week) => ({
+        d: week.weekEnd?.slice(5).replace("-", "/"),
+        v: week.averageRating ?? 0,
+      }));
+    },
+    enabled: Boolean(studentId),
+    staleTime: 5 * 60 * 1000,
+  });
+
   return (
     <Card className="flex h-full min-h-0 flex-col shadow-none">
       <CardContent className="flex min-h-0 flex-1 flex-col p-4 pt-0 pb-0">
@@ -198,7 +212,7 @@ export function WeeklyPerformance() {
 
           <Section
             title="Instructor Rating"
-            data={weeklyPerf.rating}
+            data={ratingsLoading ? [] : instructorRatings}
             mode={mode}
           />
 

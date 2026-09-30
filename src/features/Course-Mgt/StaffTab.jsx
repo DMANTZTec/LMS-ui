@@ -123,13 +123,16 @@ import ResetStaffPwdModal from "./addStaff/ResetStaffPwdModal";
     };
 
 const resetPwdModal = (data) => {
-console.log("entered into resetData function and data is: ",data);
+// claude code generated
+// console.log("entered into resetData function and data is: ",data);
 
 setSelectedStaffResetData(data);
-console.log("selectedStaffResetData value is: ",selectedStaffResetData);
+// claude code generated
+// console.log("selectedStaffResetData value is: ",selectedStaffResetData);
 
 setIsResetStaffPwdModal(true);
-console.log("isResetStaffPwdModal value is: ",isResetStaffPwdModal);
+// claude code generated
+// console.log("isResetStaffPwdModal value is: ",isResetStaffPwdModal);
 
 }
 
