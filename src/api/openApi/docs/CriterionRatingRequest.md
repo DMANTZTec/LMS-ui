@@ -1,21 +1,21 @@
-# StaffLoginRequest
+# CriterionRatingRequest
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**username** | **string** |  | [default to undefined]
-**password** | **string** |  | [default to undefined]
+**criterion** | **string** |  | [default to undefined]
+**rating** | **number** |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { StaffLoginRequest } from './api';
+import { CriterionRatingRequest } from './api';
 
-const instance: StaffLoginRequest = {
-    username,
-    password,
+const instance: CriterionRatingRequest = {
+    criterion,
+    rating,
 };
 ```
 

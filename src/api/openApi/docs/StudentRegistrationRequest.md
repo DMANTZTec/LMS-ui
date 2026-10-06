@@ -11,7 +11,6 @@ Name | Type | Description | Notes
 **mobileNum** | **string** |  | [default to undefined]
 **password** | **string** |  | [default to undefined]
 **currentStatus** | **string** |  | [optional] [default to undefined]
-**otpChannel** | **string** |  | [default to undefined]
 
 ## Example
 
@@ -25,7 +24,6 @@ const instance: StudentRegistrationRequest = {
     mobileNum,
     password,
     currentStatus,
-    otpChannel,
 };
 ```
 

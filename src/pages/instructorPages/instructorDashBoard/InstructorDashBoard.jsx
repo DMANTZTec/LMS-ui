@@ -9,6 +9,7 @@ import Overview from "./sections/Overview";
 import MyCourses from "./sections/MyCourses";
 import Placeholder from "./sections/Placeholder";
 import { NAV_ITEMS } from "./data";
+import Attendance from "./sections/Attendance";
 
 export function InstructorDashBoard() {
   const [activeNav, setActiveNav] = useState("dashboard");
@@ -37,7 +38,10 @@ export function InstructorDashBoard() {
             <Overview />
           ) : activeNav === "courses" ? (
             <MyCourses />
-          ) : (
+          ) :activeNav === "attendance" ? (
+            <Attendance />
+          
+          ): (
             <Placeholder
               item={activeItem?.label || "Section"}
               onBack={() => setActiveNav("dashboard")}

@@ -27,7 +27,7 @@ const StudentLogin = () => {
       const payload = {
         username: data.identifier, 
         password: data.password,
-        otpChannel: "EMAIL"
+        // otpChannel: "EMAIL"
       };
       
       const res = await studentApi.login(payload);

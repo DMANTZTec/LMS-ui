@@ -120,7 +120,7 @@ const { status, data } = await apiInstance.deleteProfileImage(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **forgotPassword**
-> string forgotPassword(forgotPasswordRequest)
+> { [key: string]: string; } forgotPassword(forgotPasswordRequest)
 
 
 ### Example
@@ -151,7 +151,7 @@ const { status, data } = await apiInstance.forgotPassword(
 
 ### Return type
 
-**string**
+**{ [key: string]: string; }**
 
 ### Authorization
 
@@ -575,7 +575,7 @@ const { status, data } = await apiInstance.updateProfileImage(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **verifyLoginOtp**
-> StudentLoginResponse verifyLoginOtp(otpVerifyRequest)
+> StudentLoginResponse verifyLoginOtp(studentOtpVerifyRequest)
 
 
 ### Example
@@ -584,16 +584,16 @@ const { status, data } = await apiInstance.updateProfileImage(
 import {
     StudentControllerApi,
     Configuration,
-    OtpVerifyRequest
+    StudentOtpVerifyRequest
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new StudentControllerApi(configuration);
 
-let otpVerifyRequest: OtpVerifyRequest; //
+let studentOtpVerifyRequest: StudentOtpVerifyRequest; //
 
 const { status, data } = await apiInstance.verifyLoginOtp(
-    otpVerifyRequest
+    studentOtpVerifyRequest
 );
 ```
 
@@ -601,7 +601,7 @@ const { status, data } = await apiInstance.verifyLoginOtp(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **otpVerifyRequest** | **OtpVerifyRequest**|  | |
+| **studentOtpVerifyRequest** | **StudentOtpVerifyRequest**|  | |
 
 
 ### Return type
@@ -626,7 +626,7 @@ const { status, data } = await apiInstance.verifyLoginOtp(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **verifyOtp**
-> StudentResponse verifyOtp(otpVerifyRequest)
+> StudentResponse verifyOtp(studentOtpVerifyRequest)
 
 
 ### Example
@@ -635,16 +635,16 @@ const { status, data } = await apiInstance.verifyLoginOtp(
 import {
     StudentControllerApi,
     Configuration,
-    OtpVerifyRequest
+    StudentOtpVerifyRequest
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new StudentControllerApi(configuration);
 
-let otpVerifyRequest: OtpVerifyRequest; //
+let studentOtpVerifyRequest: StudentOtpVerifyRequest; //
 
 const { status, data } = await apiInstance.verifyOtp(
-    otpVerifyRequest
+    studentOtpVerifyRequest
 );
 ```
 
@@ -652,7 +652,7 @@ const { status, data } = await apiInstance.verifyOtp(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **otpVerifyRequest** | **OtpVerifyRequest**|  | |
+| **studentOtpVerifyRequest** | **StudentOtpVerifyRequest**|  | |
 
 
 ### Return type

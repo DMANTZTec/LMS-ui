@@ -20,6 +20,7 @@ Name | Type | Description | Notes
 **reviewFeedback** | **string** |  | [optional] [default to undefined]
 **pointsAwarded** | **number** |  | [optional] [default to undefined]
 **overallRating** | **number** |  | [optional] [default to undefined]
+**criteria** | [**Array&lt;CriterionRating&gt;**](CriterionRating.md) |  | [optional] [default to undefined]
 **reviewedAt** | **string** |  | [optional] [default to undefined]
 
 ## Example
@@ -43,6 +44,7 @@ const instance: StudentTaskSubmissionResponse = {
     reviewFeedback,
     pointsAwarded,
     overallRating,
+    criteria,
     reviewedAt,
 };
 ```

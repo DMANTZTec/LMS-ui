@@ -8,7 +8,6 @@ Name | Type | Description | Notes
 **emailId** | **string** |  | [optional] [default to undefined]
 **mobileNum** | **string** |  | [optional] [default to undefined]
 **purpose** | **string** |  | [optional] [default to undefined]
-**otpChannel** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -19,7 +18,6 @@ const instance: ResendOtpRequest = {
     emailId,
     mobileNum,
     purpose,
-    otpChannel,
 };
 ```
 

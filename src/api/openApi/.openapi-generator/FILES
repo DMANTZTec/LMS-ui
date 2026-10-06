@@ -13,6 +13,7 @@ docs/AssignProgramRequest.md
 docs/AssignProgramResponse.md
 docs/AssignStudentToBatchRequest.md
 docs/AttachmentResponse.md
+docs/AttendanceStudentResponse.md
 docs/BatchDetail.md
 docs/BatchInstructorRequest.md
 docs/BatchInstructorResponse.md
@@ -41,6 +42,8 @@ docs/CourseManagementControllerApi.md
 docs/CourseProgressSummaryResponse.md
 docs/CourseResponse.md
 docs/CreateClassRequest.md
+docs/CriterionRating.md
+docs/CriterionRatingRequest.md
 docs/DailyScheduleResponse.md
 docs/DayTimeSlot.md
 docs/DeleteProgramCourseRequest.md
@@ -53,6 +56,7 @@ docs/EnrollmentRequest.md
 docs/EnrollmentResponse.md
 docs/ForgotPasswordRequest.md
 docs/GitDetail.md
+docs/InstructorAttendanceControllerApi.md
 docs/InstructorBatchResponse.md
 docs/InstructorBatchSummaryResponse.md
 docs/InstructorClassStatsResponse.md
@@ -68,6 +72,8 @@ docs/LearnerPathControllerApi.md
 docs/LearnerPathRequest.md
 docs/LearnerPathResponse.md
 docs/LocalTime.md
+docs/MarkAttendanceRequest.md
+docs/MarkAttendanceResponse.md
 docs/MentorPointsResponse.md
 docs/MyCourseResponse.md
 docs/OtpVerifyRequest.md
@@ -98,6 +104,7 @@ docs/ReviewSubmissionRequest.md
 docs/RoleControllerApi.md
 docs/RoleRequest.md
 docs/RoleResponse.md
+docs/ScheduleAttendanceResponse.md
 docs/ScheduleItemResponse.md
 docs/ScheduleMessageRequest.md
 docs/ScheduleMessageResponse.md
@@ -128,6 +135,7 @@ docs/StudentDashboardSummaryResponse.md
 docs/StudentLoginRequest.md
 docs/StudentLoginResponse.md
 docs/StudentMyCoursesResponse.md
+docs/StudentOtpVerifyRequest.md
 docs/StudentProgramControllerApi.md
 docs/StudentRegistrationRequest.md
 docs/StudentResponse.md

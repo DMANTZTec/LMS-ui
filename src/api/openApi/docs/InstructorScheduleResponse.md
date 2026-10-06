@@ -6,6 +6,9 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **number** |  | [optional] [default to undefined]
+**batchId** | **number** |  | [optional] [default to undefined]
+**studentCount** | **number** |  | [optional] [default to undefined]
+**sessionStatus** | **string** |  | [optional] [default to undefined]
 **time** | **string** |  | [optional] [default to undefined]
 **endTime** | **string** |  | [optional] [default to undefined]
 **date** | **string** |  | [optional] [default to undefined]
@@ -22,6 +25,9 @@ import { InstructorScheduleResponse } from './api';
 
 const instance: InstructorScheduleResponse = {
     id,
+    batchId,
+    studentCount,
+    sessionStatus,
     time,
     endTime,
     date,

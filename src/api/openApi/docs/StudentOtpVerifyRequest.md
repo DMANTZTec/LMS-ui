@@ -1,21 +1,21 @@
-# StaffLoginRequest
+# StudentOtpVerifyRequest
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**username** | **string** |  | [default to undefined]
-**password** | **string** |  | [default to undefined]
+**emailIdOrMobileNo** | **string** |  | [optional] [default to undefined]
+**otp** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
 ```typescript
-import { StaffLoginRequest } from './api';
+import { StudentOtpVerifyRequest } from './api';
 
-const instance: StaffLoginRequest = {
-    username,
-    password,
+const instance: StudentOtpVerifyRequest = {
+    emailIdOrMobileNo,
+    otp,
 };
 ```
 

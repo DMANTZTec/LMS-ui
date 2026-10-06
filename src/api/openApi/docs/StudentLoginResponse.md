@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 **role** | **string** |  | [optional] [default to undefined]
 **studentId** | **string** |  | [optional] [default to undefined]
 **email** | **string** |  | [optional] [default to undefined]
+**mobileNum** | **string** |  | [optional] [default to undefined]
 **token** | **string** |  | [optional] [default to undefined]
 **message** | **string** |  | [optional] [default to undefined]
 
@@ -20,6 +21,7 @@ const instance: StudentLoginResponse = {
     role,
     studentId,
     email,
+    mobileNum,
     token,
     message,
 };
