@@ -5,6 +5,8 @@ All URIs are relative to *{VITE_API_URL}*
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
 |[**getChapterProgress**](#getchapterprogress) | **GET** /api/student-dashboard/{courseId}/chapters-progress | |
+|[**getClassesAttendanceSummary**](#getclassesattendancesummary) | **GET** /api/student-dashboard/classes-attendance/{studentId} | |
+|[**getClassesAttendedPerWeek**](#getclassesattendedperweek) | **GET** /api/student-dashboard/Classes-Attended-per-week/{studentId} | |
 |[**getCompletedTasksPerWeek**](#getcompletedtasksperweek) | **GET** /api/student-dashboard/completed-tasks-per-week/{studentId} | |
 |[**getCourseProgress**](#getcourseprogress) | **GET** /api/student-dashboard/dashboard/course/{courseId}/progress | |
 |[**getDashboardSummary**](#getdashboardsummary) | **GET** /api/student-dashboard/summary/{studentId} | |
@@ -49,6 +51,109 @@ const { status, data } = await apiInstance.getChapterProgress(
 ### Return type
 
 **Array<ChapterProgressResponse>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getClassesAttendanceSummary**
+> StudentClassesAttendanceResponse getClassesAttendanceSummary()
+
+
+### Example
+
+```typescript
+import {
+    StudentDashboardControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StudentDashboardControllerApi(configuration);
+
+let studentId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.getClassesAttendanceSummary(
+    studentId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **studentId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**StudentClassesAttendanceResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getClassesAttendedPerWeek**
+> Array<WeeklyClassesAttendedResponse> getClassesAttendedPerWeek()
+
+
+### Example
+
+```typescript
+import {
+    StudentDashboardControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StudentDashboardControllerApi(configuration);
+
+let studentId: string; // (default to undefined)
+let weeks: number; // (optional) (default to 4)
+
+const { status, data } = await apiInstance.getClassesAttendedPerWeek(
+    studentId,
+    weeks
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **studentId** | [**string**] |  | defaults to undefined|
+| **weeks** | [**number**] |  | (optional) defaults to 4|
+
+
+### Return type
+
+**Array<WeeklyClassesAttendedResponse>**
 
 ### Authorization
 

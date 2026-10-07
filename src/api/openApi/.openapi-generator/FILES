@@ -29,6 +29,7 @@ docs/ClassResponse.md
 docs/ClassScheduleResponse.md
 docs/ClassStudentControllerApi.md
 docs/ClassTopicResponse.md
+docs/ClassesAttendanceStatsResponse.md
 docs/ContactUsControllerApi.md
 docs/ContactUsRequest.md
 docs/ContactUsResponse.md
@@ -126,6 +127,7 @@ docs/StaffRoleResponse.md
 docs/StaffUpdateReq1.md
 docs/StaffUpdateRequest.md
 docs/StudentClassResponse.md
+docs/StudentClassesAttendanceResponse.md
 docs/StudentControllerApi.md
 docs/StudentCourseControllerApi.md
 docs/StudentCourseEnrollRequest.md
@@ -171,6 +173,7 @@ docs/TopicUrlReferenceRequestDto.md
 docs/UpdateClassRequest.md
 docs/UpdateCourseRequest.md
 docs/UpdateMentorMinutesRequest.md
+docs/WeeklyClassesAttendedResponse.md
 docs/WeeklyInstructorRatingResponse.md
 docs/WeeklyScheduleResponse.md
 docs/WeeklyTaskCompletionResponse.md

@@ -177,6 +177,20 @@ export function WeeklyPerformance() {
     staleTime: 5 * 60 * 1000,
   });
 
+  const { data: classesAttended = [], isLoading: classesLoading } = useQuery({
+    queryKey: ["classesAttendedPerWeek", studentId],
+    queryFn: async () => {
+      const res = await dashboardApi.getClassesAttendedPerWeek(studentId, 4);
+      const weeks = Array.isArray(res) ? res : Array.isArray(res?.data) ? res.data : [];
+      return weeks.map((week) => ({
+        d: week.weekEnd?.slice(5).replace("-", "/"),
+        v: week.classesAttendedCount ?? 0,
+      }));
+    },
+    enabled: Boolean(studentId),
+    staleTime: 5 * 60 * 1000,
+  });
+
   return (
     <Card className="flex h-full min-h-0 flex-col shadow-none">
       <CardContent className="flex min-h-0 flex-1 flex-col p-4 pt-0 pb-0">
@@ -218,7 +232,7 @@ export function WeeklyPerformance() {
 
           <Section
             title="Classes Attended"
-            data={weeklyPerf.attended}
+            data={classesLoading ? [] : classesAttended}
             mode={mode}
           />
 

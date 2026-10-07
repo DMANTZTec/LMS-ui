@@ -247,10 +247,11 @@ function TasksForReview() {
   });
 
   const completeReviewMutation = useMutation({
-    mutationFn: ({ submissionId, overallRating, feedbackMessage }) =>
+    mutationFn: ({ submissionId, overallRating, feedbackMessage ,criteria}) =>
       instructorDashboardApi.reviewSubmission(submissionId, staffId, {
         overallRating,
         feedbackMessage,
+        criteria,
       }),
     onSuccess: (data, variables) => {
       toast.success("Review completed");

@@ -188,6 +188,12 @@ export interface ClassTopicResponse {
     'topicName'?: string;
     'status'?: string;
 }
+export interface ClassesAttendanceStatsResponse {
+    'attended'?: number;
+    'skipped'?: number;
+    'monthAttended'?: number;
+    'monthSkipped'?: number;
+}
 export interface ContactUsRequest {
     'fullName': string;
     'mobileNumber': string;
@@ -591,23 +597,23 @@ export interface OverallProgressResponse {
     'completed'?: boolean;
 }
 export interface PageStaffResponse {
-    'totalPages'?: number;
     'totalElements'?: number;
+    'totalPages'?: number;
+    'first'?: boolean;
+    'last'?: boolean;
     'size'?: number;
     'content'?: Array<StaffResponse>;
     'number'?: number;
     'sort'?: SortObject;
     'pageable'?: PageableObject;
-    'first'?: boolean;
-    'last'?: boolean;
     'numberOfElements'?: number;
     'empty'?: boolean;
 }
 export interface PageableObject {
     'offset'?: number;
     'sort'?: SortObject;
-    'pageNumber'?: number;
     'pageSize'?: number;
+    'pageNumber'?: number;
     'paged'?: boolean;
     'unpaged'?: boolean;
 }
@@ -880,6 +886,7 @@ export interface StaffLoginResponse {
     'role'?: string;
     'staffId'?: string;
     'email'?: string;
+    'mobileNum'?: string;
     'token'?: string;
     'message'?: string;
 }
@@ -1014,6 +1021,9 @@ export interface StudentClassResponse {
     'endDate'?: string;
     'status'?: string;
     'capacity'?: number;
+}
+export interface StudentClassesAttendanceResponse {
+    'classes'?: ClassesAttendanceStatsResponse;
 }
 export interface StudentCourseEnrollRequest {
     'studentId'?: string;
@@ -1355,6 +1365,11 @@ export type UpdateCourseRequestLevelEnum = typeof UpdateCourseRequestLevelEnum[k
 
 export interface UpdateMentorMinutesRequest {
     'minsSpent'?: number;
+}
+export interface WeeklyClassesAttendedResponse {
+    'weekStart'?: string;
+    'weekEnd'?: string;
+    'classesAttendedCount'?: number;
 }
 export interface WeeklyInstructorRatingResponse {
     'weekStart'?: string;
@@ -14792,6 +14807,85 @@ export const StudentDashboardControllerApiAxiosParamCreator = function (configur
         /**
          * 
          * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getClassesAttendanceSummary: async (studentId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'studentId' is not null or undefined
+            assertParamExists('getClassesAttendanceSummary', 'studentId', studentId)
+            const localVarPath = `/api/student-dashboard/classes-attendance/{studentId}`
+                .replace(`{${"studentId"}}`, encodeURIComponent(String(studentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {number} [weeks] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getClassesAttendedPerWeek: async (studentId: string, weeks?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'studentId' is not null or undefined
+            assertParamExists('getClassesAttendedPerWeek', 'studentId', studentId)
+            const localVarPath = `/api/student-dashboard/Classes-Attended-per-week/{studentId}`
+                .replace(`{${"studentId"}}`, encodeURIComponent(String(studentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (weeks !== undefined) {
+                localVarQueryParameter['weeks'] = weeks;
+            }
+
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} studentId 
          * @param {number} [weeks] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -15142,6 +15236,31 @@ export const StudentDashboardControllerApiFp = function(configuration?: Configur
         /**
          * 
          * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getClassesAttendanceSummary(studentId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StudentClassesAttendanceResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getClassesAttendanceSummary(studentId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StudentDashboardControllerApi.getClassesAttendanceSummary']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {number} [weeks] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getClassesAttendedPerWeek(studentId: string, weeks?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<WeeklyClassesAttendedResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getClassesAttendedPerWeek(studentId, weeks, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StudentDashboardControllerApi.getClassesAttendedPerWeek']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} studentId 
          * @param {number} [weeks] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -15262,6 +15381,25 @@ export const StudentDashboardControllerApiFactory = function (configuration?: Co
         /**
          * 
          * @param {string} studentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getClassesAttendanceSummary(studentId: string, options?: RawAxiosRequestConfig): AxiosPromise<StudentClassesAttendanceResponse> {
+            return localVarFp.getClassesAttendanceSummary(studentId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} studentId 
+         * @param {number} [weeks] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getClassesAttendedPerWeek(studentId: string, weeks?: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<WeeklyClassesAttendedResponse>> {
+            return localVarFp.getClassesAttendedPerWeek(studentId, weeks, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} studentId 
          * @param {number} [weeks] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -15352,6 +15490,27 @@ export class StudentDashboardControllerApi extends BaseAPI {
      */
     public getChapterProgress(courseId: string, studentId: string, options?: RawAxiosRequestConfig) {
         return StudentDashboardControllerApiFp(this.configuration).getChapterProgress(courseId, studentId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} studentId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getClassesAttendanceSummary(studentId: string, options?: RawAxiosRequestConfig) {
+        return StudentDashboardControllerApiFp(this.configuration).getClassesAttendanceSummary(studentId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} studentId 
+     * @param {number} [weeks] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getClassesAttendedPerWeek(studentId: string, weeks?: number, options?: RawAxiosRequestConfig) {
+        return StudentDashboardControllerApiFp(this.configuration).getClassesAttendedPerWeek(studentId, weeks, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
