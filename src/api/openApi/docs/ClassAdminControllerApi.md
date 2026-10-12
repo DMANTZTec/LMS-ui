@@ -14,6 +14,7 @@ All URIs are relative to *{VITE_API_URL}*
 |[**cancelSchedule**](#cancelschedule) | **PATCH** /api/admin/schedules/{scheduleId}/cancel | |
 |[**getAllSchedules**](#getallschedules) | **GET** /api/admin/schedules | |
 |[**getBatchById**](#getbatchbyid) | **GET** /api/admin/courseschedule/classes/{batchId} | |
+|[**getBatchSummariesByCourse**](#getbatchsummariesbycourse) | **GET** /api/admin/courseschedule/{courseId}/batches | |
 |[**getClassesByCourse**](#getclassesbycourse) | **GET** /api/admin/courseschedule/{courseId}/classes | |
 |[**getInstructorsByBatchId**](#getinstructorsbybatchid) | **GET** /api/admin/courseschedule/classes/{batchId}/instructors | |
 |[**getScheduleById**](#getschedulebyid) | **GET** /api/admin/schedules/{scheduleId} | |
@@ -525,6 +526,56 @@ const { status, data } = await apiInstance.getBatchById(
 ### Return type
 
 **ClassResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getBatchSummariesByCourse**
+> Array<BatchSummaryResponse> getBatchSummariesByCourse()
+
+
+### Example
+
+```typescript
+import {
+    ClassAdminControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ClassAdminControllerApi(configuration);
+
+let courseId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.getBatchSummariesByCourse(
+    courseId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **courseId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**Array<BatchSummaryResponse>**
 
 ### Authorization
 

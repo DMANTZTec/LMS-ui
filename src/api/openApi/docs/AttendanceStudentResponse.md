@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **profileImg** | **string** |  | [optional] [default to undefined]
 **enabled** | **string** |  | [optional] [default to undefined]
 **status** | **string** |  | [optional] [default to undefined]
+**taskStatuses** | [**Array&lt;StudentTaskStatusResponse&gt;**](StudentTaskStatusResponse.md) |  | [optional] [default to undefined]
 
 ## Example
 
@@ -28,6 +29,7 @@ const instance: AttendanceStudentResponse = {
     profileImg,
     enabled,
     status,
+    taskStatuses,
 };
 ```
 

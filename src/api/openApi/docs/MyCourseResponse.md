@@ -5,6 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**enrollmentId** | **number** |  | [optional] [default to undefined]
 **courseId** | **string** |  | [optional] [default to undefined]
 **courseName** | **string** |  | [optional] [default to undefined]
 **status** | **string** |  | [optional] [default to undefined]
@@ -18,6 +19,7 @@ Name | Type | Description | Notes
 import { MyCourseResponse } from './api';
 
 const instance: MyCourseResponse = {
+    enrollmentId,
     courseId,
     courseName,
     status,

@@ -17,6 +17,8 @@ Name | Type | Description | Notes
 **courseId** | **string** |  | [optional] [default to undefined]
 **className** | **string** |  | [optional] [default to undefined]
 **status** | **string** |  | [optional] [default to undefined]
+**presentCount** | **number** |  | [optional] [default to undefined]
+**attendanceRate** | **number** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -36,6 +38,8 @@ const instance: InstructorScheduleResponse = {
     courseId,
     className,
     status,
+    presentCount,
+    attendanceRate,
 };
 ```
 

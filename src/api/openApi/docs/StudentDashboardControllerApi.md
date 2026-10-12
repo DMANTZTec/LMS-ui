@@ -10,10 +10,12 @@ All URIs are relative to *{VITE_API_URL}*
 |[**getCompletedTasksPerWeek**](#getcompletedtasksperweek) | **GET** /api/student-dashboard/completed-tasks-per-week/{studentId} | |
 |[**getCourseProgress**](#getcourseprogress) | **GET** /api/student-dashboard/dashboard/course/{courseId}/progress | |
 |[**getDashboardSummary**](#getdashboardsummary) | **GET** /api/student-dashboard/summary/{studentId} | |
+|[**getHoursSpentPerWeek**](#gethoursspentperweek) | **GET** /api/student-dashboard/hours-spent-per-week/{studentId} | |
 |[**getInstructorRatingPerWeek**](#getinstructorratingperweek) | **GET** /api/student-dashboard/instructor-rating-per-week/{studentId} | |
 |[**getMyClasses**](#getmyclasses) | **GET** /api/student-dashboard/classes/{studentId} | |
 |[**getMyCourses**](#getmycourses) | **GET** /api/student-dashboard/my-coursesprogress | |
 |[**getTopicProgress**](#gettopicprogress) | **GET** /api/student-dashboard/{courseId}/topics-progress | |
+|[**getTotalHoursSpent**](#gettotalhoursspent) | **GET** /api/student-dashboard/hours-spent/{studentId} | |
 |[**getWeeklySchedule**](#getweeklyschedule) | **GET** /api/student-dashboard/weekly-schedule/{studentId} | |
 
 # **getChapterProgress**
@@ -328,6 +330,59 @@ const { status, data } = await apiInstance.getDashboardSummary(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **getHoursSpentPerWeek**
+> Array<WeeklyHoursSpentResponse> getHoursSpentPerWeek()
+
+
+### Example
+
+```typescript
+import {
+    StudentDashboardControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StudentDashboardControllerApi(configuration);
+
+let studentId: string; // (default to undefined)
+let weeks: number; // (optional) (default to 4)
+
+const { status, data } = await apiInstance.getHoursSpentPerWeek(
+    studentId,
+    weeks
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **studentId** | [**string**] |  | defaults to undefined|
+| **weeks** | [**number**] |  | (optional) defaults to 4|
+
+
+### Return type
+
+**Array<WeeklyHoursSpentResponse>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **getInstructorRatingPerWeek**
 > Array<WeeklyInstructorRatingResponse> getInstructorRatingPerWeek()
 
@@ -519,6 +574,56 @@ const { status, data } = await apiInstance.getTopicProgress(
 ### Return type
 
 **Array<TopicProgressResponse>**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getTotalHoursSpent**
+> TotalHoursSpentResponse getTotalHoursSpent()
+
+
+### Example
+
+```typescript
+import {
+    StudentDashboardControllerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StudentDashboardControllerApi(configuration);
+
+let studentId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.getTotalHoursSpent(
+    studentId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **studentId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**TotalHoursSpentResponse**
 
 ### Authorization
 

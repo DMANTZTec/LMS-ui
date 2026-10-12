@@ -10,8 +10,6 @@ import { Button } from "@/components/ui/button";
 import { decodeToken } from "@/utils/tokenUtility";
 import { dashboardApi } from "@/api/student-dashboard-controller";
 
-import { weeklyPerf } from "./data";
-
 function MiniChart({ data, mode }) {
   return (
     <div className="h-24 w-full">
@@ -191,6 +189,20 @@ export function WeeklyPerformance() {
     staleTime: 5 * 60 * 1000,
   });
 
+  const { data: hoursSpent = [], isLoading: hoursLoading } = useQuery({
+    queryKey: ["hoursSpentPerWeek", studentId],
+    queryFn: async () => {
+      const res = await dashboardApi.getHoursSpentPerWeek(studentId, 4);
+      const weeks = Array.isArray(res) ? res : Array.isArray(res?.data) ? res.data : [];
+      return weeks.map((week) => ({
+        d: week.weekEnd?.slice(5).replace("-", "/"),
+        v: week.totalHours ?? 0,
+      }));
+    },
+    enabled: Boolean(studentId),
+    staleTime: 5 * 60 * 1000,
+  });
+
   return (
     <Card className="flex h-full min-h-0 flex-col shadow-none">
       <CardContent className="flex min-h-0 flex-1 flex-col p-4 pt-0 pb-0">
@@ -220,7 +232,7 @@ export function WeeklyPerformance() {
         <div className="mt-2 min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
           <Section
             title="Hours Spent"
-            data={weeklyPerf.hours}
+            data={hoursLoading ? [] : hoursSpent}
             mode={mode}
           />
 

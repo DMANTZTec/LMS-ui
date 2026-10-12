@@ -4,6 +4,7 @@ All URIs are relative to *{VITE_API_URL}*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
+|[**createScheduleTask**](#createscheduletask) | **POST** /api/instructor/schedule/{scheduleId}/tasks | |
 |[**createTask**](#createtask) | **POST** /api/instructor/tasks | |
 |[**getBatchSummary**](#getbatchsummary) | **GET** /api/instructor/batches | |
 |[**getClassStats**](#getclassstats) | **GET** /api/instructor/class-stats | |
@@ -15,6 +16,60 @@ All URIs are relative to *{VITE_API_URL}*
 |[**getTaskSubmissions**](#gettasksubmissions) | **GET** /api/instructor/submissions | |
 |[**planClassTopics**](#planclasstopics) | **PUT** /api/instructor/schedule/{scheduleId}/topics | |
 |[**reviewSubmission**](#reviewsubmission) | **POST** /api/instructor/submissions/{submissionId}/review | |
+
+# **createScheduleTask**
+> InstructorTaskResponse createScheduleTask(scheduleTaskRequest)
+
+
+### Example
+
+```typescript
+import {
+    InstructorDashboardControllerApi,
+    Configuration,
+    ScheduleTaskRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new InstructorDashboardControllerApi(configuration);
+
+let scheduleId: number; // (default to undefined)
+let scheduleTaskRequest: ScheduleTaskRequest; //
+
+const { status, data } = await apiInstance.createScheduleTask(
+    scheduleId,
+    scheduleTaskRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **scheduleTaskRequest** | **ScheduleTaskRequest**|  | |
+| **scheduleId** | [**number**] |  | defaults to undefined|
+
+
+### Return type
+
+**InstructorTaskResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **createTask**
 > InstructorTaskResponse createTask(instructorTaskRequest)

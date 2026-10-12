@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **submissionNotes** | **string** |  | [optional] [default to undefined]
 **attachments** | [**Array&lt;AttachmentResponse&gt;**](AttachmentResponse.md) |  | [optional] [default to undefined]
 **git** | [**Array&lt;GitDetail&gt;**](GitDetail.md) |  | [optional] [default to undefined]
+**timeSpentInMinutes** | **number** |  | [optional] [default to undefined]
 **status** | **string** |  | [optional] [default to undefined]
 **reviewStatus** | **string** |  | [optional] [default to undefined]
 **submittedAt** | **string** |  | [optional] [default to undefined]
@@ -38,6 +39,7 @@ const instance: StudentTaskSubmissionResponse = {
     submissionNotes,
     attachments,
     git,
+    timeSpentInMinutes,
     status,
     reviewStatus,
     submittedAt,

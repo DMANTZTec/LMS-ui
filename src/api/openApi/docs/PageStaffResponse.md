@@ -13,8 +13,8 @@ Name | Type | Description | Notes
 **content** | [**Array&lt;StaffResponse&gt;**](StaffResponse.md) |  | [optional] [default to undefined]
 **number** | **number** |  | [optional] [default to undefined]
 **sort** | [**SortObject**](SortObject.md) |  | [optional] [default to undefined]
-**pageable** | [**PageableObject**](PageableObject.md) |  | [optional] [default to undefined]
 **numberOfElements** | **number** |  | [optional] [default to undefined]
+**pageable** | [**PageableObject**](PageableObject.md) |  | [optional] [default to undefined]
 **empty** | **boolean** |  | [optional] [default to undefined]
 
 ## Example
@@ -31,8 +31,8 @@ const instance: PageStaffResponse = {
     content,
     number,
     sort,
-    pageable,
     numberOfElements,
+    pageable,
     empty,
 };
 ```

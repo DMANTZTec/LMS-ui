@@ -17,6 +17,7 @@ docs/AttendanceStudentResponse.md
 docs/BatchDetail.md
 docs/BatchInstructorRequest.md
 docs/BatchInstructorResponse.md
+docs/BatchSummaryResponse.md
 docs/ChangePasswordRequest.md
 docs/ChapterDetailResponse.md
 docs/ChapterDropdownResponse.md
@@ -109,6 +110,8 @@ docs/ScheduleAttendanceResponse.md
 docs/ScheduleItemResponse.md
 docs/ScheduleMessageRequest.md
 docs/ScheduleMessageResponse.md
+docs/ScheduleTaskRequest.md
+docs/ScheduleTaskSummaryResponse.md
 docs/SetStaffPasswordRequest.md
 docs/SocialMediaControllerApi.md
 docs/SocialMediaRequest.md
@@ -148,6 +151,7 @@ docs/StudentTaskMentorRequest.md
 docs/StudentTaskMentorResponse.md
 docs/StudentTaskRequest.md
 docs/StudentTaskResponse.md
+docs/StudentTaskStatusResponse.md
 docs/StudentTaskSubmissionControllerApi.md
 docs/StudentTaskSubmissionResponse.md
 docs/StudentTopicReferenceProgressControllerApi.md
@@ -170,10 +174,12 @@ docs/TopicReferencesDetailResponse.md
 docs/TopicRequestDto.md
 docs/TopicResponseDto.md
 docs/TopicUrlReferenceRequestDto.md
+docs/TotalHoursSpentResponse.md
 docs/UpdateClassRequest.md
 docs/UpdateCourseRequest.md
 docs/UpdateMentorMinutesRequest.md
 docs/WeeklyClassesAttendedResponse.md
+docs/WeeklyHoursSpentResponse.md
 docs/WeeklyInstructorRatingResponse.md
 docs/WeeklyScheduleResponse.md
 docs/WeeklyTaskCompletionResponse.md

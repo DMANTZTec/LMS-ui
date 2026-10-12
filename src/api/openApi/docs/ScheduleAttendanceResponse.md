@@ -16,6 +16,7 @@ Name | Type | Description | Notes
 **attendanceRate** | **number** |  | [optional] [default to undefined]
 **markedAt** | **string** |  | [optional] [default to undefined]
 **markedBy** | **string** |  | [optional] [default to undefined]
+**tasks** | [**Array&lt;ScheduleTaskSummaryResponse&gt;**](ScheduleTaskSummaryResponse.md) |  | [optional] [default to undefined]
 **students** | [**Array&lt;AttendanceStudentResponse&gt;**](AttendanceStudentResponse.md) |  | [optional] [default to undefined]
 
 ## Example
@@ -35,6 +36,7 @@ const instance: ScheduleAttendanceResponse = {
     attendanceRate,
     markedAt,
     markedBy,
+    tasks,
     students,
 };
 ```

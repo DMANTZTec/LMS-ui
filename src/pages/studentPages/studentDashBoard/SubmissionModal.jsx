@@ -8,6 +8,7 @@ import {
   X,
   Loader2,
   Plus,
+  Clock,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -19,13 +20,14 @@ import { stasksubapi } from "@/api/student-task-submission-controller";
 import { decodeToken } from "@/utils/tokenUtility";
 
 export default function SubmissionModal({ task, open, onClose, onSubmitSuccess }) {
-  if (!task) return null;
-
-  const [notes, setNotes] = useState(task.submissionNotes || "");
+  const [notes, setNotes] = useState(task?.submissionNotes || "");
+  const [timeSpent, setTimeSpent] = useState("");
   const [files, setFiles] = useState([]);
   const [gitCommits, setGitCommits] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  if (!task) return null;
 
   const student = task.student || {
     name: "Anya Patel",
@@ -77,33 +79,42 @@ export default function SubmissionModal({ task, open, onClose, onSubmitSuccess }
       return;
     }
 
+    const timeSpentNum = timeSpent.trim() === "" ? undefined : Number(timeSpent);
+    if (
+      timeSpentNum !== undefined &&
+      (!Number.isInteger(timeSpentNum) || timeSpentNum < 0)
+    ) {
+      setError("Time spent must be a whole number of minutes.");
+      return;
+    }
+
     setSubmitting(true);
     try {
-      // Change this block inside handleSubmit in SubmissionModal.jsx:
+      const git = gitCommits
+        .filter((commit) => commit.githubUrl.trim() !== "")
+        .map((commit) =>
+          // Serialize each object to a JSON string here
+          JSON.stringify({
+            githubUrl: commit.githubUrl.trim(),
+            commitMessage: commit.commitMessage.trim(),
+          })
+        );
 
-const git = gitCommits
-  .filter((commit) => commit.githubUrl.trim() !== "")
-  .map((commit) => 
-    // Serialize each object to a JSON string here
-    JSON.stringify({
-      githubUrl: commit.githubUrl.trim(),
-      commitMessage: commit.commitMessage.trim(),
-    })
-  );
-
-const res = await stasksubapi.submitTask(
-  task.id,
-  studentId,
-  files,
-  notes,
-  git.length > 0 ? git : undefined
-);
+      const res = await stasksubapi.submitTask(
+        task.id,
+        studentId,
+        files,
+        notes,
+        git.length > 0 ? git : undefined,
+        timeSpentNum
+      );
 
       if (onSubmitSuccess) {
-        onSubmitSuccess({
+        onSubmitSuccess({ 
           ...(res.data || {}),
           taskId: task.id,
           notes,
+          timeSpentInMinutes: timeSpentNum,
           attachments: files.map((f) => f.name),
           git,
         });
@@ -306,6 +317,28 @@ const res = await stasksubapi.submitTask(
                   ))}
                 </div>
               )}
+            </div>
+
+            {/* Time spent on the task */}
+            <div className="mt-4 sm:mt-5 space-y-1.5">
+              <label className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
+                <Clock className="h-3.5 w-3.5" />
+                <span>Time Spent (minutes)</span>
+              </label>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                inputMode="numeric"
+                placeholder="e.g. 30"
+                value={timeSpent}
+                onChange={(e) => setTimeSpent(e.target.value)}
+                disabled={submitting}
+                className="h-9 w-full rounded-lg border border-border/60 bg-muted/20 px-2.5 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500"
+              />
+              <p className="text-[10px] text-muted-foreground">
+                How much time did you spend on this task?
+              </p>
             </div>
           </div>
 
