@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import {
   CalendarCheck,
   CalendarDays,
   Check,
-  ChevronLeft,
+  CheckCircle2,
   ChevronRight,
   CircleAlert,
   CircleDashed,
+  ClipboardList,
   Clock,
   Loader2,
   Lock,
@@ -21,6 +23,7 @@ import {
 } from "lucide-react";
 
 import { InstructorAttendanceApi } from "@/api/instructor-attendance-controller";
+import { instructorDashboardApi } from "@/api/instructor-dashboard-controller";
 import { cAdminControllerApi } from "@/api/class-admin-controller";
 import { cn } from "@/lib/utils";
 import { getStaffId } from "@/utils/tokenUtility";
@@ -30,6 +33,8 @@ import {
   ATTENDANCE_STATUS_STYLES,
 } from "../data";
 import ScheduleCalendarPopover from "../components/ScheduleCalendarPopover";
+import ScheduleTaskModal from "../components/ScheduleTaskModal";
+import ReviewModal from "../components/ReviewModal";
 
 const UNMARKED = "UNMARKED";
 
@@ -300,12 +305,36 @@ const sessionStatusMeta = (status) =>
     chip: "bg-slate-100 text-slate-500",
   };
 
+// Per-student task state from the schedule attendance payload. Past sessions
+// show these instead of the attendance toggle.
+const TASK_STATUS_META = {
+  NOT_SUBMITTED: {
+    label: "Not submitted",
+    icon: CircleDashed,
+    chip: "bg-slate-100 text-slate-500",
+  },
+  PENDING_REVIEW: {
+    label: "Pending review",
+    icon: Clock,
+    chip: "bg-amber-50 text-amber-700",
+  },
+  REVIEWED: {
+    label: "Reviewed",
+    icon: CheckCircle2,
+    chip: "bg-emerald-50 text-emerald-700",
+  },
+};
+
+const taskStatusMeta = (status) =>
+  TASK_STATUS_META[status] ?? TASK_STATUS_META.NOT_SUBMITTED;
+
 // Maps the API payload onto the shape the schedule strip renders. A schedule
 // also carries its attendance summary so the cards need no extra request.
 const toSchedule = (item) => ({
   id: String(item.id),
   scheduleId: item.id,
   code: item.courseId ?? "",
+  courseId: item.courseId ?? "",
   course: item.course ?? "",
   batch: item.batchName ?? "",
   batchId: item.batchId ?? null,
@@ -339,8 +368,6 @@ const summariesFromSchedules = (schedules) =>
   );
 
 /* ─── Selected schedule date ─── */
-const SCROLL_X_THRESHOLD = 10;
-
 // Parse as local midnight so the day never shifts with the timezone.
 const parseDateKey = (key) => new Date(`${key}T00:00:00`);
 
@@ -460,6 +487,7 @@ function ClassCard({
   showDate = false,
   fixedWidth = false,
   onSelect,
+  onAddTask,
 }) {
   const meta = PHASE_META[phase];
   const sessionStatus = isSaved ? SESSION_MARKED : cls.sessionStatus;
@@ -470,12 +498,19 @@ function ClassCard({
   const heading = [cls.code, cls.batch].filter(Boolean).join(" · ");
 
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onSelect}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onSelect?.();
+        }
+      }}
       aria-current={isActive}
       className={cn(
-        "flex w-full min-w-0 snap-start flex-col gap-1.5 rounded-xl border p-2.5 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/40 sm:p-3",
+        "flex w-full min-w-0 cursor-pointer snap-start flex-col gap-1.5 rounded-xl border p-2.5 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/40 sm:p-3",
         fixedWidth && "w-[240px] shrink-0 sm:w-[260px]",
         isCancelled && !isActive && "opacity-70",
         isActive
@@ -505,8 +540,12 @@ function ClassCard({
             </span>
           )}
         </div>
+
+        {/* Top Right percentage % */}
         <span className="flex shrink-0 items-center gap-1 text-[10px] font-bold text-slate-600">
-          {isStarted || phase === PHASE.past ? `${stats.rate}%` : "—"}
+          {isStarted || phase === PHASE.past
+            ? `${cls.attendanceRate != null ? Math.round(cls.attendanceRate) : stats.rate}%`
+            : "—"}
           <ChevronRight
             className={cn("h-3.5 w-3.5", isActive ? "text-blue-500" : "text-slate-300")}
           />
@@ -524,12 +563,12 @@ function ClassCard({
       <p className="w-full min-w-0 truncate text-[10px] text-slate-500">
         {heading || "—"}
       </p>
-
-      {isStarted || phase === PHASE.past ? (
+{/* ======================ProgressBar================1-100% */}
+      {/* {isStarted || phase === PHASE.past ? (
         <ProgressBar rate={stats.rate} />
       ) : (
         <div className="h-1.5 w-full shrink-0 rounded-full bg-slate-100" />
-      )}
+      )} */}
 
       <div className="flex w-full min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1">
         {isCancelled ? (
@@ -548,17 +587,15 @@ function ClassCard({
               {meta.label}
             </span>
             {/* Server-reported sessionStatus from getSchedulesByInstructor. */}
-            {!isSaved && (
-              <span
-                className={cn(
-                  "inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider",
-                  statusMeta.chip
-                )}
-                title={`Session status: ${sessionStatus}`}
-              >
-                {statusMeta.label}
-              </span>
-            )}
+            <span
+              className={cn(
+                "inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider",
+                statusMeta.chip
+              )}
+              title={`Session status: ${sessionStatus}`}
+            >
+              {statusMeta.label}
+            </span>
           </>
         )}
 
@@ -566,11 +603,27 @@ function ClassCard({
           {startsIn
             ? `Starts ${startsIn}`
             : isStarted || phase === PHASE.past
-              ? `${stats.attended}/${stats.total} attended`
-              : `${stats.total} students`}
+              ? `${cls.presentCount}/${cls.studentCount} attended`
+              : `${cls.studentCount} students`}
         </span>
+
+        {onAddTask && !isCancelled && (
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onAddTask(cls);
+            }}
+            onKeyDown={(event) => event.stopPropagation()}
+            aria-label={`Add task to ${cls.course || "this session"}`}
+            className="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full border border-blue-100 bg-blue-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-blue-600 transition-colors hover:border-blue-200 hover:bg-blue-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/40"
+          >
+            <ClipboardList className="h-3 w-3" />
+            Add Task
+          </button>
+        )}
       </div>
-    </button>
+    </div>
   );
 }
 
@@ -591,26 +644,17 @@ function ClassStrip({
   onDateChange,
   onFilterChange,
   onSelect,
+  onAddTask,
 }) {
-  const scrollRef = useRef(null);
-
-  // Each card follows its own date, so a bucket spanning many days still labels
-  // every session correctly.
+  // Each card follows its own date, so a bucket spanning multiple days still
+  // shows the correct date on every session.
   const phaseOf = (cls) => getPhaseForDate(cls, dateKey ?? cls.dateKey);
-
-  // Browsing a bucket mixes many days, so cards have to show their own date.
   const showDate = !dateKey;
-
-  // The page already scopes `classes` to the active bucket and, when a day is
-  // focused, to that single date — so nothing is filtered here.
   const visible = classes;
-
-  // Past the threshold a wrapping grid gets unusable, so switch to a swipeable row.
-  const overflows = visible.length > SCROLL_X_THRESHOLD;
   const isToday = (dateKey ?? TODAY_KEY) === TODAY_KEY;
 
   const filterLabel =
-    SCHEDULE_FILTERS.find((f) => f.value === filter)?.label ?? "Today";
+    SCHEDULE_FILTERS.find((item) => item.value === filter)?.label ?? "Today";
 
   const heading = dateKey
     ? "Schedule"
@@ -628,19 +672,19 @@ function ClassStrip({
         ? "Everything up to yesterday"
         : "Tomorrow onwards";
 
-  const nudge = (dir) =>
-    scrollRef.current?.scrollBy({ left: dir * 340, behavior: "smooth" });
-
   return (
-    <div className="sticky top-0 z-20 -mx-1 bg-slate-50/95 px-1 py-3 backdrop-blur-sm">
-      <section className="rounded-2xl border border-slate-100 bg-white shadow-sm">
-        <header className="flex flex-col gap-3 border-b border-slate-100 px-3 py-2.5 sm:px-4 sm:py-3">
-          <div className="flex min-w-0 flex-wrap items-center justify-between gap-2.5">
-            <div className="flex min-w-0 items-center gap-2.5">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50">
+    <aside className="min-w-0 lg:sticky lg:top-0 lg:self-start">
+      <section className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
+        {/* Header */}
+        <header className="border-b border-slate-100 p-3 sm:p-4">
+          <div className="flex min-w-0 flex-col gap-3">
+            <div className="flex justify-between">
+            <div className="flex min-w-0 items-start gap-2.5">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50">
                 <CalendarDays className="h-4 w-4 text-blue-600" />
               </span>
-              <div className="min-w-0">
+
+              <div className="min-w-0 flex-1">
                 <h2 className="truncate text-sm font-bold text-slate-800">
                   {heading}
                 </h2>
@@ -651,7 +695,7 @@ function ClassStrip({
             </div>
 
             {/* Date picker */}
-            <div className="flex min-w-0 shrink-0 items-center gap-1.5">
+            <div className="flex min-w-0 items-center gap-2">
               <ScheduleCalendarPopover
                 selectedKey={dateKey ?? TODAY_KEY}
                 triggerLabel={dateKey ?? filterLabel}
@@ -662,121 +706,88 @@ function ClassStrip({
                 loading={loading}
                 onSelectDate={onDateChange}
               />
+
               {dateKey && (
                 <button
                   type="button"
                   onClick={() => onDateChange(TODAY_KEY)}
-                  className="h-8 shrink-0 rounded-lg bg-slate-100 px-2 text-[11px] font-semibold text-slate-600 transition-colors hover:bg-slate-200"
+                  className="h-8 shrink-0 rounded-lg bg-slate-100 px-3 text-[11px] font-semibold text-slate-600 transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/40"
                 >
                   Today
                 </button>
               )}
             </div>
-          </div>
+            </div>
+            
 
-          <div className="flex min-w-0 flex-wrap items-center justify-between gap-2">
-            {/* Schedule filters — single row, swipeable when space is tight */}
-            <div className="hide-scrollbar flex min-w-0 max-w-full flex-nowrap gap-1 overflow-x-auto rounded-full bg-slate-100 p-1">
-              {SCHEDULE_FILTERS.map((f) => (
+            {/* Schedule filters */}
+            <div className="hide-scrollbar flex min-w-0 max-w-full gap-1 overflow-x-auto rounded-xl bg-slate-100 p-1">
+              {SCHEDULE_FILTERS.map((item) => (
                 <button
-                  key={f.value}
+                  key={item.value}
                   type="button"
-                  aria-pressed={filter === f.value}
-                  onClick={() => onFilterChange(f.value)}
+                  aria-pressed={filter === item.value}
+                  onClick={() => onFilterChange(item.value)}
                   className={cn(
-                    "flex h-7 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-[11px] font-semibold transition-all",
-                    filter === f.value
+                    "flex h-8 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 text-[11px] font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/40",
+                    filter === item.value
                       ? "bg-white text-slate-800 shadow-sm"
                       : "text-slate-500 hover:text-slate-700"
                   )}
                 >
-                  {f.label}
+                  {item.label}
                   <span
                     className={cn(
                       "rounded-full px-1.5 text-[10px] font-bold",
-                      filter === f.value
+                      filter === item.value
                         ? "bg-blue-50 text-blue-600"
                         : "bg-slate-200/80 text-slate-500"
                     )}
                   >
-                    {bucketCounts[f.value] ?? 0}
+                    {bucketCounts[item.value] ?? 0}
                   </span>
                 </button>
               ))}
             </div>
 
-            <div className="flex shrink-0 items-center gap-2">
-              {overflows && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => nudge(-1)}
-                    aria-label="Scroll classes left"
-                    className="hidden h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition-colors hover:bg-slate-50 sm:flex"
-                  >
-                    <ChevronLeft className="h-3.5 w-3.5" />
-                  </button>
-                  <span className="hidden text-[10px] font-semibold text-slate-400 sm:inline">
-                    Swipe for more
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => nudge(1)}
-                    aria-label="Scroll classes right"
-                    className="hidden h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition-colors hover:bg-slate-50 sm:flex"
-                  >
-                    <ChevronRight className="h-3.5 w-3.5" />
-                  </button>
-                </>
-              )}
-              <span className="shrink-0 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-600">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[10px] font-medium text-slate-400">
+                {visible.length === 1 ? "1 session" : `${visible.length} sessions`}
+              </p>
+              <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-bold text-blue-600">
                 {visible.length}/{dateKey ? totalClasses : bucketTotal}
               </span>
             </div>
           </div>
         </header>
 
+        {/* Schedule list */}
         {loading ? (
-          <p className="flex items-center justify-center gap-2 px-4 py-8 text-xs text-slate-400">
+          <div className="flex items-center justify-center gap-2 px-4 py-10 text-xs text-slate-400">
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
             Loading schedule…
-          </p>
+          </div>
         ) : visible.length === 0 ? (
-          <p className="px-4 py-8 text-center text-xs text-slate-400">
-            {totalClasses === 0
-              ? "No schedules have been assigned yet."
-              : dateKey
-                ? `No classes on ${formatDateLong(dateKey)}.`
-                : `No ${filterLabel.toLowerCase()} sessions.`}
-          </p>
-        ) : overflows ? (
-          <div
-            ref={scrollRef}
-            role="radiogroup"
-            aria-label="Scheduled classes"
-            className="hide-scrollbar flex snap-x snap-mandatory gap-2 overflow-x-auto p-2.5 sm:p-3"
-          >
-            {visible.map((cls) => (
-              <ClassCard
-                key={cls.id}
-                cls={cls}
-                stats={statsForClass(cls, { marks, summaries, startedClasses })}
-                isActive={cls.id === activeId}
-                isSaved={summaries[cls.id]?.sessionStatus === SESSION_MARKED}
-                isStarted={summaries[cls.id]?.sessionStatus === SESSION_MARKED || startedClasses.includes(cls.id)}
-                phase={phaseOf(cls)}
-                isToday={isToday}
-                showDate={showDate}
-                fixedWidth
-                onSelect={() => onSelect(cls.id)}
-              />
-            ))}
+          <div className="px-4 py-10 text-center">
+            <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100">
+              <CalendarDays className="h-5 w-5 text-slate-400" />
+            </div>
+            <p className="mt-3 text-xs font-semibold text-slate-600">
+              {totalClasses === 0
+                ? "No schedules have been assigned yet."
+                : dateKey
+                  ? `No classes on ${formatDateLong(dateKey)}.`
+                  : `No ${filterLabel.toLowerCase()} sessions.`}
+            </p>
+            <p className="mt-1 text-[11px] leading-relaxed text-slate-400">
+              Select another date or schedule category to continue.
+            </p>
           </div>
         ) : (
           <div
             role="radiogroup"
             aria-label="Scheduled classes"
-            className="grid grid-cols-1 gap-2 p-2.5 min-[420px]:grid-cols-2 min-[720px]:grid-cols-3 lg:grid-cols-4 sm:p-3"
+            className="hide-scrollbar flex max-h-[calc(100vh-280px)] min-h-0 flex-col gap-2 overflow-y-auto p-2.5 sm:p-3"
           >
             {visible.map((cls) => (
               <ClassCard
@@ -785,17 +796,21 @@ function ClassStrip({
                 stats={statsForClass(cls, { marks, summaries, startedClasses })}
                 isActive={cls.id === activeId}
                 isSaved={summaries[cls.id]?.sessionStatus === SESSION_MARKED}
-                isStarted={summaries[cls.id]?.sessionStatus === SESSION_MARKED || startedClasses.includes(cls.id)}
+                isStarted={
+                  summaries[cls.id]?.sessionStatus === SESSION_MARKED ||
+                  startedClasses.includes(cls.id)
+                }
                 phase={phaseOf(cls)}
                 isToday={isToday}
                 showDate={showDate}
                 onSelect={() => onSelect(cls.id)}
+                onAddTask={onAddTask}
               />
             ))}
           </div>
         )}
       </section>
-    </div>
+    </aside>
   );
 }
 
@@ -962,31 +977,32 @@ function SessionToolbar({
             <Lock className="h-3.5 w-3.5 shrink-0" />
             <span className="truncate">Session has ended</span>
           </span>
-        ) : (
-          <div className="flex w-full min-w-0 rounded-full bg-white p-1 shadow-sm ring-1 ring-slate-200/80 min-[420px]:w-auto">
-            <button
-              type="button"
-              onClick={onMarkAll}
-              disabled={saving}
-              className="flex h-8 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 text-[11px] font-semibold text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 min-[420px]:flex-none min-[420px]:justify-start min-[420px]:px-3 min-[420px]:text-xs"
-            >
-              {saving ? (
-                <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin" />
-              ) : (
-                <Check className="h-3.5 w-3.5 shrink-0" />
-              )}
-              <span className="truncate">All attended</span>
-            </button>
-            <button
-              type="button"
-              onClick={onReset}
-              disabled={saving}
-              className="flex h-8 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 text-[11px] font-semibold text-slate-500 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 min-[420px]:flex-none min-[420px]:justify-start min-[420px]:px-3 min-[420px]:text-xs"
-            >
-              <RotateCcw className="h-3.5 w-3.5 shrink-0" />
-              <span className="truncate">Clear</span>
-            </button>
-          </div>
+        ) : ( 
+          null
+          // <div className="flex w-full min-w-0 rounded-full bg-white p-1 shadow-sm ring-1 ring-slate-200/80 min-[420px]:w-auto">
+          //   <button
+          //     type="button"
+          //     onClick={onMarkAll}
+          //     disabled={saving}
+          //     className="flex h-8 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 text-[11px] font-semibold text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 min-[420px]:flex-none min-[420px]:justify-start min-[420px]:px-3 min-[420px]:text-xs"
+          //   >
+          //     {saving ? (
+          //       <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin" />
+          //     ) : (
+          //       <Check className="h-3.5 w-3.5 shrink-0" />
+          //     )}
+          //     <span className="truncate">All attended</span>
+          //   </button>
+          //   <button
+          //     type="button"
+          //     onClick={onReset}
+          //     disabled={saving}
+          //     className="flex h-8 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 text-[11px] font-semibold text-slate-500 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 min-[420px]:flex-none min-[420px]:justify-start min-[420px]:px-3 min-[420px]:text-xs"
+          //   >
+          //     <RotateCcw className="h-3.5 w-3.5 shrink-0" />
+          //     <span className="truncate">Clear</span>
+          //   </button>
+          // </div>
         )}
       </div>
 
@@ -1072,8 +1088,86 @@ function StatusSelector({ studentName, status, readOnly = false, pending = false
   );
 }
 
+/* ─── Student task chips (past sessions) ─── */
+// One chip per task: the task title sits on top, its review state below.
+// A task awaiting review becomes a button that opens the review modal.
+function StudentTasks({ tasks = [], taskStatuses = [], onReviewTask }) {
+  if (!tasks.length) {
+    return (
+      <span className="text-[10px] italic text-slate-400">No tasks assigned</span>
+    );
+  }
+
+  const entryFor = (taskId) =>
+    taskStatuses.find((t) => t.taskId === taskId) ?? {};
+
+  return (
+    <div className="flex w-full min-w-0 flex-wrap gap-1.5 sm:max-w-md sm:justify-end">
+      {tasks.map((task) => {
+        const entry = entryFor(task.taskId);
+        const status = entry.status ?? "NOT_SUBMITTED";
+        const meta = taskStatusMeta(status);
+        const Icon = meta.icon;
+        const title = `${task.topicName ? `${task.topicName} · ` : ""}${task.taskTitle} — ${meta.label}`;
+        const baseClasses = cn(
+          "flex min-w-0 max-w-[180px] flex-col rounded-lg px-2 py-1 text-left",
+          meta.chip
+        );
+        const content = (
+          <>
+            <span className="truncate text-[10px] font-semibold text-slate-700">
+              {task.taskTitle || "Untitled"}
+            </span>
+            <span className="flex min-w-0 items-center gap-1 text-[9px] font-bold uppercase tracking-wide">
+              <Icon className="h-3 w-3 shrink-0" />
+              <span className="truncate">{meta.label}</span>
+            </span>
+          </>
+        );
+
+        if (status !== "PENDING_REVIEW" || !onReviewTask) {
+          return (
+            <span key={task.taskId} className={baseClasses} title={title}>
+              {content}
+            </span>
+          );
+        }
+
+        return (
+          <button
+            key={task.taskId}
+            type="button"
+            onClick={() =>
+              onReviewTask({
+                taskId: task.taskId,
+                submissionId: entry.submissionId,
+              })
+            }
+            className={cn(
+              baseClasses,
+              "cursor-pointer transition-shadow hover:ring-2 hover:ring-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+            )}
+            title={`${title} · Click to review`}
+          >
+            {content}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 /* ─── Student row ─── */
-function StudentRow({ student, status, pending = false, readOnly = false, onMark }) {
+function StudentRow({
+  student,
+  status,
+  pending = false,
+  readOnly = false,
+  onMark,
+  tasks = [],
+  showTasks = false,
+  onReviewTask,
+}) {
   const isInactive = student.enabled !== "Y";
 
   return (
@@ -1142,22 +1236,34 @@ function StudentRow({ student, status, pending = false, readOnly = false, onMark
           <p className="mt-0.5 flex min-w-0 flex-wrap items-center gap-x-1 text-[11px] text-slate-400">
             <span className="font-medium text-slate-500">{student.studentId}</span>
             <span className="text-slate-300" aria-hidden>·</span>
-            <span className="truncate">{student.mobileNum}</span>
-            <span className="hidden text-slate-300 sm:inline" aria-hidden>·</span>
-            <span className="hidden min-w-0 truncate sm:inline">{student.emailId}</span>
+            {/* <span className="truncate">{student.mobileNum}</span> */}
+            {/* <span className="hidden text-slate-300 sm:inline" aria-hidden>·</span>
+            <span className="hidden min-w-0 truncate sm:inline">{student.emailId}</span> */}
           </p>
         </div>
       </div>
 
       {/* Controls — full width on mobile, hugs content from sm up */}
       <div className="w-full shrink-0 sm:w-auto">
-        <StatusSelector
-          studentName={fullName(student)}
-          status={status}
-          readOnly={readOnly}
-          pending={pending}
-          onChange={(next) => onMark(student.studentId, next)}
-        />
+        {showTasks ? (
+          <StudentTasks
+            tasks={tasks}
+            taskStatuses={student.taskStatuses}
+            onReviewTask={
+              onReviewTask
+                ? (payload) => onReviewTask({ ...payload, student })
+                : undefined
+            }
+          />
+        ) : (
+          <StatusSelector
+            studentName={fullName(student)}
+            status={status}
+            readOnly={readOnly}
+            pending={pending}
+            onChange={(next) => onMark(student.studentId, next)}
+          />
+        )}
       </div>
     </li>
   );
@@ -1242,6 +1348,8 @@ function NotStartedState({ cls, studentCount, phase, isToday, onStart }) {
 function Roster({
   students,
   marks,
+  tasks = [],
+  showTasks = false,
   search,
   filter,
   loading = false,
@@ -1251,6 +1359,7 @@ function Roster({
   onStatusChange,
   onSearchChange,
   onFilterChange,
+  onReviewTask,
 }) {
   const counts = useMemo(() => {
     const c = { [UNMARKED]: 0 };
@@ -1405,6 +1514,9 @@ function Roster({
               pending={Boolean(pendingStudents?.[student.studentId])}
               readOnly={readOnly}
               onMark={onStatusChange}
+              tasks={tasks}
+              showTasks={showTasks}
+              onReviewTask={onReviewTask}
             />
           ))}
         </ul>
@@ -1415,6 +1527,7 @@ function Roster({
 
 /* ─── Page ─── */
 export default function Attendance() {
+  const queryClient = useQueryClient();
   const [staffId] = useState(getStaffId);
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(() => Boolean(getStaffId()));
@@ -1439,6 +1552,10 @@ export default function Attendance() {
   const [scheduleFilter, setScheduleFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
+  // Schedule the Add Task modal is currently targeting (null = closed).
+  const [taskSchedule, setTaskSchedule] = useState(null);
+  // Submission currently open in the review modal (null = closed).
+  const [reviewTarget, setReviewTarget] = useState(null);
 
   // Mirrors pendingStudents so a double tap can be rejected inside the handler
   // before the next render lands.
@@ -1597,10 +1714,11 @@ export default function Attendance() {
         const res = await InstructorAttendanceApi.getScheduleAttendance(Number(scheduleId));
         const payload = res?.data ?? {};
         const students = Array.isArray(payload.students) ? payload.students : [];
+        const tasks = Array.isArray(payload.tasks) ? payload.tasks : [];
         setApiAvailable(true);
         setSessions((prev) => ({
           ...prev,
-          [scheduleId]: { students, loaded: true, error: false },
+          [scheduleId]: { students, tasks, loaded: true, error: false },
         }));
         setMarks((prev) => ({ ...prev, [scheduleId]: marksFromStudents(students) }));
         mergeSummary(scheduleId, payload, students.length);
@@ -1611,7 +1729,7 @@ export default function Attendance() {
         );
         setSessions((prev) => ({
           ...prev,
-          [scheduleId]: { students: [], loaded: true, error: true },
+          [scheduleId]: { students: [], tasks: [], loaded: true, error: true },
         }));
         setApiAvailable(true);
       }
@@ -1621,6 +1739,85 @@ export default function Attendance() {
 
   const activeScheduleId = activeClass?.id ?? null;
   const activeSession = activeScheduleId ? sessions[activeScheduleId] : undefined;
+
+  // Pending review submissions for this instructor. The attendance payload only
+  // carries a submissionId per task, so the modal's full details come from here.
+  const pendingReviewsQuery = useQuery({
+    queryKey: ["instructorPendingReviews", staffId],
+    queryFn: async () => {
+      if (!staffId) return [];
+      const res = await instructorDashboardApi.getPendingReviews(staffId);
+      return res?.data ?? [];
+    },
+    enabled: Boolean(staffId),
+    staleTime: 30 * 1000,
+  });
+
+  const reviewMutation = useMutation({
+    mutationFn: ({ submissionId, overallRating, feedbackMessage, criteria }) =>
+      instructorDashboardApi.reviewSubmission(submissionId, staffId, {
+        overallRating,
+        feedbackMessage,
+        criteria,
+      }),
+    onSuccess: () => {
+      toast.success("Review completed");
+      queryClient.invalidateQueries({
+        queryKey: ["instructorPendingReviews", staffId],
+      });
+      if (activeScheduleId) loadSession(activeScheduleId);
+      setReviewTarget(null);
+    },
+    onError: () => {
+      toast.error("Failed to complete review");
+    },
+  });
+
+  // A pending chip hands us its submissionId; resolve it to the full submission
+  // so ReviewModal can render student, attachments and existing review state.
+  const handleOpenReview = useCallback(
+    ({ submissionId, student }) => {
+      const list = pendingReviewsQuery.data ?? [];
+      const match =
+        list.find((s) => String(s.id) === String(submissionId)) ??
+        list.find((s) => s.studentId === student?.studentId);
+      if (!match) {
+        toast.error("Review details are not available yet. Please try again.");
+        return;
+      }
+      setReviewTarget(match);
+    },
+    [pendingReviewsQuery.data]
+  );
+
+  const reviewDetails = reviewTarget
+    ? {
+        studentName: reviewTarget.studentName,
+        studentInitials: (reviewTarget.studentName ?? "?")
+          .split(" ")
+          .map((p) => p?.[0])
+          .join("")
+          .slice(0, 2)
+          .toUpperCase(),
+        courseTitle: reviewTarget.courseTitle,
+        topic: reviewTarget.topicName,
+        submittedDate: reviewTarget.submittedAt
+          ? new Date(reviewTarget.submittedAt).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })
+          : null,
+        taskTitle: reviewTarget.taskTitle,
+        submissionNotes: reviewTarget.submissionNotes || "No notes provided.",
+        attachments: reviewTarget.attachments || [],
+        git: reviewTarget.git || [],
+        reviewFeedback: reviewTarget.reviewFeedback,
+        rating: reviewTarget.reviewRating || reviewTarget.overallRating || 0,
+        criteria: reviewTarget.reviewCriteria || [],
+        status: "Pending Review",
+      }
+    : null;
   // Real roster when the API answers, demo roster while it is unavailable.
   const roster = useMemo(() => {
     if (activeSession?.students?.length) return activeSession.students;
@@ -1785,6 +1982,9 @@ export default function Attendance() {
   const handleMarkAll = () => bulkMark("PRESENT");
   const handleReset = () => bulkMark("UNMARKED");
 
+  const handleAddTask = useCallback((cls) => setTaskSchedule(cls), []);
+  const handleCloseTaskModal = useCallback(() => setTaskSchedule(null), []);
+
   const handleClassChange = useCallback(
     (id) => {
       setSelectedClassId(id);
@@ -1846,93 +2046,142 @@ export default function Attendance() {
 
   return (
     <div className="flex min-w-0 flex-col gap-3 pb-6 sm:gap-4 lg:min-h-0 lg:flex-1 lg:gap-4 lg:overflow-y-auto lg:pb-2 lg:pr-1">
-      <MetricCards summaries={summaries} classes={schedules} />
+      {/* <MetricCards summaries={summaries} classes={schedules} /> */}
 
-      <ClassStrip
-        classes={dateClasses}
-        bucketTotal={bucketCounts[scheduleFilter] ?? 0}
-        totalClasses={schedules.length}
-        bucketCounts={bucketCounts}
-        schedulesByDate={schedulesByDate}
-        countsByDate={countsByDate}
-        loading={loading}
-        marks={marks}
-        summaries={summaries}
-        startedClasses={startedClasses}
-        activeId={activeClass?.id}
-        filter={scheduleFilter}
-        dateKey={dateKey}
-        onDateChange={handleDateChange}
-        onFilterChange={handleScheduleFilter}
-        onSelect={handleClassChange}
+      {/*
+       * Attendance workspace
+       *
+       * Desktop: schedule remains on the left while the selected session and
+       * roster occupy the larger right-hand content area.
+       * Mobile/tablet: the layout collapses into a single readable column.
+       */}
+      <div className="grid min-w-0 gap-4 lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[330px_minmax(0,1fr)] 2xl:grid-cols-[360px_minmax(0,1fr)]">
+        {/* Left: schedule navigation */}
+        <ClassStrip
+          classes={dateClasses}
+          bucketTotal={bucketCounts[scheduleFilter] ?? 0}
+          totalClasses={schedules.length}
+          bucketCounts={bucketCounts}
+          schedulesByDate={schedulesByDate}
+          countsByDate={countsByDate}
+          loading={loading}
+          marks={marks}
+          summaries={summaries}
+          startedClasses={startedClasses}
+          activeId={activeClass?.id}
+          filter={scheduleFilter}
+          dateKey={dateKey}
+          onDateChange={handleDateChange}
+          onFilterChange={handleScheduleFilter}
+          onSelect={handleClassChange}
+          onAddTask={handleAddTask}
+        />
+
+        {/* Right: selected class + attendance roster */}
+        <main className="min-w-0">
+          <section className="min-w-0 rounded-2xl border border-slate-100 bg-white shadow-sm">
+            <div className="flex min-w-0 flex-col gap-4 p-3 sm:p-4 lg:gap-5 lg:p-5 xl:p-6">
+              {scheduleError || (!activeClass && !loading) ? (
+                <div className="flex min-h-[320px] min-w-0 flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-5 py-12 text-center">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-slate-100">
+                    {scheduleError ? (
+                      <CircleAlert className="h-6 w-6 text-slate-400" />
+                    ) : (
+                      <CalendarDays className="h-6 w-6 text-slate-400" />
+                    )}
+                  </div>
+
+                  <div className="min-w-0 max-w-md">
+                    <h3 className="text-sm font-bold text-slate-700">
+                      {scheduleError ? "Schedule unavailable" : "No session selected"}
+                    </h3>
+                    <p className="mt-1 text-xs leading-relaxed text-slate-400">
+                      {scheduleError
+                        ? "We could not load your scheduled classes. Please refresh and try again."
+                        : "Select a class from the schedule to view its attendance and student roster."}
+                    </p>
+                  </div>
+                </div>
+              ) : activeClass ? (
+                <>
+                  <ClassHero
+                    cls={activeClass}
+                    studentCount={roster.length || activeClass.studentCount}
+                    showDate={!dateKey}
+                  />
+
+                  <SessionToolbar
+                    stats={stats}
+                    phase={phase}
+                    isStarted={isStarted}
+                    isSaved={isSaved}
+                    saving={bulkSaving}
+                    onStart={handleStart}
+                    onMarkAll={handleMarkAll}
+                    onReset={handleReset}
+                    isToday={isTodaySession}
+                    isPastDate={isPastDate}
+                  />
+
+                  {showRoster ? (
+                    <Roster
+                      students={roster}
+                      marks={classMarks}
+                      tasks={activeSession?.tasks ?? []}
+                      showTasks={isPastDate}
+                      search={search}
+                      filter={filter}
+                      loading={rosterLoading}
+                      error={rosterError}
+                      readOnly={!isStarted || isPastDate}
+                      pendingStudents={pendingStudents}
+                      onStatusChange={markStatus}
+                      onSearchChange={setSearch}
+                      onFilterChange={setFilter}
+                      onReviewTask={handleOpenReview}
+                    />
+                  ) : (
+                    <NotStartedState
+                      cls={activeClass}
+                      studentCount={roster.length || activeClass.studentCount}
+                      phase={phase}
+                      isToday={isTodaySession}
+                      onStart={handleStart}
+                    />
+                  )}
+                </>
+              ) : null}
+            </div>
+          </section>
+        </main>
+      </div>
+
+      <ScheduleTaskModal
+        key={taskSchedule?.id ?? "schedule-task"}
+        isOpen={Boolean(taskSchedule)}
+        schedule={taskSchedule}
+        onClose={handleCloseTaskModal}
       />
 
-      <div className="min-w-0 rounded-2xl border border-slate-100 bg-white shadow-sm">
-        <div className="flex min-w-0 flex-col gap-3 p-3 sm:gap-4 sm:p-4 lg:gap-5 lg:p-5 xl:p-6">
-          {scheduleError || (!activeClass && !loading) ? (
-            <div className="flex min-w-0 flex-col items-center gap-3 rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-5 py-12 text-center">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-slate-100">
-                <CalendarDays className="h-6 w-6 text-slate-400" />
-              </div>
-              <div className="min-w-0 max-w-sm">
-                <h3 className="text-sm font-bold text-slate-700">
-                  {scheduleError ? "Schedule unavailable" : "No session selected"}
-                </h3>
-                <p className="mt-1 text-xs leading-relaxed text-slate-400">
-                  {scheduleError
-                    ? "We could not load your scheduled classes. Refresh the page to try again."
-                    : "Pick a date on the calendar above to view the sessions scheduled for that day."}
-                </p>
-              </div>
-            </div>
-          ) : activeClass ? (
-            <>
-              <ClassHero
-                cls={activeClass}
-                studentCount={roster.length || activeClass.studentCount}
-                showDate={!dateKey}
-              />
-
-              <SessionToolbar
-                stats={stats}
-                phase={phase}
-                isStarted={isStarted}
-                isSaved={isSaved}
-                saving={bulkSaving}
-                onStart={handleStart}
-                onMarkAll={handleMarkAll}
-                onReset={handleReset}
-                isToday={isTodaySession}
-                isPastDate={isPastDate}
-              />
-
-              {showRoster ? (
-                <Roster
-                  students={roster}
-                  marks={classMarks}
-                  search={search}
-                  filter={filter}
-                  loading={rosterLoading}
-                  error={rosterError}
-                  readOnly={!isStarted || isPastDate}
-                  pendingStudents={pendingStudents}
-                  onStatusChange={markStatus}
-                  onSearchChange={setSearch}
-                  onFilterChange={setFilter}
-                />
-              ) : (
-                <NotStartedState
-                  cls={activeClass}
-                  studentCount={roster.length || activeClass.studentCount}
-                  phase={phase}
-                  isToday={isTodaySession}
-                  onStart={handleStart}
-                />
-              )}
-            </>
-          ) : null}
-        </div>
-      </div>
+      {reviewTarget && (
+        <ReviewModal
+          key={reviewTarget.id ?? "review"}
+          isOpen={Boolean(reviewTarget)}
+          onClose={() => setReviewTarget(null)}
+          onStartReview={(payload) => {
+            if (reviewTarget?.id != null) {
+              reviewMutation.mutate({
+                submissionId: reviewTarget.id,
+                overallRating: payload?.rating,
+                feedbackMessage: payload?.feedback,
+                criteria: payload?.criteria,
+              });
+            }
+          }}
+          submitting={reviewMutation.isPending}
+          details={reviewDetails}
+        />
+      )}
     </div>
   );
 }
