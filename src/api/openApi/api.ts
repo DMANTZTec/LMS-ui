@@ -615,12 +615,12 @@ export interface OverallProgressResponse {
 export interface PageStaffResponse {
     'totalElements'?: number;
     'totalPages'?: number;
-    'first'?: boolean;
-    'last'?: boolean;
     'size'?: number;
     'content'?: Array<StaffResponse>;
     'number'?: number;
     'sort'?: SortObject;
+    'first'?: boolean;
+    'last'?: boolean;
     'numberOfElements'?: number;
     'pageable'?: PageableObject;
     'empty'?: boolean;
@@ -628,10 +628,10 @@ export interface PageStaffResponse {
 export interface PageableObject {
     'offset'?: number;
     'sort'?: SortObject;
-    'pageSize'?: number;
-    'pageNumber'?: number;
     'paged'?: boolean;
     'unpaged'?: boolean;
+    'pageSize'?: number;
+    'pageNumber'?: number;
 }
 export interface PlanClassTopicsRequest {
     'staffId': string;
@@ -895,8 +895,8 @@ export const SocialMediaResponsePlatformEnum = {
 export type SocialMediaResponsePlatformEnum = typeof SocialMediaResponsePlatformEnum[keyof typeof SocialMediaResponsePlatformEnum];
 
 export interface SortObject {
-    'sorted'?: boolean;
     'empty'?: boolean;
+    'sorted'?: boolean;
     'unsorted'?: boolean;
 }
 export interface StaffCourseResponse {
@@ -912,7 +912,7 @@ export interface StaffLoginRequest {
     'password': string;
 }
 export interface StaffLoginResponse {
-    'role'?: string;
+    'role'?: Array<string>;
     'staffId'?: string;
     'email'?: string;
     'mobileNum'?: string;
@@ -1023,8 +1023,6 @@ export type StaffUpdateReq1GenderEnum = typeof StaffUpdateReq1GenderEnum[keyof t
 export interface StaffUpdateRequest {
     'firstNm'?: string;
     'lastNm'?: string;
-    'emailId'?: string;
-    'mobileNum'?: string;
     'dob'?: string;
     'gender'?: StaffUpdateRequestGenderEnum;
     'dateOfJoining'?: string;

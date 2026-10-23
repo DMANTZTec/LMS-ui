@@ -15,6 +15,7 @@ export default function StaffOtp() {
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [timer, setTimer] = useState(120);
+  const [selectedRole, setSelectedRole] = useState(null);
   const navigate = useNavigate();
 
   // const savedUser = JSON.parse(sessionStorage.getItem("otpStaff") || "{}");
@@ -23,6 +24,33 @@ export default function StaffOtp() {
 
   const staffId = savedUser?.staffId;
   const email = savedUser?.email;
+
+  const getRolesArray = () => {
+    const roleInfo = savedUser?.role;
+    if (!roleInfo) return [];
+    if (Array.isArray(roleInfo)) {
+      return roleInfo
+        .filter(Boolean)
+        .map((r) => String(r).toUpperCase());
+    }
+    return [String(roleInfo).toUpperCase()];
+  };
+
+  const roles = getRolesArray();
+  const hasAdminOrStaff = roles.includes("ADMIN") || roles.includes("STAFF");
+  const hasInstructor = roles.includes("INSTRUCTOR");
+  const showRoleSwitcher = hasAdminOrStaff && hasInstructor;
+
+  useEffect(() => {
+    if (roles.length === 0) return;
+    if (hasAdminOrStaff) {
+      setSelectedRole("ADMIN");
+    } else if (hasInstructor) {
+      setSelectedRole("INSTRUCTOR");
+    } else {
+      setSelectedRole(roles[0]);
+    }
+  }, [JSON.stringify(roles)]);
 
   // Countdown timer logic
   useEffect(() => {
@@ -91,15 +119,23 @@ export default function StaffOtp() {
       }
 
       setTimeout(() => {
-        // const roleInfo = JSON.parse(sessionStorage.getItem("otpStaff") ).role;
-        // claude code generated
-        const roleInfo = getOtpStaff().role;
-        // claude code generated
-        // console.log("roleInfo and roleInfo.toUpperCase() === 'ADMIN'and roleInfo.toUpperCase() === 'INSTRUCTOR'is: ",roleInfo,roleInfo.toUpperCase() === "ADMIN",roleInfo.toUpperCase() === "INSTRUCTOR");
-        if(roleInfo.toUpperCase() === "ADMIN" || roleInfo.toUpperCase() === "STAFF")
-        navigate("/Staff-dashboard");
-        if(roleInfo.toUpperCase() === "INSTRUCTOR")
-        navigate("/Instructor-dashboard");
+        const roleInfo = selectedRole || getOtpStaff()?.role;
+        const normalizedRole = Array.isArray(roleInfo)
+          ? roleInfo.find((r) => {
+              const ur = String(r).toUpperCase();
+              return ur === "ADMIN" || ur === "STAFF" || ur === "INSTRUCTOR";
+            })
+          : roleInfo;
+        const finalRole = String(normalizedRole || selectedRole || "ADMIN").toUpperCase();
+        if (finalRole === "ADMIN" || finalRole === "STAFF")
+          navigate("/Staff-dashboard");
+        else if (finalRole === "INSTRUCTOR")
+          navigate("/Instructor-dashboard");
+        else if (hasAdminOrStaff) {
+          navigate("/Staff-dashboard");
+        } else if (hasInstructor) {
+          navigate("/Instructor-dashboard");
+        }
       }, 1000);
     } catch (error) {
       const errorMsg =
@@ -127,6 +163,26 @@ export default function StaffOtp() {
       </CardHeader>
 
       <CardContent>
+        {showRoleSwitcher && (
+          <div className="flex gap-2 mb-4">
+            <Button
+              type="button"
+              variant={selectedRole === "ADMIN" ? "default" : "outline"}
+              onClick={() => setSelectedRole("ADMIN")}
+              className="flex-1"
+            >
+              Admin
+            </Button>
+            <Button
+              type="button"
+              variant={selectedRole === "INSTRUCTOR" ? "default" : "outline"}
+              onClick={() => setSelectedRole("INSTRUCTOR")}
+              className="flex-1"
+            >
+              Instructor
+            </Button>
+          </div>
+        )}
         <Field className="space-y-4">
           <div className="flex items-center justify-between">
             <FieldLabel>Verification code</FieldLabel>

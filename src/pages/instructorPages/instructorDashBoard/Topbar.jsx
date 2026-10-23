@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import StaffNavbarAvatar from "@/features/Avatar/staff/StaffNavbarAvatar";
 // claude code generated
-import { getOtpStaff } from "@/utils/tokenUtility";
+import { getOtpStaff, getUserRole } from "@/utils/tokenUtility";
+import { useNavigate } from "react-router-dom";
 
 function getStaffFromSession() {
   try {
@@ -35,6 +36,20 @@ function getDisplayName(stfData) {
 
 export default function Topbar({ onMenuClick }) {
   const stfData = getStaffFromSession();
+  const navigate = useNavigate();
+  const currentRole = String(getUserRole() || stfData?.role || "").toUpperCase();
+  
+  const getRolesArray = () => {
+    const roleInfo = stfData?.role;
+    if (!roleInfo) return [];
+    if (Array.isArray(roleInfo)) {
+      return roleInfo.filter(Boolean).map((r) => String(r).toUpperCase());
+    }
+    return [String(roleInfo).toUpperCase()];
+  };
+  const roles = getRolesArray();
+  const hasAdminOrStaff = roles.includes("ADMIN") || roles.includes("STAFF");
+  const canSwitchToAdmin = hasAdminOrStaff && currentRole === "INSTRUCTOR";
 
   return (
     <header className="flex items-center justify-between border-b border-slate-100 bg-white px-4 py-5 md:px-8 lg:py-3">
@@ -79,6 +94,17 @@ export default function Topbar({ onMenuClick }) {
             1
           </span>
         </Button>
+
+        {canSwitchToAdmin && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate("/Staff-dashboard")}
+            className="bg-blue-100 text-[#155DFC] border-0"
+          >
+            Switch to Admin Dashboard
+          </Button>
+        )}
 
         <StaffNavbarAvatar />
       </div>

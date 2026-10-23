@@ -7,8 +7,6 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **firstNm** | **string** |  | [optional] [default to undefined]
 **lastNm** | **string** |  | [optional] [default to undefined]
-**emailId** | **string** |  | [optional] [default to undefined]
-**mobileNum** | **string** |  | [optional] [default to undefined]
 **dob** | **string** |  | [optional] [default to undefined]
 **gender** | **string** |  | [optional] [default to undefined]
 **dateOfJoining** | **string** |  | [optional] [default to undefined]
@@ -22,8 +20,6 @@ import { StaffUpdateRequest } from './api';
 const instance: StaffUpdateRequest = {
     firstNm,
     lastNm,
-    emailId,
-    mobileNum,
     dob,
     gender,
     dateOfJoining,

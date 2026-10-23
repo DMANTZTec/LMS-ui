@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**role** | **string** |  | [optional] [default to undefined]
+**role** | **Array&lt;string&gt;** |  | [optional] [default to undefined]
 **staffId** | **string** |  | [optional] [default to undefined]
 **email** | **string** |  | [optional] [default to undefined]
 **mobileNum** | **string** |  | [optional] [default to undefined]
