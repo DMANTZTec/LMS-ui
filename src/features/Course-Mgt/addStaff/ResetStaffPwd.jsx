@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -37,13 +37,17 @@ const ResetStaffPwd = () => {
 const [isSubmitting, setIsSubmitting] = useState(false);    
 const [submittedMsg, setSubmittedMsg] = useState(null);
 const [globalError, setGlobalError] = useState(null);
+const [isSuccess, setIsSuccess] = useState(false);
+const navigateTimeoutRef = useRef(null);
 
 const [showPassword, setShowPassword] = useState(false);
 const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+
     const [ searchParams ] = useSearchParams();
 // Extract the specific query parameter
   const tokenValue = searchParams.get('token');
+   const navigate= useNavigate();
 
  const { register, handleSubmit, reset, setError, formState: { errors }, watch } = useForm({
         resolver: zodResolver(resetPwdSchema),
@@ -59,6 +63,15 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
         setSubmittedMsg(null);
         setGlobalError(null);
        },[JSON.stringify(watchedValues)]);
+
+
+ useEffect(() => {
+        return () => {
+            if (navigateTimeoutRef.current) {
+                clearTimeout(navigateTimeoutRef.current);
+            }
+        };
+    }, []);
 
   const resetPwd = async (data) => {
 setIsSubmitting(true);
@@ -76,7 +89,18 @@ const result = await staffApi.resetPassword1(payload);
 // duration: 5000, 
 // className: '!bg-green-800 !text-white'
 //  });
- setSubmittedMsg(" new password was reset successfully.");
+// setSubmittedMsg(" new password was reset successfully.");
+
+setSubmittedMsg(" new password was reset successfully.");
+ setIsSuccess(true);
+ setIsSubmitting(false);
+ if (navigateTimeoutRef.current) {
+    clearTimeout(navigateTimeoutRef.current);
+ }
+ navigateTimeoutRef.current = setTimeout(() => {
+    navigate("/staffLogin");
+ }, 2000);
+
 }catch(error) {
 setIsSubmitting(false);
                 if(error.response) {
@@ -139,6 +163,7 @@ setIsSubmitting(false);
                         </Field>
 
                         <Button type="submit" disabled = {isSubmitting}>
+                        {/* <Button type="submit" disabled = {isSubmitting || isSuccess}> */}
                             {isSubmitting ? (
                             <>
                             <Loader2 className='animate-spin'/> Submitting
