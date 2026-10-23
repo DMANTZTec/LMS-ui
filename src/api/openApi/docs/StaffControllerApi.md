@@ -41,7 +41,6 @@ let firstNm: string; // (default to undefined)
 let lastNm: string; // (default to undefined)
 let emailId: string; // (default to undefined)
 let mobileNum: string; // (default to undefined)
-let otpChannel: string; // (default to undefined)
 let roleIds: Set<number>; // (default to undefined)
 let dob: string; // (optional) (default to undefined)
 let gender: string; // (optional) (default to undefined)
@@ -53,7 +52,6 @@ const { status, data } = await apiInstance.createStaff(
     lastNm,
     emailId,
     mobileNum,
-    otpChannel,
     roleIds,
     dob,
     gender,
@@ -70,7 +68,6 @@ const { status, data } = await apiInstance.createStaff(
 | **lastNm** | [**string**] |  | defaults to undefined|
 | **emailId** | [**string**] |  | defaults to undefined|
 | **mobileNum** | [**string**] |  | defaults to undefined|
-| **otpChannel** | [**string**]**Array<&#39;EMAIL&#39; &#124; &#39;MOBILE&#39;>** |  | defaults to undefined|
 | **roleIds** | **Set&lt;number&gt;** |  | defaults to undefined|
 | **dob** | [**string**] |  | (optional) defaults to undefined|
 | **gender** | [**string**]**Array<&#39;MALE&#39; &#124; &#39;FEMALE&#39; &#124; &#39;PREFER_NOT_TO_SAY&#39; &#124; &#39;NON_BINARY&#39; &#124; &#39;OTHER&#39;>** |  | (optional) defaults to undefined|

@@ -6,6 +6,9 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **number** |  | [optional] [default to undefined]
+**batchId** | **number** |  | [optional] [default to undefined]
+**studentCount** | **number** |  | [optional] [default to undefined]
+**sessionStatus** | **string** |  | [optional] [default to undefined]
 **time** | **string** |  | [optional] [default to undefined]
 **endTime** | **string** |  | [optional] [default to undefined]
 **date** | **string** |  | [optional] [default to undefined]
@@ -14,6 +17,8 @@ Name | Type | Description | Notes
 **courseId** | **string** |  | [optional] [default to undefined]
 **className** | **string** |  | [optional] [default to undefined]
 **status** | **string** |  | [optional] [default to undefined]
+**presentCount** | **number** |  | [optional] [default to undefined]
+**attendanceRate** | **number** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -22,6 +27,9 @@ import { InstructorScheduleResponse } from './api';
 
 const instance: InstructorScheduleResponse = {
     id,
+    batchId,
+    studentCount,
+    sessionStatus,
     time,
     endTime,
     date,
@@ -30,6 +38,8 @@ const instance: InstructorScheduleResponse = {
     courseId,
     className,
     status,
+    presentCount,
+    attendanceRate,
 };
 ```
 

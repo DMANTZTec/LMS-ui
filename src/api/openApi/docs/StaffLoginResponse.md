@@ -5,9 +5,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**role** | **string** |  | [optional] [default to undefined]
+**role** | **Array&lt;string&gt;** |  | [optional] [default to undefined]
 **staffId** | **string** |  | [optional] [default to undefined]
 **email** | **string** |  | [optional] [default to undefined]
+**mobileNum** | **string** |  | [optional] [default to undefined]
 **token** | **string** |  | [optional] [default to undefined]
 **message** | **string** |  | [optional] [default to undefined]
 
@@ -20,6 +21,7 @@ const instance: StaffLoginResponse = {
     role,
     staffId,
     email,
+    mobileNum,
     token,
     message,
 };

@@ -1,10 +1,44 @@
 // HoursCard.jsx
-
-import { Clock } from "lucide-react";
+import { Clock ,Loader2} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { hours } from "../data";
+import { decodeToken } from "@/utils/tokenUtility";
+import { dashboardApi } from "@/api/student-dashboard-controller";
+import { useEffect, useState } from "react";
+
+const EMPTY ={totalHours:0,label: "Total learning time" }
 
 export default function HoursCard() {
+  const studentId =decodeToken()?.userId || null
+
+  const [totalHours, setTotalHours] = useState(EMPTY);
+  const [loading, setLoading] = useState(Boolean(studentId));
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!studentId) return;
+    dashboardApi.getTotalHoursSpent(studentId)
+    .then((res)=>{
+      if(isMounted){
+        setTotalHours({
+          totalHours: res?.data?.totalHours ?? 0 ,
+          label: res?.data?.label ?? EMPTY.label
+        })
+      }
+
+    })
+   .catch(() => {
+        if (isMounted) setHours(EMPTY);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+
+
+  },[studentId])
   return (
     <Card className="h-[122px]">
 
@@ -21,11 +55,15 @@ export default function HoursCard() {
         </div>
 
         <div className="ms-2 mt-2 text-3xl font-bold text-foreground">
-          {hours.total}
+         {loading ? (
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground/50" />
+          ) : (
+            totalHours.totalHours
+          )}
         </div>
 
         <div className="mt-1 text-xs text-muted-foreground">
-          Total learning time
+          {totalHours.label}
         </div>
 
       </CardContent>

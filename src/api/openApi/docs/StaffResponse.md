@@ -29,6 +29,7 @@ Name | Type | Description | Notes
 **createdDt** | **string** |  | [optional] [default to undefined]
 **updatedDt** | **string** |  | [optional] [default to undefined]
 **roles** | **Set&lt;string&gt;** |  | [optional] [default to undefined]
+**message** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -60,6 +61,7 @@ const instance: StaffResponse = {
     createdDt,
     updatedDt,
     roles,
+    message,
 };
 ```
 

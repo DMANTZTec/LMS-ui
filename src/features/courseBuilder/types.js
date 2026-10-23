@@ -1,4 +1,7 @@
-export const uid = () => crypto.randomUUID();
+// export const uid = () => crypto.randomUUID();
+// npm install uuid
+import { v4 as uuidv4 } from "uuid";
+export const uid = () => uuidv4();
 
 export const createTopic = () => ({
   id: uid(),

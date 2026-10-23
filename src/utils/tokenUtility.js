@@ -127,5 +127,27 @@ if(! decode) {
     return null;
 }
 
-return decode.role;
+const role = decode.role;
+if (Array.isArray(role)) {
+    if (role.length === 0) return null;
+    return role[0];
 }
+return role;
+}
+
+
+//  export const getUserRole = () => {
+//   const decoded = decodeToken();
+
+//   if (!decoded) {
+//     return null;
+//   }
+
+//   const role = decoded.role;
+
+//   if (Array.isArray(role)) {
+//     return role.length > 0 ? role : null;
+//   }
+
+//   return role || null;
+// };

@@ -52,7 +52,7 @@ const FormField = ({ label, required, error, children }) => (
 const PhotoUpload = ({ fileInputRef, photoPreview, onPhotoChange, onRemovePhoto, error, register }) => (
     <div className="flex flex-col items-center">
         <label className="text-sm font-medium text-slate-700 self-start mb-2">
-            Photo
+            Photo <span className="text-red-500">*</span>
         </label>
 
         {/* <input */}
@@ -259,13 +259,13 @@ getRoles();
                 data.lastName,
                 data.email,
                 data.mobileNumber,
-                "EMAIL",
                 [data.roles],
                 formattedDOB,
                 [data.gender],
                 formattedDateOfJoining,
-                data.photo
-            );
+                data.photo,
+                //"EMAIL",
+                );
 
             setSubmittedMsg("Submitted successfully. Link has been sent to your mail");
             toast.success("Link has been sent to your mail", { 
@@ -410,7 +410,7 @@ getRoles();
                                         {...register("email")} 
                                     />
                                 </FormField>
-                                <FormField label="Mobile Number" error={errors.mobileNumber}>
+                                <FormField label="Mobile Number" required error={errors.mobileNumber}>
                                     <Input 
                                         placeholder="+1 (555) 000-0000" 
                                         className={inputClassName} 
@@ -421,14 +421,14 @@ getRoles();
 
                             {/* Personal Details Row */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <FormField label="Date of Birth" error={errors.dateOfBirth}>
+                                <FormField label="Date of Birth" required error={errors.dateOfBirth}>
                                     <Input 
                                         type="date" 
                                         className={`${inputClassName} text-slate-500`} 
                                         {...register("dateOfBirth")} 
                                     />
                                 </FormField>
-                                <FormField label="Gender" error={errors.gender}>
+                                <FormField label="Gender" required error={errors.gender}>
                                     <Controller
                                         name="gender"
                                         control={control}

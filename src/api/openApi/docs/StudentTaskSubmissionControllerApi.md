@@ -26,13 +26,15 @@ let studentId: string; // (default to undefined)
 let attachments: Array<File>; // (default to undefined)
 let submissionNotes: string; // (optional) (default to undefined)
 let git: Array<GitDetail>; // (optional) (default to undefined)
+let timeSpentInMinutes: number; // (optional) (default to undefined)
 
 const { status, data } = await apiInstance.submitTask(
     studentTaskId,
     studentId,
     attachments,
     submissionNotes,
-    git
+    git,
+    timeSpentInMinutes
 );
 ```
 
@@ -45,6 +47,7 @@ const { status, data } = await apiInstance.submitTask(
 | **attachments** | **Array&lt;File&gt;** |  | defaults to undefined|
 | **submissionNotes** | [**string**] |  | (optional) defaults to undefined|
 | **git** | **Array&lt;GitDetail&gt;** |  | (optional) defaults to undefined|
+| **timeSpentInMinutes** | [**number**] |  | (optional) defaults to undefined|
 
 
 ### Return type

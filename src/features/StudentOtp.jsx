@@ -56,7 +56,7 @@ const [studentDetail, setStudentDetail] = useAtom(studentDataAtom);
         emailId: emailIdOrMobileNo,
         mobileNum: "string",
         purpose: "LOGIN",
-        otpChannel: "EMAIL"
+        // otpChannel: "EMAIL"
       };
 
       const res = await studentApi.resendOtp(payload);

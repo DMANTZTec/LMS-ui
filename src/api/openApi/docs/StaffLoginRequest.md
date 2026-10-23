@@ -7,7 +7,6 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **username** | **string** |  | [default to undefined]
 **password** | **string** |  | [default to undefined]
-**otpChannel** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -17,7 +16,6 @@ import { StaffLoginRequest } from './api';
 const instance: StaffLoginRequest = {
     username,
     password,
-    otpChannel,
 };
 ```
 

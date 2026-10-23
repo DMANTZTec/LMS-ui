@@ -14,12 +14,14 @@ Name | Type | Description | Notes
 **submissionNotes** | **string** |  | [optional] [default to undefined]
 **attachments** | [**Array&lt;AttachmentResponse&gt;**](AttachmentResponse.md) |  | [optional] [default to undefined]
 **git** | [**Array&lt;GitDetail&gt;**](GitDetail.md) |  | [optional] [default to undefined]
+**timeSpentInMinutes** | **number** |  | [optional] [default to undefined]
 **status** | **string** |  | [optional] [default to undefined]
 **reviewStatus** | **string** |  | [optional] [default to undefined]
 **submittedAt** | **string** |  | [optional] [default to undefined]
 **reviewFeedback** | **string** |  | [optional] [default to undefined]
 **pointsAwarded** | **number** |  | [optional] [default to undefined]
 **overallRating** | **number** |  | [optional] [default to undefined]
+**criteria** | [**Array&lt;CriterionRating&gt;**](CriterionRating.md) |  | [optional] [default to undefined]
 **reviewedAt** | **string** |  | [optional] [default to undefined]
 
 ## Example
@@ -37,12 +39,14 @@ const instance: StudentTaskSubmissionResponse = {
     submissionNotes,
     attachments,
     git,
+    timeSpentInMinutes,
     status,
     reviewStatus,
     submittedAt,
     reviewFeedback,
     pointsAwarded,
     overallRating,
+    criteria,
     reviewedAt,
 };
 ```

@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **overallRating** | **number** |  | [default to undefined]
 **feedbackMessage** | **string** |  | [default to undefined]
+**criteria** | [**Array&lt;CriterionRatingRequest&gt;**](CriterionRatingRequest.md) |  | [optional] [default to undefined]
 
 ## Example
 
@@ -16,6 +17,7 @@ import { ReviewSubmissionRequest } from './api';
 const instance: ReviewSubmissionRequest = {
     overallRating,
     feedbackMessage,
+    criteria,
 };
 ```
 

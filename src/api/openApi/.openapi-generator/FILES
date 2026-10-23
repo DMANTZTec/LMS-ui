@@ -13,9 +13,11 @@ docs/AssignProgramRequest.md
 docs/AssignProgramResponse.md
 docs/AssignStudentToBatchRequest.md
 docs/AttachmentResponse.md
+docs/AttendanceStudentResponse.md
 docs/BatchDetail.md
 docs/BatchInstructorRequest.md
 docs/BatchInstructorResponse.md
+docs/BatchSummaryResponse.md
 docs/ChangePasswordRequest.md
 docs/ChapterDetailResponse.md
 docs/ChapterDropdownResponse.md
@@ -28,6 +30,7 @@ docs/ClassResponse.md
 docs/ClassScheduleResponse.md
 docs/ClassStudentControllerApi.md
 docs/ClassTopicResponse.md
+docs/ClassesAttendanceStatsResponse.md
 docs/ContactUsControllerApi.md
 docs/ContactUsRequest.md
 docs/ContactUsResponse.md
@@ -41,6 +44,8 @@ docs/CourseManagementControllerApi.md
 docs/CourseProgressSummaryResponse.md
 docs/CourseResponse.md
 docs/CreateClassRequest.md
+docs/CriterionRating.md
+docs/CriterionRatingRequest.md
 docs/DailyScheduleResponse.md
 docs/DayTimeSlot.md
 docs/DeleteProgramCourseRequest.md
@@ -53,6 +58,7 @@ docs/EnrollmentRequest.md
 docs/EnrollmentResponse.md
 docs/ForgotPasswordRequest.md
 docs/GitDetail.md
+docs/InstructorAttendanceControllerApi.md
 docs/InstructorBatchResponse.md
 docs/InstructorBatchSummaryResponse.md
 docs/InstructorClassStatsResponse.md
@@ -68,6 +74,8 @@ docs/LearnerPathControllerApi.md
 docs/LearnerPathRequest.md
 docs/LearnerPathResponse.md
 docs/LocalTime.md
+docs/MarkAttendanceRequest.md
+docs/MarkAttendanceResponse.md
 docs/MentorPointsResponse.md
 docs/MyCourseResponse.md
 docs/OtpVerifyRequest.md
@@ -98,9 +106,12 @@ docs/ReviewSubmissionRequest.md
 docs/RoleControllerApi.md
 docs/RoleRequest.md
 docs/RoleResponse.md
+docs/ScheduleAttendanceResponse.md
 docs/ScheduleItemResponse.md
 docs/ScheduleMessageRequest.md
 docs/ScheduleMessageResponse.md
+docs/ScheduleTaskRequest.md
+docs/ScheduleTaskSummaryResponse.md
 docs/SetStaffPasswordRequest.md
 docs/SocialMediaControllerApi.md
 docs/SocialMediaRequest.md
@@ -119,6 +130,7 @@ docs/StaffRoleResponse.md
 docs/StaffUpdateReq1.md
 docs/StaffUpdateRequest.md
 docs/StudentClassResponse.md
+docs/StudentClassesAttendanceResponse.md
 docs/StudentControllerApi.md
 docs/StudentCourseControllerApi.md
 docs/StudentCourseEnrollRequest.md
@@ -128,6 +140,7 @@ docs/StudentDashboardSummaryResponse.md
 docs/StudentLoginRequest.md
 docs/StudentLoginResponse.md
 docs/StudentMyCoursesResponse.md
+docs/StudentOtpVerifyRequest.md
 docs/StudentProgramControllerApi.md
 docs/StudentRegistrationRequest.md
 docs/StudentResponse.md
@@ -138,6 +151,7 @@ docs/StudentTaskMentorRequest.md
 docs/StudentTaskMentorResponse.md
 docs/StudentTaskRequest.md
 docs/StudentTaskResponse.md
+docs/StudentTaskStatusResponse.md
 docs/StudentTaskSubmissionControllerApi.md
 docs/StudentTaskSubmissionResponse.md
 docs/StudentTopicReferenceProgressControllerApi.md
@@ -160,9 +174,12 @@ docs/TopicReferencesDetailResponse.md
 docs/TopicRequestDto.md
 docs/TopicResponseDto.md
 docs/TopicUrlReferenceRequestDto.md
+docs/TotalHoursSpentResponse.md
 docs/UpdateClassRequest.md
 docs/UpdateCourseRequest.md
 docs/UpdateMentorMinutesRequest.md
+docs/WeeklyClassesAttendedResponse.md
+docs/WeeklyHoursSpentResponse.md
 docs/WeeklyInstructorRatingResponse.md
 docs/WeeklyScheduleResponse.md
 docs/WeeklyTaskCompletionResponse.md

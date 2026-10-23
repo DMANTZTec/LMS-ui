@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import * as tabs from './index';
+import { useNavigate } from 'react-router-dom';
+import { getOtpStaff, getUserRole } from "@/utils/tokenUtility";
 
 import { Avatar, MCP } from '@/assets/images';
 import StaffNavbarAvatar from '../Avatar/staff/StaffNavbarAvatar';
@@ -9,6 +11,21 @@ import StaffNavbarAvatar from '../Avatar/staff/StaffNavbarAvatar';
 const Main = () => {
 
     const [activeTab, setActiveTab] = useState("Courses");
+    const navigate = useNavigate();
+    const savedUser = getOtpStaff() || {};
+    const currentRole = String(getUserRole() || savedUser?.role || "").toUpperCase();
+    
+    const getRolesArray = () => {
+      const roleInfo = savedUser?.role;
+      if (!roleInfo) return [];
+      if (Array.isArray(roleInfo)) {
+        return roleInfo.filter(Boolean).map((r) => String(r).toUpperCase());
+      }
+      return [String(roleInfo).toUpperCase()];
+    };
+    const roles = getRolesArray();
+    const hasInstructor = roles.includes("INSTRUCTOR");
+    const canSwitchToInstructor = hasInstructor && (currentRole === "ADMIN" || currentRole === "STAFF");
 
     return (
         <>
@@ -29,7 +46,17 @@ const Main = () => {
                     {/* <div className="border rounded-full p-1 md:p-2">
                         <img src={Avatar} className="w-8 h-8 md:w-10 md:h-10" />
                     </div> */}
-                     <div className="flex items-center">
+                     <div className="flex items-center gap-2">
+                        {hasInstructor && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="bg-blue-100 text-[#155DFC] border-0"
+                            onClick={() => navigate("/Instructor-dashboard")}
+                          >
+                            Switch to Instructor Dashboard
+                          </Button>
+                        )}
                         <StaffNavbarAvatar />
                     </div>
                 </div>

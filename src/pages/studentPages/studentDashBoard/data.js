@@ -11,9 +11,6 @@ export const classes = {
   monthSkipped: 3,
 };
 
-export const hours = {
-  total: 127,
-};
 
 export const mentorPoints = {
   total: 850,
