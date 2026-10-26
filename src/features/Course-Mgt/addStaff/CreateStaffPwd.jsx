@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -39,9 +39,13 @@ const [ searchParams ] = useSearchParams();
 const [isSubmitting, setIsSubmitting] = useState(false);
     const [submittedMsg, setSubmittedMsg] = useState(null);
     const [globalError, setGlobalError] = useState(null);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const navigateTimeoutRef = useRef(null);
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+        const navigate = useNavigate();
 
 // Extract the specific query parameter
   const tokenValue = searchParams.get('token');
@@ -62,6 +66,14 @@ const [isSubmitting, setIsSubmitting] = useState(false);
     setGlobalError(null);
    },[JSON.stringify(watchedValues)]);
 
+     useEffect(() => {
+    return () => {
+        if (navigateTimeoutRef.current) {
+            clearTimeout(navigateTimeoutRef.current);
+        }
+    };
+   }, []);
+
     const createPwd = async (data) => {
     
         setIsSubmitting(true);
@@ -79,6 +91,14 @@ const [isSubmitting, setIsSubmitting] = useState(false);
 try {
 const result = await staffApi.setPassword(payload);
 setSubmittedMsg("Staff password created successfully.");
+setIsSuccess(true);
+setIsSubmitting(false);
+if (navigateTimeoutRef.current) {
+    clearTimeout(navigateTimeoutRef.current);
+}
+navigateTimeoutRef.current = setTimeout(() => {
+    navigate("/staffLogin");
+}, 2000);
 //toast.success("Staff password created successfully.", {duration: 5000,className: '!bg-green-800 !text-white' });
 
 //reset();
@@ -146,7 +166,7 @@ setSubmittedMsg("Staff password created successfully.");
                                                         </div>
                         </Field>
 
-                        <Button type="submit" disabled = {isSubmitting}>
+                       <Button type="submit" disabled = {isSubmitting || isSuccess}>
                             {isSubmitting ? (
                             <>
                             <Loader2 className='animate-spin'/> Submitting

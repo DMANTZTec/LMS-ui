@@ -21,12 +21,36 @@ const getTodayString = () => {
 const getNextDayString = (dateStr) => {
   if (!dateStr) return "";
   const date = new Date(dateStr);
-  date.setDate(date.getDate() + 1); // Increment day by exactly 1
+  date.setDate(date.getDate() + 1);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
+
+// ─── 12-Hour to 24-Hour Conversion Helpers (Frontend Only) ───────────────────
+function to24Hour(hour, minute, period) {
+  if (!hour || !minute || !period) return "";
+  let h = parseInt(hour, 10);
+  const m = parseInt(minute, 10);
+  if (period === "PM" && h < 12) h += 12;
+  if (period === "AM" && h === 12) h = 0;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+function from24Hour(timeStr) {
+  if (!timeStr) return { hour: "", minute: "", period: "AM" };
+  const [hStr, mStr] = timeStr.split(":");
+  let h = parseInt(hStr, 10);
+  const minute = mStr || "00";
+  let period = "AM";
+  if (h >= 12) {
+    period = "PM";
+    if (h > 12) h -= 12;
+  }
+  if (h === 0) h = 12;
+  return { hour: String(h), minute, period };
+}
 
 // ─── Real-Time Production Validation Schema ──────────────────────────────────
 const scheduleFormSchema = z.object({
@@ -113,7 +137,74 @@ function SelectInput({ value, onChange, children, className = "", disabled, isEr
   );
 }
 
-export default function SCheduleCourse({ onSuccess }) {
+// ─── 12-Hour Time Picker Component (Frontend UI Only) ────────────────────────
+function TimePicker12Hour({ value, onChange, disabled }) {
+  const parsed = from24Hour(value);
+  const [hour, setHour] = useState(parsed.hour);
+  const [minute, setMinute] = useState(parsed.minute);
+  const [period, setPeriod] = useState(parsed.period);
+
+  useEffect(() => {
+    const p = from24Hour(value);
+    setHour(p.hour);
+    setMinute(p.minute);
+    setPeriod(p.period);
+  }, [value]);
+
+  const handleChange = (h, m, p) => {
+    setHour(h);
+    setMinute(m);
+    setPeriod(p);
+    if (h && m && p) {
+      const t24 = to24Hour(h, m, p);
+      onChange(t24);
+    } else {
+      onChange("");
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-1.5 flex-1 min-w-0">
+      {/* Hour */}
+      <select
+        disabled={disabled}
+        value={hour}
+        onChange={(e) => handleChange(e.target.value, minute || "00", period)}
+        className="flex-1 min-w-0 rounded border border-slate-200 px-1.5 py-1.5 text-xs bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+      >
+        <option value="">HH</option>
+        {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
+          <option key={h} value={String(h)}>{String(h).padStart(2, "0")}</option>
+        ))}
+      </select>
+      <span className="text-slate-400 font-bold">:</span>
+      {/* Minute */}
+      <select
+        disabled={disabled}
+        value={minute}
+        onChange={(e) => handleChange(hour || "12", e.target.value, period)}
+        className="flex-1 min-w-0 rounded border border-slate-200 px-1.5 py-1.5 text-xs bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+      >
+        <option value="">MM</option>
+        {Array.from({ length: 61 }, (_, i) => String(i).padStart(2, "0")).map((m) => (
+          <option key={m} value={m}>{m}</option>
+        ))}
+      </select>
+      {/* AM/PM */}
+      <select
+        disabled={disabled}
+        value={period}
+        onChange={(e) => handleChange(hour || "12", minute || "00", e.target.value)}
+        className="shrink-0 rounded border border-slate-200 px-1.5 py-1.5 text-xs bg-white text-slate-700 font-semibold focus:outline-none focus:ring-1 focus:ring-indigo-400"
+      >
+        <option value="AM">AM</option>
+        <option value="PM">PM</option>
+      </select>
+    </div>
+  );
+}
+
+export default function ScheduleCourse({ onSuccess }) {
   const [subjects, setSubjects] = useState([]);
   const [courses, setCourses] = useState([]);
   const [instructors, setInstructors] = useState([]);
@@ -134,7 +225,6 @@ export default function SCheduleCourse({ onSuccess }) {
   });
 
   const todayStr = getTodayString();
-  // Calculate minimum end date string contextually
   const minEndDateStr = beginDate ? getNextDayString(beginDate) : todayStr;
 
   useEffect(() => {
@@ -262,6 +352,7 @@ export default function SCheduleCourse({ onSuccess }) {
     setIsSubmitting(true);
 
     try {
+      // Maintains exact 24-hour format payload structure for backend API
       const formattedDayTimes = Object.keys(dayTimes).reduce((acc, day) => {
         const { start, end } = dayTimes[day];
         acc[day] = {
@@ -293,16 +384,16 @@ export default function SCheduleCourse({ onSuccess }) {
   };
 
   return (
-    <div className="bg-gray-100 p-2">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">Schedule a Course</h1>
-        <p className="text-sm text-slate-600 mt-1">Define batch details, assign instructors, and generate the class timetable.</p>
+    <div className="bg-gray-100 p-2 sm:p-4">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Schedule a Course</h1>
+        <p className="text-xs sm:text-sm text-slate-600 mt-1">Define batch details, assign instructors, and generate the class timetable.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-1 gap-6 items-start">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 items-start">
         
         {/* Left Form Panel */}
-        <div className="bg-white rounded-lg border border-slate-200 p-6 flex flex-col gap-5">
+        <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6 flex flex-col gap-5">
           <SectionHeader icon={<BookOpen className="w-5 h-5" />} title="Schedule Details" />
 
           {/* Subject Field */}
@@ -345,7 +436,7 @@ export default function SCheduleCourse({ onSuccess }) {
           </div>
 
           {/* Dates Row Layout */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <FieldLabel>Begin Date</FieldLabel>
               <input
@@ -357,7 +448,6 @@ export default function SCheduleCourse({ onSuccess }) {
                   setBeginDate(selectedBegin); 
                   clearFieldError("beginDate");
                   
-                  // Reset end date if it falls on or before the new begin date
                   if (endDate && endDate <= selectedBegin) {
                     setEndDate("");
                   }
@@ -374,7 +464,7 @@ export default function SCheduleCourse({ onSuccess }) {
               <input
                 type="date"
                 value={endDate}
-                min={minEndDateStr} // Disables selecting any dates before or equal to the Begin Date
+                min={minEndDateStr}
                 disabled={!beginDate} 
                 onChange={(e) => { setEndDate(e.target.value); clearFieldError("endDate"); }}
                 className={`w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 transition ${
@@ -424,7 +514,7 @@ export default function SCheduleCourse({ onSuccess }) {
         </div>
 
         {/* Right Panel Component */}
-        <div className="bg-white rounded-lg border border-slate-200 p-6 flex flex-col gap-5 h-full">
+        <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6 flex flex-col gap-5 h-full">
           <SectionHeader icon={<Calendar className="w-5 h-5" />} title="Generate Classes" />
 
           {/* Recurring Toggles */}
@@ -451,39 +541,69 @@ export default function SCheduleCourse({ onSuccess }) {
             <ErrorMessage message={errors.selectedDays} />
           </div>
 
-          {/* Dynamic Time Input Elements */}
+          {/* Dynamic 12-Hour Time Input Elements */}
           {selectedDays.length > 0 && (
             <div className="flex flex-col gap-3 mt-2">
+              <FieldLabel>Time</FieldLabel>
+              <div className="hidden sm:flex flex-row items-center gap-2 pb-1.5 border-b border-slate-200 text-[11px] font-semibold tracking-wide text-slate-500 uppercase">
+                <div className="flex items-center gap-2 w-11/12 min-w-0">
+                  <span className="w-10 shrink-0">Day</span>
+                  <span className="flex-1">Start Time</span>
+                  <span className="w-1 shrink-0" />
+                  <span className="flex-1">End Time</span>
+                </div>
+                <div className="w-1/12 text-center">Duration</div>
+              </div>
               {selectedDays.map((day) => {
                 const t = dayTimes[day] || { start: "", end: "" };
                 const dur = calcDuration(t.start, t.end);
                 return (
-                  <div key={day} className="flex flex-row items-center gap-2 py-1.5 border-b border-slate-50 last:border-none w-full">
-  {/* Left Side: Day and Inputs (80% Width) */}
-  <div className="flex items-center gap-2 w-11/12">
-    <span className="text-sm font-medium text-slate-700 w-10 shrink-0">{day}</span>
-    <input
-      type="time"
-      disabled={isSubmitting}
-      value={t.start}
-      onChange={(e) => updateTime(day, "start", e.target.value)}
-      className="flex-1 min-w-0 rounded-lg border border-slate-200 px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-    />
-    <span className="text-slate-400 shrink-0">–</span>
-    <input
-      type="time"
-      disabled={isSubmitting}
-      value={t.end}
-      onChange={(e) => updateTime(day, "end", e.target.value)}
-      className="flex-1 min-w-0 rounded-lg border border-slate-200 px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-    />
-  </div>
+                  <div key={day} className="flex flex-col gap-2 py-2 sm:py-1.5 border-b border-slate-50 last:border-none w-full">
+                    {/* Mobile: Stacked Start / End Time */}
+                    <div className="flex flex-col gap-2 sm:hidden">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-slate-700">{day}</span>
+                        <span className="text-xs font-medium text-slate-500">{dur}</span>
+                      </div>
+                      <div>
+                        <span className="block text-[11px] font-medium text-slate-500 uppercase mb-1">Start Time</span>
+                        <TimePicker12Hour
+                          disabled={isSubmitting}
+                          value={t.start}
+                          onChange={(val) => updateTime(day, "start", val)}
+                        />
+                      </div>
+                      <div>
+                        <span className="block text-[11px] font-medium text-slate-500 uppercase mb-1">End Time</span>
+                        <TimePicker12Hour
+                          disabled={isSubmitting}
+                          value={t.end}
+                          onChange={(val) => updateTime(day, "end", val)}
+                        />
+                      </div>
+                    </div>
 
-  {/* Right Side: Duration Indicator (20% Width) */}
-  <div className="w-1/12 text-xs font-medium text-slate-500  px-2 py-1.5 rounded text-center truncate">
-    {dur}
-  </div>
-</div>
+                    {/* Desktop: Day and 12-Hour Inputs in a Row */}
+                    <div className="hidden sm:flex flex-row items-center gap-2 w-full">
+                      <div className="flex items-center gap-2 w-11/12 min-w-0">
+                        <span className="text-sm font-medium text-slate-700 w-10 shrink-0">{day}</span>
+                        <TimePicker12Hour
+                          disabled={isSubmitting}
+                          value={t.start}
+                          onChange={(val) => updateTime(day, "start", val)}
+                        />
+                        <span className="text-slate-400 shrink-0">–</span>
+                        <TimePicker12Hour
+                          disabled={isSubmitting}
+                          value={t.end}
+                          onChange={(val) => updateTime(day, "end", val)}
+                        />
+                      </div>
+                      <div className="w-1/12 text-xs font-medium text-slate-500 px-2 py-1.5 rounded text-center truncate">
+                        {dur}
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
               <ErrorMessage message={errors.dayTimes} />
