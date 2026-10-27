@@ -13,7 +13,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { ArrowLeft, Clock, Loader2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Clock, Loader2, AlertCircle, Eye } from 'lucide-react';
 import { isAuthenticated, getUserRole } from '@/utils/tokenUtility';
 
 const levelColors = {
@@ -165,6 +165,7 @@ export default function ViewCourses() {
               {filteredCourses.map((course) => (
                 <Card
                   key={course.id}
+                  onClick={() => navigate(`/view-courses/${course.courseId}`)}
                   className="bg-white rounded-2xl overflow-hidden border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col p-0"
                 >
                   <CardHeader className="p-0 relative h-44 bg-teal-100 overflow-hidden">
@@ -227,13 +228,24 @@ export default function ViewCourses() {
                       <Clock className="w-3.5 h-3.5" />
                       <span>{course.language}</span>
                     </div>
-                    <Button
-                      onClick={handleEnroll}
-                      size="sm"
-                      className="bg-[#0d9488] hover:bg-[#0f766e] text-white rounded-full px-4 text-xs font-semibold transition-colors"
-                    >
-                      Enroll Now
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        onClick={() => navigate(`/view-courses/${course.courseId}`)}
+                        variant="outline"
+                        size="sm"
+                        className="border-teal-600 text-teal-700 hover:bg-teal-50 rounded-full px-4 text-xs font-semibold transition-colors"
+                      >
+                        {/* <Eye className="w-3.5 h-3.5 mr-1" /> */}
+                        View
+                      </Button>
+                      <Button
+                        onClick={handleEnroll}
+                        size="sm"
+                        className="bg-[#0d9488] hover:bg-[#0f766e] text-white rounded-full px-4 text-xs font-semibold transition-colors"
+                      >
+                        Enroll Now
+                      </Button>
+                    </div>
                   </CardFooter>
                 </Card>
               ))}

@@ -29,6 +29,7 @@ import { StudentDashBoard } from '@/pages/studentPages/studentDashBoard/StudentD
 import ForgotPassword from '@/pages/Auth/StaffForgotPassword';
 import ViewCourses from '@/pages/public/ViewCourses';
 import StudentCoursesPage from '@/pages/studentPages/studentDashBoard/StudentCoursesPage';
+import ViewCourseDetails from '@/pages/public/ViewCourseDetails';
 
 const AppRoute = () => {
 
@@ -53,6 +54,7 @@ const AppRoute = () => {
                     <Route path="/reset-password" element={<ResetStaffPwd />} /> 
                     <Route path="/forgot-password" element={<ForgotPassword />} />   
                     <Route path="/view-courses" element={<ViewCourses/>} />
+                    <Route path="/view-courses/:courseId" element={<ViewCourseDetails/>} />
                     
                     {/* STAFF Routes */}
                     <Route element={<AuthGuard allowedRole="STAFF" />}>
