@@ -628,10 +628,10 @@ export interface PageStaffResponse {
 export interface PageableObject {
     'offset'?: number;
     'sort'?: SortObject;
-    'paged'?: boolean;
-    'unpaged'?: boolean;
     'pageSize'?: number;
     'pageNumber'?: number;
+    'paged'?: boolean;
+    'unpaged'?: boolean;
 }
 export interface PlanClassTopicsRequest {
     'staffId': string;
@@ -907,6 +907,27 @@ export interface StaffCourseResponse {
     'courseId'?: string;
     'courseTitle'?: string;
 }
+export interface StaffDetailsUpdateRequest {
+    'firstNm'?: string;
+    'lastNm'?: string;
+    'dob'?: string;
+    'gender'?: StaffDetailsUpdateRequestGenderEnum;
+    'dateOfJoining'?: string;
+    'email'?: string;
+    'mobileNum'?: string;
+    'roleIds'?: Set<number>;
+}
+
+export const StaffDetailsUpdateRequestGenderEnum = {
+    Male: 'MALE',
+    Female: 'FEMALE',
+    PreferNotToSay: 'PREFER_NOT_TO_SAY',
+    NonBinary: 'NON_BINARY',
+    Other: 'OTHER',
+} as const;
+
+export type StaffDetailsUpdateRequestGenderEnum = typeof StaffDetailsUpdateRequestGenderEnum[keyof typeof StaffDetailsUpdateRequestGenderEnum];
+
 export interface StaffLoginRequest {
     'username': string;
     'password': string;
@@ -12258,6 +12279,48 @@ export const StaffControllerApiAxiosParamCreator = function (configuration?: Con
         },
         /**
          * 
+         * @param {string} staffId 
+         * @param {StaffDetailsUpdateRequest} staffDetailsUpdateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateStaffDetails: async (staffId: string, staffDetailsUpdateRequest: StaffDetailsUpdateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'staffId' is not null or undefined
+            assertParamExists('updateStaffDetails', 'staffId', staffId)
+            // verify required parameter 'staffDetailsUpdateRequest' is not null or undefined
+            assertParamExists('updateStaffDetails', 'staffDetailsUpdateRequest', staffDetailsUpdateRequest)
+            const localVarPath = `/api/staff/{staffId}/update-details`
+                .replace(`{${"staffId"}}`, encodeURIComponent(String(staffId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            localVarHeaderParameter['Accept'] = '*/*';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(staffDetailsUpdateRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} token 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -12537,6 +12600,19 @@ export const StaffControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} staffId 
+         * @param {StaffDetailsUpdateRequest} staffDetailsUpdateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateStaffDetails(staffId: string, staffDetailsUpdateRequest: StaffDetailsUpdateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateStaffDetails(staffId, staffDetailsUpdateRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffControllerApi.updateStaffDetails']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {string} token 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -12714,6 +12790,16 @@ export const StaffControllerApiFactory = function (configuration?: Configuration
          */
         updateStaff1(staffId: string, staffUpdateReq1: StaffUpdateReq1, options?: RawAxiosRequestConfig): AxiosPromise<StaffResponse> {
             return localVarFp.updateStaff1(staffId, staffUpdateReq1, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} staffId 
+         * @param {StaffDetailsUpdateRequest} staffDetailsUpdateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateStaffDetails(staffId: string, staffDetailsUpdateRequest: StaffDetailsUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<StaffResponse> {
+            return localVarFp.updateStaffDetails(staffId, staffDetailsUpdateRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -12900,6 +12986,17 @@ export class StaffControllerApi extends BaseAPI {
      */
     public updateStaff1(staffId: string, staffUpdateReq1: StaffUpdateReq1, options?: RawAxiosRequestConfig) {
         return StaffControllerApiFp(this.configuration).updateStaff1(staffId, staffUpdateReq1, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} staffId 
+     * @param {StaffDetailsUpdateRequest} staffDetailsUpdateRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public updateStaffDetails(staffId: string, staffDetailsUpdateRequest: StaffDetailsUpdateRequest, options?: RawAxiosRequestConfig) {
+        return StaffControllerApiFp(this.configuration).updateStaffDetails(staffId, staffDetailsUpdateRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
