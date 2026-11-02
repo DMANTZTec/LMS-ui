@@ -14,15 +14,19 @@ export const staffIdAtom = atomWithStorage('staffId', null, undefined, { getOnIn
 // claude code generated
 // Stores the staff OTP/login session payload in sessionStorage under the key "otpStaff"
       //export const otpStaffAtom = atomWithStorage('otpStaff', null, sessionStorageAdapter);
-export const otpStaffAtom = atomWithStorage('otpStaff', null, sessionStorageAdapter, { getOnInit: true });
+//export const otpStaffAtom = atomWithStorage('otpStaff', null, sessionStorageAdapter, { getOnInit: true });
+export const otpStaffAtom = atomWithStorage('otpStaff', null, undefined, { getOnInit: true });
 // claude code generated
 // Stores the student OTP/login session payload in sessionStorage under the key "otpUser"
-export const otpUserAtom = atomWithStorage('otpUser', null, sessionStorageAdapter, { getOnInit: true });
+//export const otpUserAtom = atomWithStorage('otpUser', null, sessionStorageAdapter, { getOnInit: true });
+export const otpUserAtom = atomWithStorage('otpUser', null, undefined, { getOnInit: true });
 
 // claude code generated
 // Stores the student registration/profile payload in sessionStorage under the key "stuRegData"
       //export const stuRegDataAtom = atomWithStorage('stuRegData', null, sessionStorageAdapter);
-export const stuRegDataAtom = atomWithStorage('stuRegData', null, sessionStorageAdapter, { getOnInit: true });
+//export const stuRegDataAtom = atomWithStorage('stuRegData', null, sessionStorageAdapter, { getOnInit: true });
+export const stuRegDataAtom = atomWithStorage('stuRegData', null, undefined, { getOnInit: true });
+
 // Stores the last successfully submitted student payload
 export const studentDataAtom = atom(null);
 

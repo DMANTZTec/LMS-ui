@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
+import { useAtom } from "jotai";
 
 import { getUserRole } from "@/utils/tokenUtility";
+import { instructorActiveNavAtom } from "@/store/atoms/studentReportsAtoms";
 
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
@@ -10,9 +12,11 @@ import MyCourses from "./sections/MyCourses";
 import Placeholder from "./sections/Placeholder";
 import { NAV_ITEMS } from "./data";
 import Attendance from "./sections/Attendance";
+import StudentReports from "./sections/StudentReports";
 
 export function InstructorDashBoard() {
-  const [activeNav, setActiveNav] = useState("dashboard");
+  // Persisted in sessionStorage so a browser refresh keeps the current section open.
+  const [activeNav, setActiveNav] = useAtom(instructorActiveNavAtom);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (getUserRole().toUpperCase() !== "INSTRUCTOR") {
@@ -30,7 +34,11 @@ export function InstructorDashBoard() {
         onClose={() => setSidebarOpen(false)}
       />
 
-      <div className="flex min-w-0 flex-1 flex-col overflow-y-auto lg:overflow-hidden">
+      <div
+        className={`flex min-w-0 flex-1 flex-col overflow-y-auto lg:overflow-hidden${
+          activeNav === "reports" ? " hide-scrollbar" : ""
+        }`}
+      >
         <Topbar onMenuClick={() => setSidebarOpen(true)} />
 
         <main className="flex flex-col gap-4 p-4 md:gap-6 md:p-6 lg:min-h-0 lg:flex-1 lg:gap-4 lg:overflow-hidden lg:p-6 xl:p-8">
@@ -40,8 +48,10 @@ export function InstructorDashBoard() {
             <MyCourses />
           ) :activeNav === "attendance" ? (
             <Attendance />
-          
-          ): (
+
+          ) : activeNav === "reports" ? (
+            <StudentReports onNavigate={setActiveNav} />
+          ) : (
             <Placeholder
               item={activeItem?.label || "Section"}
               onBack={() => setActiveNav("dashboard")}

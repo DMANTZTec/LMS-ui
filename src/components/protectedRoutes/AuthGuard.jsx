@@ -2,7 +2,7 @@
 // ───────────── ORIGINAL CODE (commented out; kept for rollback) ─────────────
 // import { Navigate, Outlet } from "react-router-dom";
 // import { getToken, getUserRole, isTokenExpired } from "@/utils/tokenUtility";
-//
+
 // const AuthGuard = ({allowedRole}) => {
 //     const token = getToken();
 //     const role = getUserRole();
@@ -10,27 +10,27 @@
 //     // console.log("allowedRole is: ",allowedRole);
 //     // claude code generated
 //     // console.log("token is deleted ?. ",token);
-//
+
 // if(!token) {
 //   // claude code generated
 //   // console.log("!token in AuthGuard.jsx");
 //     return <Navigate to={allowedRole === "STUDENT" ? "/studentLogin": "/staffLogin"} replace />
 // }
-//
+
 // if(isTokenExpired()) {
 // // claude code generated
 // // console.log("isTokenExpired in AuthGuard.jsx");
 // return <Navigate to={allowedRole === "STUDENT" ? "/studentLogin": "/staffLogin"} replace />
 // }
-//
-//
-//
+
+
+
 // return <Outlet />;
 // }
-//
-//
-// export default  AuthGuard;
-// ───────────── END ORIGINAL CODE ─────────────
+
+
+//export default  AuthGuard;
+//───────────── END ORIGINAL CODE ─────────────
 
 // claude code generated
 // ───────────── NEW CODE: existing checks + role check against allowedRole ─────────────
@@ -111,5 +111,5 @@ return <Outlet />;
 
 
 export default  AuthGuard;
-// claude code generated
+//claude code generated
 // ───────────── END NEW CODE ─────────────
