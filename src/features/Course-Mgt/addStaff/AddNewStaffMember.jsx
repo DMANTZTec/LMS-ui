@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from 'react-hot-toast';
-import { Upload, CheckCircle, Loader, RefreshCw, Trash2, Check, ChevronsUpDown, X } from "lucide-react";
+import { Upload, CheckCircle, Loader, RefreshCw, Trash2, Check, ChevronsUpDown, X, Pencil } from "lucide-react";
 
 import {                                                                
   Popover,
@@ -49,20 +49,18 @@ const FormField = ({ label, required, error, children }) => (
     </div>
 );
 
-const PhotoUpload = ({ fileInputRef, photoPreview, onPhotoChange, onRemovePhoto, error, register }) => (
+const PhotoUpload = ({ fileInputRef, photoPreview, onPhotoChange, onRemovePhoto, error }) => (
     <div className="flex flex-col items-center">
         <label className="text-sm font-medium text-slate-700 self-start mb-2">
             Photo <span className="text-red-500">*</span>
         </label>
 
-        {/* <input */}
-          <input
-          ref={fileInputRef}
+        <input
+            ref={fileInputRef}
             type="file"
             className="hidden"
             accept="image/png,image/jpeg"
             onChange={onPhotoChange}
-            register
         />
 
         {/* Outer frame matching standard passport size dimensions */}
@@ -105,8 +103,6 @@ const PhotoUpload = ({ fileInputRef, photoPreview, onPhotoChange, onRemovePhoto,
                                 e.preventDefault();
                                 e.stopPropagation();
                                 fileInputRef.current?.click();
-                                //onPhotoChange();                        i have added this line
-                                
                             }}
                             className="w-full py-1 px-1.5 bg-white/90 hover:bg-white text-slate-800 text-[10px] font-medium rounded shadow flex items-center justify-center gap-1 transition-colors"
                         >
@@ -149,6 +145,387 @@ const PhotoUpload = ({ fileInputRef, photoPreview, onPhotoChange, onRemovePhoto,
     </div>
 );
 
+const formatLabel = (value) =>
+    value ? String(value).toLowerCase().replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "—";
+
+const formatDate = (value) => {
+    if (!value) return "—";
+    const d = new Date(value);
+    return isNaN(d) ? value : d.toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" });
+};
+
+// Plain-text label/value pair (not an input) for the read-only view
+const ViewField = ({ label, children, className = "" }) => (
+    <div className={`py-3 border-b border-slate-100 ${className}`}>
+        <dt className="text-xs font-semibold uppercase tracking-wider text-slate-400">{label}</dt>
+        <dd className="mt-1 text-base font-medium text-slate-900 break-words">{children || "—"}</dd>
+    </div>
+);
+
+// Read-only view of the staff member fetched back after creation
+const StaffDetailsView = ({ staff, photoUrl, submittedMsg, onClose }) => {
+    const roles = staff.roles ? [...staff.roles] : [];
+    const initials = `${staff.firstNm?.trim()?.[0] ?? ""}${staff.lastNm?.trim()?.[0] ?? ""}`.toUpperCase();
+    // Fall back to initials when no photo was selected or it fails to load
+    const [photoFailed, setPhotoFailed] = useState(false);
+    const showPhoto = photoUrl && !photoFailed;
+
+    return (
+    <div className="px-6 py-5 space-y-5">
+        {submittedMsg && (
+            <div className="flex items-center gap-2 p-3.5 rounded-lg bg-green-50 border border-green-200 text-sm text-green-600">
+                <CheckCircle className="text-green-600" size={20} />
+                {submittedMsg}
+            </div>
+        )}
+
+        {/* Profile summary */}
+        <div className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-600 text-lg font-semibold text-white shadow-sm">
+                {showPhoto ? (
+                    <img
+                        src={photoUrl}
+                        alt={`${staff.firstNm ?? ""} ${staff.lastNm ?? ""}`.trim() || "Profile"}
+                        className="h-full w-full object-cover"
+                        onError={() => setPhotoFailed(true)}
+                    />
+                ) : (
+                    initials || "—"
+                )}
+            </div>
+            <div className="min-w-0">
+                <p className="text-xl font-semibold text-slate-900 truncate">
+                    {staff.firstNm} {staff.lastNm}
+                </p>
+                <p className="mt-0.5 text-sm text-slate-500 truncate">{staff.email}</p>
+            </div>
+        </div>
+
+        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8">
+            <ViewField label="Staff ID"><span className="font-mono text-blue-700">{staff.staffId}</span></ViewField>
+            <ViewField label="Gender">{staff.gender && formatLabel(staff.gender)}</ViewField>
+            <ViewField label="First Name">{staff.firstNm}</ViewField>
+            <ViewField label="Last Name">{staff.lastNm}</ViewField>
+            <ViewField label="Email">{staff.email}</ViewField>
+            <ViewField label="Mobile Number">{staff.mobileNum}</ViewField>
+            <ViewField label="Date of Birth">{staff.dob && formatDate(staff.dob)}</ViewField>
+            <ViewField label="Date of Joining">{staff.dateOfJoining && formatDate(staff.dateOfJoining)}</ViewField>
+            <ViewField label="Roles" className="sm:col-span-2 border-b-0">
+                {roles.length > 0 && (
+                    <span className="flex flex-wrap gap-2">
+                        {roles.map((role) => (
+                            <span
+                                key={role}
+                                className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 border border-violet-100 px-3 py-1 text-sm font-medium text-violet-700"
+                            >
+                                <span className="h-1.5 w-1.5 rounded-full bg-violet-500" />
+                                {formatLabel(role)}
+                            </span>
+                        ))}
+                    </span>
+                )}
+            </ViewField>
+        </dl>
+
+        <div className="border-t pt-5 flex justify-end gap-3">
+            <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                className="w-[95px] h-10 border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors"
+            >
+                Close
+            </Button>
+        </div>
+    </div>
+    );
+};
+
+// Editable fields of the created staff member, with the same rules as create
+const staffEditSchema = staffFormSchema.pick({
+    firstName: true,
+    lastName: true,
+    email: true,
+    mobileNumber: true,
+    dateOfBirth: true,
+    gender: true,
+    dateOfJoining: true,
+    roles: true,
+}).extend({
+    // Optional in edit mode (keep the current photo); a new one must pass the create rules
+    photo: staffFormSchema.shape.photo.nullable().optional(),
+});
+
+// Profile photo thumbnail in edit mode with a "Change" button to pick a new one
+const EditPhotoField = ({ form, currentPhotoUrl, initials }) => {
+    const { setValue, watch, formState: { errors } } = form;
+    const photoInputRef = useRef(null);
+    const newPhoto = watch("photo");
+    const [newPhotoUrl, setNewPhotoUrl] = useState(null);
+
+    // Free the preview's object URL when it is replaced or the view unmounts
+    useEffect(() => () => {
+        if (newPhotoUrl) URL.revokeObjectURL(newPhotoUrl);
+    }, [newPhotoUrl]);
+
+    const thumbUrl = newPhotoUrl || currentPhotoUrl;
+
+    const handleChange = (e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setValue("photo", file, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
+            setNewPhotoUrl(URL.createObjectURL(file));
+        }
+        // Allow picking the same file again after an error
+        e.target.value = "";
+    };
+
+    const handleUndo = () => {
+        setValue("photo", null, { shouldValidate: true, shouldDirty: true });
+        setNewPhotoUrl(null);
+    };
+
+    return (
+        <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-slate-700">Profile Photo</label>
+            <div className="flex items-center gap-4">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-600 text-lg font-semibold text-white shadow-sm ring-2 ring-slate-100">
+                    {thumbUrl ? (
+                        <img src={thumbUrl} alt="Profile" className="h-full w-full object-cover" />
+                    ) : (
+                        initials || "—"
+                    )}
+                </div>
+                <div className="flex flex-col gap-1.5 min-w-0">
+                    <div className="flex items-center gap-2">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => photoInputRef.current?.click()}
+                            className="h-9 px-3 border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg font-medium gap-1.5"
+                        >
+                            <RefreshCw size={14} />
+                            Change
+                        </Button>
+                        {newPhoto && (
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                onClick={handleUndo}
+                                className="h-9 px-3 text-slate-500 hover:text-slate-700 rounded-lg font-medium"
+                            >
+                                Undo
+                            </Button>
+                        )}
+                    </div>
+                    <p className="text-xs text-slate-500 truncate">
+                        {newPhoto instanceof File ? newPhoto.name : "JPEG or PNG"}
+                    </p>
+                </div>
+                <input
+                    ref={photoInputRef}
+                    type="file"
+                    className="hidden"
+                    accept="image/png,image/jpeg"
+                    onChange={handleChange}
+                />
+            </div>
+            {errors.photo && <p className="text-xs font-medium text-red-500">{errors.photo.message}</p>}
+        </div>
+    );
+};
+
+// Multi-select roles picker for edit mode, same look and behaviour as "Assign Roles" in the create form
+const RolesMultiSelect = ({ value, onChange, roleOptions }) => {
+    const [openRoles, setOpenRoles] = useState(false);
+    const selectedValues = value || [];
+
+    const toggleOption = (val) => {
+        const updated = selectedValues.includes(val)
+            ? selectedValues.filter((item) => item !== val)
+            : [...selectedValues, val];
+        onChange(updated);
+    };
+
+    return (
+        <Popover open={openRoles} onOpenChange={setOpenRoles}>
+            <PopoverTrigger asChild>
+                <Button
+                    type="button"
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={openRoles}
+                    className="w-full min-h-10 h-auto py-2 px-3 justify-between bg-slate-50 border-slate-200 hover:bg-slate-100 rounded-lg text-left font-normal"
+                >
+                    <div className="flex flex-wrap gap-1 items-center max-w-[85%]">
+                        {selectedValues.length === 0 && (
+                            <span className="text-slate-400 text-sm">Select roles...</span>
+                        )}
+
+                        {selectedValues.map((val) => {
+                            const label = roleOptions.find((opt) => opt.id === val)?.roleNm;
+                            return (
+                                <Badge
+                                    key={val}
+                                    variant="secondary"
+                                    className="bg-slate-200 text-slate-800 hover:bg-slate-300 gap-1 rounded-md text-xs py-0.5 px-2"
+                                >
+                                    {label}
+                                    <X
+                                        className="h-3 w-3 text-slate-500 hover:text-slate-900 cursor-pointer"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            toggleOption(val);
+                                        }}
+                                    />
+                                </Badge>
+                            );
+                        })}
+                    </div>
+                    <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50 ml-2" />
+                </Button>
+            </PopoverTrigger>
+
+            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 rounded-lg bg-white border border-slate-200 shadow-md">
+                <Command>
+                    <CommandInput placeholder="Search roles..." className="h-9" />
+                    <CommandList>
+                        <CommandEmpty>No roles found.</CommandEmpty>
+                        <CommandGroup>
+                            {roleOptions.map((option) => {
+                                const isSelected = selectedValues.includes(option.id);
+                                return (
+                                    <CommandItem
+                                        key={option.id}
+                                        onSelect={() => toggleOption(option.id)}
+                                        className="cursor-pointer flex items-center justify-between py-2 px-3 hover:bg-slate-100 rounded-md"
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <div
+                                                className={`flex h-4 w-4 items-center justify-center rounded border border-slate-300 transition-colors ${
+                                                    isSelected
+                                                        ? "bg-blue-600 border-blue-600 text-white"
+                                                        : "bg-white opacity-70"
+                                                }`}
+                                            >
+                                                {isSelected && <Check className="h-3 w-3 stroke-[3]" />}
+                                            </div>
+                                            <span className="text-sm text-slate-700 font-medium">
+                                                {option.roleNm}
+                                            </span>
+                                        </div>
+                                    </CommandItem>
+                                );
+                            })}
+                        </CommandGroup>
+                    </CommandList>
+                </Command>
+            </PopoverContent>
+        </Popover>
+    );
+};
+
+// Edit mode of the created staff member: Staff ID stays plain text
+const StaffEditView = ({ staff, form, roleOptions, photoUrl, inputClassName, isSaving, error, onSave, onCancel }) => {
+    const { register, control, handleSubmit, formState: { errors } } = form;
+    const initials = `${staff.firstNm?.trim()?.[0] ?? ""}${staff.lastNm?.trim()?.[0] ?? ""}`.toUpperCase();
+
+    return (
+    <form onSubmit={handleSubmit(onSave)} className="px-6 py-5 space-y-5">
+        {error && (
+            <div className="p-3.5 rounded-lg bg-red-50 border border-red-200 text-sm text-red-600">
+                {error}
+            </div>
+        )}
+
+        <EditPhotoField form={form} currentPhotoUrl={photoUrl} initials={initials} />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+            <ViewField label="Staff ID" className="border-b-0 !py-0">
+                <span className="font-mono text-blue-700">{staff.staffId}</span>
+            </ViewField>
+            <FormField label="Gender" required error={errors.gender}>
+                <Controller
+                    name="gender"
+                    control={control}
+                    render={({ field }) => (
+                        <Select onValueChange={field.onChange} value={field.value || ""}>
+                            <SelectTrigger className="h-10 bg-slate-50 border-slate-200 text-slate-700 rounded-lg w-full">
+                                <SelectValue placeholder="Select gender" />
+                            </SelectTrigger>
+                            <SelectContent className="rounded-lg">
+                                <SelectItem value="MALE">Male</SelectItem>
+                                <SelectItem value="FEMALE">Female</SelectItem>
+                                <SelectItem value="OTHER">Other</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    )}
+                />
+            </FormField>
+            <FormField label="First Name" required error={errors.firstName}>
+                <Input className={inputClassName} {...register("firstName")} />
+            </FormField>
+            <FormField label="Last Name" required error={errors.lastName}>
+                <Input className={inputClassName} {...register("lastName")} />
+            </FormField>
+            <FormField label="Email Address" required error={errors.email}>
+                <Input type="email" className={inputClassName} {...register("email")} />
+            </FormField>
+            <FormField label="Mobile Number" required error={errors.mobileNumber}>
+                <Input className={inputClassName} {...register("mobileNumber")} />
+            </FormField>
+            <FormField label="Date of Birth" required error={errors.dateOfBirth}>
+                <Input type="date" className={inputClassName} {...register("dateOfBirth")} />
+            </FormField>
+            <FormField label="Date of Joining" required error={errors.dateOfJoining}>
+                <Input type="date" className={inputClassName} {...register("dateOfJoining")} />
+            </FormField>
+            <div className="sm:col-span-2">
+                <FormField label="Assign Roles" required error={errors.roles}>
+                    <Controller
+                        name="roles"
+                        control={control}
+                        render={({ field }) => (
+                            <RolesMultiSelect
+                                value={field.value}
+                                onChange={field.onChange}
+                                roleOptions={roleOptions}
+                            />
+                        )}
+                    />
+                </FormField>
+            </div>
+        </div>
+
+        <div className="border-t pt-5 flex justify-end gap-3">
+            <Button
+                type="button"
+                variant="outline"
+                onClick={onCancel}
+                disabled={isSaving}
+                className="w-[95px] h-10 border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors"
+            >
+                Cancel
+            </Button>
+            <Button
+                type="submit"
+                disabled={isSaving}
+                className="bg-blue-600 hover:bg-blue-700 text-white w-[140px] h-10 rounded-lg font-medium transition-colors"
+            >
+                {isSaving ? (
+                    <div className="flex items-center justify-center gap-2">
+                        <Loader size={16} className="animate-spin" />
+                        <span>Saving</span>
+                    </div>
+                ) : (
+                    "Save Changes"
+                )}
+            </Button>
+        </div>
+    </form>
+    );
+};
+
 // --- Main Component ---
 
 const AddNewStaffMember = ({ open, onOpenChange, onSuccess }) => {
@@ -157,6 +534,26 @@ const AddNewStaffMember = ({ open, onOpenChange, onSuccess }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submittedMsg, setSubmittedMsg] = useState(null);
     const [globalError, setGlobalError] = useState(null);
+    const [createdStaff, setCreatedStaff] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [editError, setEditError] = useState(null);
+
+    // Separate form for editing the created staff member, so the create form is untouched
+    const editForm = useForm({
+        resolver: zodResolver(staffEditSchema),
+        defaultValues: {
+            firstName: "",
+            lastName: "",
+            email: "",
+            mobileNumber: "",
+            dateOfBirth: "",
+            gender: "",
+            dateOfJoining: "",
+            roles: [],
+            photo: null,
+        },
+    });
 
 const [openPopOver, setOpenPopOver] = useState(false);                    
 
@@ -171,12 +568,7 @@ const fetchRoles = async () => {
 useEffect(() => {
     const getRoles = async () => {
         const response = await fetchRoles();
-        // claude code generated
-        // console.log("response is: ", response);
         setRoleOptions(response.data);
-        // claude code generated
-        // console.log("response.data is: ",response.data);
-        
     }
 getRoles();
 },[]);
@@ -188,7 +580,6 @@ getRoles();
         watch,
         reset,
         formState: { errors },
-        getValues,
     } = useForm({
         resolver: zodResolver(staffFormSchema),
         defaultValues: {
@@ -201,8 +592,6 @@ getRoles();
             dateOfJoining: "",
             roles: [],
             photo: null,
-
-            roles: [],
         },
     });
 
@@ -219,10 +608,6 @@ getRoles();
     }, [JSON.stringify(watchedValues), watchedPhoto?.name, watchedPhoto?.size]);
 
     const onSubmit = async (data) => {
-        //console.log("entered into onSubmit function and data is: ",data);
-        //const stringRolesArray = data.roles;
-        //const formattedRolesArray =stringRolesArray.map(Number);
-        
         setIsSubmitting(true);
         setGlobalError(null);
         setSubmittedMsg(null);
@@ -235,26 +620,8 @@ getRoles();
             const formattedDateOfJoining = data.dateOfJoining instanceof Date
                 ? data.dateOfJoining.toISOString().split('T')[0]
                 : data.dateOfJoining;
-// claude code generated
-// console.log("data is: ",data);
-                const payload = {
-                'firstNm':data.firstName,
-                'lastNm': data.lastName,
-                'emailId':data.email,
-                'mobileNum':data.mobileNumber,
-                'otpChannel': "EMAIL",
-                'roleIds': [data.roles],
 
-                'dob':formattedDOB,
-                'gender':[data.gender],
-                'dateOfJoining':formattedDateOfJoining,
-                'profileImg': data.photo,
-                
-                
-                }
-  //              console.log("payload.lastNm is",payload.lastNm);
-//const result = await staffApi.createStaff(payload);
-             const result = await staffApi.createStaff(
+            const result = await staffApi.createStaff(
                 data.firstName,
                 data.lastName,
                 data.email,
@@ -264,15 +631,25 @@ getRoles();
                 [data.gender],
                 formattedDateOfJoining,
                 data.photo,
-                //"EMAIL",
-                );
+            );
 
             setSubmittedMsg("Submitted successfully. Link has been sent to your mail");
-            toast.success("Link has been sent to your mail", { 
-                duration: 5000, 
-                className: '!bg-green-800 !text-white' 
+            toast.success("Link has been sent to your mail", {
+                duration: 5000,
+                className: '!bg-green-800 !text-white'
             });
             onSuccess();
+
+            // Read the saved record back from the database to show it in view mode;
+            // fall back to the create response if the lookup fails
+            const created = result?.data;
+            try {
+                const saved = created?.staffId ? await staffApi.getStaffById(created.staffId) : null;
+                setCreatedStaff(saved?.data || created || null);
+            } catch (fetchError) {
+                console.error("Fetching created staff failed: ", fetchError);
+                setCreatedStaff(created || null);
+            }
         } catch (error) {
             console.error("Submission failed: ", error);
             setSubmittedMsg(null);
@@ -290,6 +667,10 @@ getRoles();
         onOpenChange(false);
         setSubmittedMsg(null);
         setGlobalError(null);
+        setCreatedStaff(null);
+        setIsEditing(false);
+        setEditError(null);
+        editForm.reset();
     };
 
     const handleOpenChange = (isOpen) => {
@@ -298,31 +679,106 @@ getRoles();
         reset();
         setSubmittedMsg(null);
         setGlobalError(null);
+        setCreatedStaff(null);
+        setIsEditing(false);
+        setEditError(null);
+        editForm.reset();
         onOpenChange(isOpen);
     };
 
-    const handlePhotoChange = (e) => {
-        // claude code generated
-        // console.log("value of e is: ",e);
-        // claude code generated
-        // console.log("value of e.target is: ", e.target);
-        // claude code generated
-        // console.log("value of e.target.files?.[0]", e.target.files?.[0]);
+    const startEdit = () => {
+        editForm.reset({
+            firstName: createdStaff.firstNm || "",
+            lastName: createdStaff.lastNm || "",
+            email: createdStaff.email || "",
+            mobileNumber: createdStaff.mobileNum || "",
+            dateOfBirth: createdStaff.dob?.split("T")[0] || "",
+            gender: createdStaff.gender || "",
+            dateOfJoining: createdStaff.dateOfJoining?.split("T")[0] || "",
+            // The response holds role names; the picker works with role ids
+            roles: [...(createdStaff.roles || [])]
+                .map((role) => roleOptions.find((opt) => opt.roleNm === role)?.id)
+                .filter((id) => id !== undefined),
+            photo: null,
+        });
+        setEditError(null);
+        setSubmittedMsg(null);
+        setIsEditing(true);
+    };
 
+    const cancelEdit = () => {
+        setEditError(null);
+        setSubmittedMsg(null);
+        setIsEditing(false);
+    };
+
+    const 
+    onSaveEdit = async (data) => {
+        setIsSaving(true);
+        setEditError(null);
+
+        try {
+            await staffApi.updateStaffDetails(createdStaff.staffId, {
+                firstNm: data.firstName,
+                lastNm: data.lastName,
+                dob: data.dateOfBirth,
+                gender: data.gender,
+                dateOfJoining: data.dateOfJoining,
+                email: data.email,
+                mobileNum: data.mobileNumber,
+                roleIds: data.roles,
+            });
+
+            // Upload the new profile photo only when one was picked
+            if (data.photo instanceof File) {
+                await staffApi.updateProfileImage1(createdStaff.staffId, data.photo);
+                if (photoPreview) URL.revokeObjectURL(photoPreview);
+                setPhotoPreview(URL.createObjectURL(data.photo));
+            }
+        } catch (error) {
+            console.error("Update failed: ", error);
+            setEditError(error.response?.data?.message || "Failed to update staff details.");
+            setIsSaving(false);
+            return;
+        }
+
+        // Read the updated record back from the database
+        try {
+            const saved = await staffApi.getStaffById(createdStaff.staffId);
+            setCreatedStaff(saved.data);
+        } catch (fetchError) {
+            console.error("Fetching updated staff failed: ", fetchError);
+            setCreatedStaff((prev) => ({
+                ...prev,
+                firstNm: data.firstName,
+                lastNm: data.lastName,
+                dob: data.dateOfBirth,
+                gender: data.gender,
+                dateOfJoining: data.dateOfJoining,
+                email: data.email,
+                mobileNum: data.mobileNumber,
+                roles: data.roles
+                    .map((id) => roleOptions.find((opt) => opt.id === id)?.roleNm)
+                    .filter(Boolean),
+            }));
+        }
+
+        toast.success("Staff details updated successfully!");
+        onSuccess();
+        setSubmittedMsg(null);
+        setIsSaving(false);
+        setIsEditing(false);
+    };
+
+    const handlePhotoChange = (e) => {
         const file = e.target.files?.[0];
-        // claude code generated
-        // console.log("in hadlePhotoChange function and file.type is: ",file.type);
-       // claude code generated
-       // console.log("line1 in handlePhotoChange and getValues('photo') is: ",getValues("photo"));
         if (file) {
             if (photoPreview) URL.revokeObjectURL(photoPreview);
-                setValue("photo", file, {
+            setValue("photo", file, {
                 shouldValidate: true,
                 shouldDirty: true,
                 shouldTouch: true,
             });
-            // claude code generated
-            // console.log("line2 in handlePhotoChange and getValues('photo') is: ",getValues("photo"));
             setPhotoPreview(URL.createObjectURL(file));
         }
     };
@@ -344,24 +800,56 @@ getRoles();
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            {/* <DialogContent className="w-[95vw] sm:max-w-[720px] p-0 overflow-hidden rounded-xl bg-white border-none shadow-xl"> */}
-             <DialogContent className="w-[95vw] sm:max-w-[720px] p-0 max-h-[95vh] overflow-y-auto rounded-xl bg-white border-none shadow-xl">
+            <DialogContent className="w-[95vw] sm:max-w-[720px] p-0 max-h-[95vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden rounded-xl bg-white border-none shadow-xl">
    
                 <DialogHeader className="px-6 pt-6 pb-4 border-b">
-                    <DialogTitle className="text-lg font-semibold text-slate-900">
-                        Add New Staff Member
-                    </DialogTitle>
-                    <p className="text-sm text-slate-500 mt-1">
-                        Fill in the details to create a new staff account.
-                    </p>
+                    <div className="flex items-start justify-between gap-4 pr-8">
+                        <div>
+                            <DialogTitle className="text-lg font-semibold text-slate-900">
+                                {createdStaff ? "Staff Member Details" : "Add New Staff Member"}
+                            </DialogTitle>
+                            <p className="text-sm text-slate-500 mt-1">
+                                {isEditing
+                                    ? "Update the details below and save your changes."
+                                    : createdStaff
+                                    ? "The staff account has been created with the details below."
+                                    : "Fill in the details to create a new staff account."}
+                            </p>
+                        </div>
+                        {createdStaff && !isEditing && (
+                            <Button
+                                type="button"
+                                onClick={startEdit}
+                                className="bg-blue-600 hover:bg-blue-700 text-white h-9 px-4 rounded-lg font-medium transition-colors gap-1.5 shrink-0"
+                            >
+                                <Pencil size={14} />
+                                Edit
+                            </Button>
+                        )}
+                    </div>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit(onSubmit,(errors) => {
-                // claude code generated
-                // console.log("validation failed");
-                // claude code generated
-                // console.log("errors is: ",errors);
-                })} className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+                {createdStaff && isEditing ? (
+                    <StaffEditView
+                        staff={createdStaff}
+                        form={editForm}
+                        roleOptions={roleOptions}
+                        photoUrl={photoPreview}
+                        inputClassName={inputClassName}
+                        isSaving={isSaving}
+                        error={editError}
+                        onSave={onSaveEdit}
+                        onCancel={cancelEdit}
+                    />
+                ) : createdStaff ? (
+                    <StaffDetailsView
+                        staff={createdStaff}
+                        photoUrl={photoPreview}
+                        submittedMsg={submittedMsg}
+                        onClose={handleClose}
+                    />
+                ) : (
+                <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
                     
                     {/* Status Banners */}
                     {globalError && (
@@ -603,6 +1091,7 @@ getRoles();
                         </Button>
                     </div>
                 </form>
+                )}
             </DialogContent>
         </Dialog>
     );

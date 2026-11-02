@@ -19,6 +19,7 @@ All URIs are relative to *{VITE_API_URL}*
 |[**updateProfileImage1**](#updateprofileimage1) | **PUT** /api/staff/{staffId}/profile-image | |
 |[**updateStaff**](#updatestaff) | **PUT** /api/staff/{staffId}/update | |
 |[**updateStaff1**](#updatestaff1) | **PUT** /api/staff/{staffId}/update1 | |
+|[**updateStaffDetails**](#updatestaffdetails) | **PUT** /api/staff/{staffId}/update-details | |
 |[**validateResetToken**](#validateresettoken) | **GET** /api/staff/reset-password/validate | |
 |[**verifyStaffOtp**](#verifystaffotp) | **POST** /api/staff/login-verification-otp | |
 
@@ -788,6 +789,60 @@ const { status, data } = await apiInstance.updateStaff1(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **staffUpdateReq1** | **StaffUpdateReq1**|  | |
+| **staffId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**StaffResponse**
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **updateStaffDetails**
+> StaffResponse updateStaffDetails(staffDetailsUpdateRequest)
+
+
+### Example
+
+```typescript
+import {
+    StaffControllerApi,
+    Configuration,
+    StaffDetailsUpdateRequest
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new StaffControllerApi(configuration);
+
+let staffId: string; // (default to undefined)
+let staffDetailsUpdateRequest: StaffDetailsUpdateRequest; //
+
+const { status, data } = await apiInstance.updateStaffDetails(
+    staffId,
+    staffDetailsUpdateRequest
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **staffDetailsUpdateRequest** | **StaffDetailsUpdateRequest**|  | |
 | **staffId** | [**string**] |  | defaults to undefined|
 
 

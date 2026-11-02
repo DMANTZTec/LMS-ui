@@ -1,5 +1,6 @@
 .gitignore
 .npmignore
+.openapi-generator-ignore
 api.ts
 base.ts
 common.ts
@@ -120,6 +121,7 @@ docs/SortObject.md
 docs/StaffControllerApi.md
 docs/StaffCourseControllerApi.md
 docs/StaffCourseResponse.md
+docs/StaffDetailsUpdateRequest.md
 docs/StaffLoginRequest.md
 docs/StaffLoginResponse.md
 docs/StaffRegistrationRequest.md
