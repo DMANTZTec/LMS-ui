@@ -106,7 +106,9 @@ export default function Topbar({ onMenuClick }) {
           </Button>
         )}
 
-        <StaffNavbarAvatar />
+        {/* claude code generated: in the instructor dashboard "My Profile" always opens the staff profile page */}
+        {/* <StaffNavbarAvatar /> */}
+        <StaffNavbarAvatar profilePath="/staffProfile_new" />
       </div>
     </header>
   );

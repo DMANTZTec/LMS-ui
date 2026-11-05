@@ -31,6 +31,9 @@ import ViewCourses from '@/pages/public/ViewCourses';
 import StudentCoursesPage from '@/pages/studentPages/studentDashBoard/StudentCoursesPage';
 import ViewCourseDetails from '@/pages/public/ViewCourseDetails';
 
+import StaffProfile_new from '@/features/Avatar/staff/profile/staff_profile_new/StaffProfile_new'; //
+import StaffProfileGuard from '@/components/protectedRoutes/StaffProfileGuard'; // claude code generated
+
 const AppRoute = () => {
 
     return (
@@ -60,16 +63,27 @@ const AppRoute = () => {
                     <Route element={<AuthGuard allowedRole="STAFF" />}>
                         <Route path="/Staff-dashboard" element={<StaffDashBoard />} />
                         
-                        <Route path="/staffProfile" element={<StaffProfile />} />
+                        {/* claude code generated: ADMIN only */}
+                        <Route element={<StaffProfileGuard adminOnly />}>
+                            <Route path="/staffProfile" element={<StaffProfile />} />
+                        </Route>
                         <Route path="courseMgt" element={<CourseMgtMain />} />
                         <Route path="/addCourse" element={<AddCourse />} />
                         <Route  path='/course-builder/:courseId' element={<CourseStructureBuilder />} />
                         <Route path="/courseDetails/:courseId" element={<CourseDetails />} />
+
+{/* claude code generated: moved below so INSTRUCTOR can open it too */}
+{/* <Route path="/staffProfile_new" element={<StaffProfile_new />} /> */}
                     </Route>
 
                     {/* INSTRUCTOR Routes */}
                     <Route element={<AuthGuard allowedRole="INSTRUCTOR" />}>
                     <Route path="/Instructor-dashboard" element={<InstructorDashBoard />} />
+                    </Route>
+
+                    {/* claude code generated: STAFF (non-admin) + INSTRUCTOR profile */}
+                    <Route element={<StaffProfileGuard />}>
+                        <Route path="/staffProfile_new" element={<StaffProfile_new />} />
                     </Route>
 
                     {/* STUDENT Routes */}
